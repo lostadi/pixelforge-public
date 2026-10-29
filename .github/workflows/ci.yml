@@ -47,11 +47,12 @@ jobs:
             python -m unittest discover -s tools/arm_npu -p "$suite" -q
           done
       - name: Test voice conversation, tool and terminal fixtures
+        working-directory: source/ostadix-voice
         shell: bash
         run: |
           set -euo pipefail
           for suite in test_pixelforge_chat.py test_conversation_protocol.py test_local_chat.py test_terminal_ui.py test_npu_runtime.py test_local_runtime.py; do
-            python -m unittest discover -s source/ostadix-voice/tests -p "$suite" -q
+            python -m unittest discover -s tests -p "$suite" -q
           done
       - name: Build and independently verify the public source archive
         shell: bash
