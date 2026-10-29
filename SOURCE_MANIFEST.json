@@ -317,9 +317,9 @@
       "sha256": "f6f88a183b508aa1acde4f82aa5705c2d483f2c232dd7dbebb999182bd3f31cb"
     },
     {
-      "bytes": 7025,
+      "bytes": 7585,
       "path": "chat/README.md",
-      "sha256": "e78693bf262b288c02103a500b33c67de7fb6c9711bce832d9285c8793186232"
+      "sha256": "14e7acc53f18764dfeca43eb4639531688431b8567f7ab87f234f99260845b36"
     },
     {
       "bytes": 1465,
@@ -337,9 +337,9 @@
       "sha256": "09a6a6c611fa1aeb844c90c05659b3f959998e18f17d772ee9a58d1d05ead400"
     },
     {
-      "bytes": 4374,
+      "bytes": 5308,
       "path": "chat/build_native.sh",
-      "sha256": "97f70fd573e2688bdeba909222e9de16eaf61aead4234a7519541cf11124744b"
+      "sha256": "5b2b050883c4b380f5f34afd3c52008c186475c0b57179e7d0f64ffb178e283a"
     },
     {
       "bytes": 1251,
@@ -357,9 +357,9 @@
       "sha256": "9a2c2dcd243442bb25d78859fb39d37337f257e2813f9232b3eaeb9ae7b5eb80"
     },
     {
-      "bytes": 3545,
+      "bytes": 6209,
       "path": "chat/lifecycle.py",
-      "sha256": "3e4b565bc39e41d32b39973136edad73e87c725a986f053c6efc51d181211012"
+      "sha256": "d427026fc12e6fd2ee0a283b36f0023dd234083f21fc27310debd5c96728181b"
     },
     {
       "bytes": 875,
@@ -372,9 +372,9 @@
       "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
     },
     {
-      "bytes": 10193,
+      "bytes": 10659,
       "path": "chat/native/chat_runner.cc",
-      "sha256": "60f1dd4a281282294521f227eb66da8943223efd3e6f5196ae28e50843a305ab"
+      "sha256": "cea2a7cb11488cc215fb702a8f4e921c4dc947932d838a07d45eecddb5839522"
     },
     {
       "bytes": 18796,
@@ -392,9 +392,19 @@
       "sha256": "7244d459cc7d4c0c27e96cbe1695e37b8bad53c8e78e5907e471d8c75263206d"
     },
     {
-      "bytes": 14935,
+      "bytes": 15148,
       "path": "chat/service.py",
-      "sha256": "0271b49aefa246cbf265ffa6b5acff6314fb3d2caf88c1cb7b2d69cd14d39ab9"
+      "sha256": "2b32d44a4ede33d78f8f62d24cd7479317452797b41914fdba2df32182553928"
+    },
+    {
+      "bytes": 1909,
+      "path": "chat/tests/fusion_fixture.cc",
+      "sha256": "9bd58347ef38797adc4daeeb978e41430b9073f38101c4c3eb1201b2dd2ebc76"
+    },
+    {
+      "bytes": 6871,
+      "path": "chat/tests/test_build_cache.py",
+      "sha256": "5db0de2fa08d7c5e9ffbedb9e0d5f79ef5f8ba302acf648e7c208b5ab4bac5a5"
     },
     {
       "bytes": 7715,
@@ -402,14 +412,14 @@
       "sha256": "7f349ab8e62b1d0fdfee5aaddef59c73ddb8963fccf3c28158d9386abb5542c8"
     },
     {
-      "bytes": 6523,
+      "bytes": 10420,
       "path": "chat/tests/test_native.py",
-      "sha256": "4f0e08ebe384a97ba74478b3d5ebf67494590bdced695cf32e040e5c90425833"
+      "sha256": "947515215496be03452ca751d0555ef1b2d924068ba414b274cd7906300359ec"
     },
     {
-      "bytes": 3666,
+      "bytes": 12116,
       "path": "chat/tests/test_service.py",
-      "sha256": "be492175ef799f4627212fc09570c1b366d350f5ea7165e4f989ed1da255e944"
+      "sha256": "95347d2db937806fd7283f7218a95ce899a969744d84d47abd20b4b37c9255a0"
     },
     {
       "bytes": 988,
@@ -2212,9 +2222,9 @@
       "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b"
     },
     {
-      "bytes": 1389,
+      "bytes": 914,
       "path": "tools/arm_npu/llama_npu_bridge.patch",
-      "sha256": "23e3bd990b791cc9fb38b328b825bcb61855ea4f484abd28d15c33f941df1bc8"
+      "sha256": "d2565b3c0ec1fdedc0954559fd3763fa487fffca8888b9135018e776baad8c53"
     },
     {
       "bytes": 4918,

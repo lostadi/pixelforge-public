@@ -19,6 +19,17 @@ chat/venv/bin/python -m unittest discover -s chat/tests -v
 
 The native tests use a synthetic tiny GGUF and a simulated matrix broker. They test routing, selected-operation failure, per-request counters and shutdown; they do not prove hardware execution. Native tests skip until the binary exists. Root-owned bootstrap/cleanup fixtures skip without root.
 
+The source cache records both the upstream revision and the applied bridge
+patch hash. A stale or unrecorded patch stops the build before compilation.
+Move the reported `chat/build/source` cache aside and rerun with a pinned
+source input to regenerate it.
+
+Native replies report `context_init_seconds`, `prefill_seconds` and
+`decode_seconds` separately. `generation_seconds` remains prefill plus decode;
+it excludes context initialization, source validation and host-tool work.
+These fields describe an individual run and do not establish an overall
+speedup.
+
 ## Prepare local model banks
 
 Supply your own model, matching compiled banks and the Android helper built from `tools/arm_npu/npu_pipe.cc`. Follow [the compiler guide](../tools/arm_npu/GGUF_COMPILER.md) for the compatible rooted Tensor runtime and its helper setup. GGUF model weights, DarwiNN bytecode, proprietary vendor runtime libraries and SDK binaries are not included here.

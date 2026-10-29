@@ -43,9 +43,25 @@ PY
   trap - EXIT
 fi
 test "$(cat "$PIXELFORGE_CHAT_TREE/.pixelforge-chat-source-owner")" = "$PIXELFORGE_CHAT_REVISION"
-if ! rg -q 'ggml_npu_bridge.h' "$PIXELFORGE_CHAT_TREE/ggml/src/ggml-cpu/ggml-cpu.c"; then
-  patch -d "$PIXELFORGE_CHAT_TREE" -p1 < "$PIXELFORGE_CHAT_KIT/llama_npu_bridge.patch"
-fi
+python3 - "$PIXELFORGE_CHAT_TREE" "$PIXELFORGE_CHAT_KIT/llama_npu_bridge.patch" <<'PY'
+import hashlib,subprocess,sys
+from pathlib import Path
+tree,patch = map(Path,sys.argv[1:])
+marker = tree / '.pixelforge-chat-patch-sha256'
+expected = hashlib.sha256(patch.read_bytes()).hexdigest()
+patched = 'ggml_npu_bridge.h' in (tree / 'ggml/src/ggml-cpu/ggml-cpu.c').read_text()
+if marker.exists() or marker.is_symlink() or patched:
+    if (tree.is_symlink() or marker.is_symlink() or not marker.is_file() or not patched
+            or marker.read_text().strip() != expected):
+        raise SystemExit('Cached llama source has no matching PixelForge patch SHA-256. '
+                         'Move ' + str(tree) + ' aside, then regenerate source by rerunning '
+                         'chat/build_native.sh with the pinned --archive, --source, or --fetch input.')
+else:
+    if tree.is_symlink():
+        raise SystemExit('Refusing to patch a symlinked cached source directory: ' + str(tree))
+    subprocess.run(['patch','--fuzz=0','-d',str(tree),'-p1','-i',str(patch)],check=True)
+    marker.write_text(expected + '\n')
+PY
 cp -- "$PIXELFORGE_CHAT_ROOT/native/ggml_npu_bridge.cc" "$PIXELFORGE_CHAT_ROOT/native/ggml_npu_bridge.h" "$PIXELFORGE_CHAT_TREE/ggml/src/ggml-cpu/"
 cat > "$PIXELFORGE_CHAT_TREE/pixelforge-chat.cmake" <<'CMAKE'
 add_executable(pixelforge-chat "${PIXELFORGE_CHAT_SOURCE}/chat_runner.cc")

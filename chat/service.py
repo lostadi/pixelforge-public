@@ -114,6 +114,13 @@ def adopt_broker(cleanup, owned, path):
         cleanup.collect_owned(owned)
 
 
+def track_owned(cleanup, owned, stopped):
+    """Keep periodic discovery cheap; final cleanup never waits on this timer."""
+    interval = .2
+    while not stopped.wait(interval):
+        interval = .2 if cleanup.collect_owned_children(owned) else 2.0
+
+
 def main():
     global read_profile_counter
     if len(sys.argv) != 1:
@@ -242,10 +249,8 @@ def main():
                         os.kill(os.getpid(), signal.SIGTERM)
             reader = threading.Thread(target=output, name='pixelforge-output', daemon=True)
             reader.start()
-            def track():
-                while not stopped.wait(.2):
-                    cleanup.collect_owned(owned)
-            tracker = threading.Thread(target=track, name='pixelforge-owned', daemon=True)
+            tracker = threading.Thread(target=track_owned, args=(cleanup, owned, stopped),
+                                       name='pixelforge-owned', daemon=True)
             tracker.start()
             for line in iter(lambda: sys.stdin.buffer.readline(FRAME_LIMIT + 1), b''):
                 if len(line) > FRAME_LIMIT or not line.endswith(b'\n'):

@@ -99,8 +99,10 @@ static void generate(llama_model * model, int threads, const json & request) {
     cp.n_threads = cp.n_threads_batch = threads;
     cp.flash_attn_type = LLAMA_FLASH_ATTN_TYPE_DISABLED;
     cp.offload_kqv = cp.op_offload = false;
+    const auto context_began = Clock::now();
     std::unique_ptr<llama_context, decltype(&llama_free)> ctx(llama_init_from_model(model, cp), llama_free);
     if (!ctx) throw std::runtime_error("Conversation context initialization failed");
+    const double context_init_seconds = std::chrono::duration<double>(Clock::now() - context_began).count();
     const uint64_t npu_before = pixelforge_ggml_npu_requests();
     const uint64_t cpu_before = pixelforge_ggml_npu_cpu_matmuls();
     const uint64_t prefill_before = pixelforge_ggml_npu_cpu_prefill_matmuls();
@@ -112,6 +114,7 @@ static void generate(llama_model * model, int threads, const json & request) {
             throw std::runtime_error("Conversation prefill failed");
     }
     pixelforge_ggml_npu_set_cpu_prefill(false);
+    const auto prefilled = Clock::now();
     std::string text, pending;
     json output_ids = json::array();
     bool ended = false;
@@ -145,6 +148,7 @@ static void generate(llama_model * model, int threads, const json & request) {
             throw std::runtime_error("Conversation decode failed");
     }
     if (!pending.empty()) emit({{"type", "chunk"}, {"id", id}, {"text", pending}});
+    const auto decoded = Clock::now();
     emit({{"type", "done"}, {"id", id}, {"text", text}, {"generated_tokens", output_ids},
           {"prompt_tokens", n}, {"npu_weight_matmul_operations", pixelforge_ggml_npu_requests() - npu_before},
           {"cpu_dynamic_matmul_operations", pixelforge_ggml_npu_cpu_matmuls() - cpu_before},
@@ -152,7 +156,10 @@ static void generate(llama_model * model, int threads, const json & request) {
           {"cpu_placed_weight_matmul_operations", pixelforge_ggml_npu_cpu_placed_matmuls() - placed_before},
           {"selected_npu_weight_tensors", selected_tensors()},
           {"prefill_cpu", prefill_cpu}, {"token_limit_reached", !ended},
-          {"generation_seconds", std::chrono::duration<double>(Clock::now() - began).count()}});
+          {"context_init_seconds", context_init_seconds},
+          {"prefill_seconds", std::chrono::duration<double>(prefilled - began).count()},
+          {"decode_seconds", std::chrono::duration<double>(decoded - prefilled).count()},
+          {"generation_seconds", std::chrono::duration<double>(decoded - began).count()}});
 }
 
 int main(int argc, char ** argv) {

@@ -1,6 +1,6 @@
 """Offline native protocol/stage tests. Simulated bridge is not NPU evidence."""
 from pathlib import Path
-import json, os, resource, subprocess, sys, tempfile, unittest
+import json, math, os, resource, shutil, subprocess, sys, tempfile, unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'tools/arm_npu'))
 from create_tiny_gguf import create
 from gguf_hf_loader import GGUFWeights
@@ -37,9 +37,10 @@ class NativeTests(unittest.TestCase):
   self.root=Path(self.temp.name)
   self.model=self.root/'tiny.gguf';create(self.model)
  def tearDown(self):self.temp.cleanup()
- def run_requests(self,requests,bridge=False,selection=None,fail=False,expect_success=True):
+ def run_requests(self,requests,bridge=False,selection=None,fail=False,expect_success=True,disable_fusion=False):
   env=os.environ.copy()
-  for key in ('PIXELFORGE_GGML_PLAN','PIXELFORGE_GGML_BROKER','PIXELFORGE_GGML_NPU_TENSORS'):env.pop(key,None)
+  for key in ('PIXELFORGE_GGML_PLAN','PIXELFORGE_GGML_BROKER','PIXELFORGE_GGML_NPU_TENSORS','GGML_CPU_DISABLE_FUSION'):env.pop(key,None)
+  if disable_fusion:env['GGML_CPU_DISABLE_FUSION']='1'
   if bridge:
    broker=self.root/'broker.py';broker.write_text(BROKER.replace('#!/usr/bin/python3', '#!'+sys.executable, 1));broker.chmod(0o700)
    plan=self.root/'weights.plan'
@@ -53,7 +54,15 @@ class NativeTests(unittest.TestCase):
    preexec_fn=lambda:resource.setrlimit(resource.RLIMIT_CORE,(0,0)))
   if not expect_success:return result
   self.assertEqual(result.returncode,0,result.stderr)
-  return [json.loads(line) for line in result.stdout.splitlines()]
+  frames=[json.loads(line) for line in result.stdout.splitlines()]
+  for frame in frames:
+   if frame['type']=='done':
+    for key in ('context_init_seconds','prefill_seconds','decode_seconds','generation_seconds'):
+     self.assertIs(type(frame[key]),float,key)
+     self.assertTrue(math.isfinite(frame[key]),key)
+     self.assertGreaterEqual(frame[key],0,key)
+    self.assertAlmostEqual(frame['prefill_seconds']+frame['decode_seconds'],frame['generation_seconds'],places=6)
+  return frames
  def test_cpu_multiple_turns_context_reset_errors_and_stream(self):
   request={'id':'first','prompt':'<s>Hello','max_tokens':4,'context_size':256,'prefill_cpu':True}
   frames=self.run_requests([{'id':'invalid','prompt':'hi','max_tokens':0},request,dict(request,id='second')])
@@ -107,4 +116,59 @@ class NativeTests(unittest.TestCase):
   self.assertNotIn('"type":"done"',result.stdout)
   self.assertIn('broker rejected projection',result.stderr)
   self.assertEqual((self.root/'seen').read_text().splitlines(),['blk.0.ffn_up.weight'])
+ def test_cpu_and_simulated_npu_fusion_preserve_tokens_and_placement(self):
+  requests=[{'id':str(i),'prompt':'Hello','max_tokens':4,'context_size':256,'prefill_cpu':prefill}
+            for i,prefill in enumerate((True,False))]
+  modes=[(False,None),(True,None),(True,'blk.0.ffn_up.weight')]
+  for bridge,selection in modes:
+   with self.subTest(bridge=bridge,selection=selection):
+    fused=self.run_requests(requests,bridge=bridge,selection=selection)
+    separate=self.run_requests(requests,bridge=bridge,selection=selection,disable_fusion=True)
+    fused=[f for f in fused if f['type']=='done']
+    separate=[f for f in separate if f['type']=='done']
+    self.assertEqual(len(fused),len(requests))
+    self.assertEqual(len(separate),len(requests))
+    for actual,reference in zip(fused,separate):
+     for key in ('text','generated_tokens','prompt_tokens','prefill_cpu','selected_npu_weight_tensors',
+                 'npu_weight_matmul_operations','cpu_dynamic_matmul_operations',
+                 'cpu_prefill_weight_matmul_operations','cpu_placed_weight_matmul_operations'):
+      self.assertEqual(actual[key],reference[key],key)
+
+
+class FusionGraphTests(unittest.TestCase):
+ """Small compiled graph proves fusion runs even while the bridge is enabled."""
+ @classmethod
+ def setUpClass(cls):
+  compiler=shutil.which(os.environ.get('CXX','c++'))
+  includes=ROOT/'build/source/ggml/include'
+  libraries=[ROOT/'build/ggml/src'/name for name in ('libggml.a','libggml-cpu.a','libggml-base.a')]
+  if not compiler or not (includes/'ggml.h').is_file() or not all(p.is_file() for p in libraries):
+   raise unittest.SkipTest('Build the pinned native source and static libraries first')
+  cls.temp=tempfile.TemporaryDirectory(prefix='pixelforge-fusion-test-')
+  cls.addClassCleanup(cls.temp.cleanup)
+  cls.fixture=Path(cls.temp.name)/'fusion-fixture'
+  subprocess.run([compiler,'-std=c++17','-O2','-I'+str(includes),str(ROOT/'tests/fusion_fixture.cc'),
+                  *map(str,libraries),'-pthread','-ldl','-lm','-o',str(cls.fixture)],
+                 check=True,capture_output=True,text=True,timeout=60)
+ def run_graph(self,bridge=False,disable_fusion=False):
+  env=os.environ.copy()
+  for key in ('PIXELFORGE_GGML_PLAN','PIXELFORGE_GGML_BROKER','PIXELFORGE_GGML_NPU_TENSORS','GGML_CPU_DISABLE_FUSION'):
+   env.pop(key,None)
+  # This graph has no matmul: enabling the bridge must not launch any broker.
+  if bridge:env['PIXELFORGE_GGML_BROKER']='/nonexistent/unused-test-broker'
+  if disable_fusion:env['GGML_CPU_DISABLE_FUSION']='1'
+  result=subprocess.run([str(self.fixture)],capture_output=True,text=True,env=env,timeout=10)
+  self.assertEqual(result.returncode,0,result.stderr)
+  return json.loads(result.stdout)
+ def test_bridge_keeps_norm_scale_fusion_and_matches_unfused_output(self):
+  for bridge in (False,True):
+   with self.subTest(bridge=bridge):
+    fused=self.run_graph(bridge=bridge)
+    separate=self.run_graph(bridge=bridge,disable_fusion=True)
+    self.assertTrue(fused['fused'],'RMS_NORM + MUL was split into separate kernels')
+    self.assertFalse(separate['fused'],'Reference must execute the separate kernels')
+    self.assertEqual(len(fused['output']),64)
+    self.assertEqual(len(separate['output']),64)
+    for actual,reference in zip(fused['output'],separate['output']):
+     self.assertAlmostEqual(actual,reference,delta=1e-6)
 if __name__=='__main__':unittest.main()

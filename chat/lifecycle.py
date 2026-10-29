@@ -5,6 +5,8 @@ from pathlib import Path
 import signal
 import time
 
+PROC_ROOT = Path('/proc')
+
 def process_record(pid):
     try:
         process = Path('/proc') / str(pid)
@@ -57,6 +59,74 @@ def collect_owned(owned):
         roots.update(found)
     for pid in roots:
         owned[pid] = records[pid]['stamp']
+
+
+def collect_owned_children(owned):
+    """Discover descendants without scanning unrelated processes periodically.
+
+    Linux records children against the spawning thread, so every live task of
+    each validated process is inspected. Full discovery remains the fallback
+    when that interface cannot be read, and still owns final cleanup.
+    """
+    pending = list(owned.items())
+    visited = set()
+
+    def fallback():
+        collect_owned(owned)
+        return False
+
+    def current(pid, stamp):
+        record = process_record(pid)
+        return record if record and record['stamp'] == stamp else None
+
+    while pending:
+        pid, stamp = pending.pop()
+        if (pid, stamp) in visited or not current(pid, stamp):
+            continue
+        visited.add((pid, stamp))
+        try:
+            tasks = list((PROC_ROOT / str(pid) / 'task').iterdir())
+        except OSError:
+            if current(pid, stamp):
+                return fallback()
+            continue
+        if not tasks and current(pid, stamp):
+            return fallback()
+        for task in tasks:
+            if not task.name.isdecimal():
+                continue
+            try:
+                with (task / 'children').open('rb') as source:
+                    data = source.read(262145)
+            except FileNotFoundError:
+                if not current(pid, stamp):
+                    break
+                if task.exists():
+                    return fallback()
+                continue  # A worker thread exited during this snapshot.
+            except OSError:
+                if current(pid, stamp):
+                    return fallback()
+                break
+            fields = data.split()
+            if len(data) > 262144 or any(not item.isdigit() for item in fields):
+                return fallback()
+            for field in fields:
+                child_pid = int(field)
+                if not 0 < child_pid <= 2 ** 31 - 1:
+                    return fallback()
+                child = process_record(child_pid)
+                if not child or child['parent'] != pid or not current(pid, stamp):
+                    continue
+                child_stamp = child['stamp']
+                if child_pid in owned and owned[child_pid] != child_stamp:
+                    continue  # Never replace a recorded identity after PID reuse.
+                confirmed = current(child_pid, child_stamp)
+                if not confirmed or confirmed['parent'] != pid or not current(pid, stamp):
+                    continue
+                owned[child_pid] = child_stamp
+                pending.append((child_pid, child_stamp))
+    return True
 
 
 def signal_owned(owned, number):
