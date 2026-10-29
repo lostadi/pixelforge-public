@@ -1,0 +1,26 @@
+{
+  "schema": "pixelforge.chat.reference-acceptance.v1",
+  "date": "2026-10-29",
+  "platform": "Rooted Pixel 10 Pro / Tensor G5; pre-existing Ubuntu ARM64 and ordinary Termux client",
+  "model_provenance_repo": "huihui-ai/Huihui-NeoHorse-1-4B-abliterated",
+  "model_gguf_sha256": "cc4a3cc480fe0e0142333244aaa3f2c0d4feda6c78d296976e8513d02aabbbcd",
+  "reference_profile_input_sha256": "c15f521e1caff56d213898e566b7c64c777dfadd76262bd41b5a4a841f8eeeec",
+  "reference_native_sha256": "01449007bad795fca2279381db61294a901dcdcbb4fdd6ae007691c749b04a6b",
+  "selected_npu_weight_tensors": [
+    "blk.0.ffn_down.weight",
+    "blk.0.ffn_gate.weight",
+    "blk.0.ffn_up.weight"
+  ],
+  "compiled_banks": 7,
+  "placement": "CPU prefill; only selected first-block FFN projections on NPU; other operations on CPU",
+  "measured": {
+    "seconds": 214.62560086699887,
+    "npu_weight_matmul_operations": 72,
+    "native_npu_invocations": 168,
+    "compiled_during_inference": 0,
+    "native_cleanup_ok": true,
+    "cancel_seconds": 0.4224
+  },
+  "scope": "One controlled real file-tool request and final reply through c. No private prompt, file contents, user conversations, process IDs, or root receipt paths included.",
+  "limitations": "Historical reference deployment, not a benchmark or proof of general quality. Public source changes and fresh builds require their own hardware verification. No speedup, full-model NPU placement, or clean-device installation established."
+}

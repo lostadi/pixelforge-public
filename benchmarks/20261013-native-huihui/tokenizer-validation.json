@@ -1,0 +1,157 @@
+[
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi"
+      }
+    ],
+    "options": {
+      "add_generation_prompt": true,
+      "enable_thinking": false
+    },
+    "identical_rendering_ids_decode": true,
+    "ids": [
+      0,
+      130072,
+      8448,
+      220,
+      19301,
+      130073,
+      220,
+      130072,
+      130071,
+      220,
+      8,
+      130063,
+      9,
+      130063
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Say hello."
+      }
+    ],
+    "options": {
+      "add_generation_prompt": true,
+      "enable_thinking": false
+    },
+    "identical_rendering_ids_decode": true,
+    "ids": [
+      0,
+      130072,
+      8448,
+      220,
+      52774,
+      40837,
+      35,
+      130073,
+      220,
+      130072,
+      130071,
+      220,
+      8,
+      130063,
+      9,
+      130063
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Be concise."
+      },
+      {
+        "role": "user",
+        "content": "Hi"
+      },
+      {
+        "role": "assistant",
+        "content": "Hello"
+      },
+      {
+        "role": "user",
+        "content": "2+2?"
+      }
+    ],
+    "options": {
+      "add_generation_prompt": true,
+      "enable_thinking": false
+    },
+    "identical_rendering_ids_decode": true,
+    "ids": [
+      0,
+      130072,
+      17261,
+      220,
+      5100,
+      44375,
+      35,
+      130073,
+      220,
+      130072,
+      8448,
+      220,
+      19301,
+      130073,
+      220,
+      130072,
+      130071,
+      220,
+      8,
+      130063,
+      9,
+      130063,
+      36417,
+      130073,
+      220,
+      130072,
+      8448,
+      220,
+      39,
+      32,
+      39,
+      52,
+      130073,
+      220,
+      130072,
+      130071,
+      220,
+      8,
+      130063,
+      9,
+      130063
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi"
+      }
+    ],
+    "options": {
+      "add_generation_prompt": true,
+      "enable_thinking": true
+    },
+    "identical_rendering_ids_decode": true,
+    "ids": [
+      0,
+      130072,
+      8448,
+      220,
+      19301,
+      130073,
+      220,
+      130072,
+      130071,
+      220,
+      8,
+      220
+    ]
+  }
+]

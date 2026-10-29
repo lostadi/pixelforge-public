@@ -1,0 +1,150 @@
+{
+  "A_B_A_invocations": 12,
+  "code_retained": true,
+  "snapshots": [
+    {
+      "label": "ready",
+      "rss_kb": 9708,
+      "pss_kb": 3543,
+      "dma_fd_size_sum_bytes": 0,
+      "dma_unique_buffer_bytes": 0,
+      "dma_unique_buffer_count": 0
+    },
+    {
+      "label": "both_compiled",
+      "rss_kb": 32652,
+      "pss_kb": 24591,
+      "dma_fd_size_sum_bytes": 0,
+      "dma_unique_buffer_bytes": 0,
+      "dma_unique_buffer_count": 0
+    },
+    {
+      "label": "run0_runtime_released",
+      "rss_kb": 32764,
+      "pss_kb": 24668,
+      "dma_fd_size_sum_bytes": 73728,
+      "dma_unique_buffer_bytes": 36864,
+      "dma_unique_buffer_count": 2
+    },
+    {
+      "label": "run1_runtime_released",
+      "rss_kb": 32768,
+      "pss_kb": 24670,
+      "dma_fd_size_sum_bytes": 73728,
+      "dma_unique_buffer_bytes": 36864,
+      "dma_unique_buffer_count": 2
+    },
+    {
+      "label": "run11_runtime_released",
+      "rss_kb": 32784,
+      "pss_kb": 24678,
+      "dma_fd_size_sum_bytes": 73728,
+      "dma_unique_buffer_bytes": 36864,
+      "dma_unique_buffer_count": 2
+    },
+    {
+      "label": "both_freed",
+      "rss_kb": 15056,
+      "pss_kb": 6950,
+      "dma_fd_size_sum_bytes": 73728,
+      "dma_unique_buffer_bytes": 36864,
+      "dma_unique_buffer_count": 2
+    }
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.032207499999913125,
+      "finite": true
+    },
+    {
+      "run": 1,
+      "model": "B",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.01584825500003717,
+      "finite": true
+    },
+    {
+      "run": 2,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.013294140999732917,
+      "finite": true
+    },
+    {
+      "run": 3,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.012601665999682155,
+      "finite": true
+    },
+    {
+      "run": 4,
+      "model": "B",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.018781276000026992,
+      "finite": true
+    },
+    {
+      "run": 5,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.013709479000226565,
+      "finite": true
+    },
+    {
+      "run": 6,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.011469089000001986,
+      "finite": true
+    },
+    {
+      "run": 7,
+      "model": "B",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.01297684900009699,
+      "finite": true
+    },
+    {
+      "run": 8,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.02013710999972318,
+      "finite": true
+    },
+    {
+      "run": 9,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.010079922000386432,
+      "finite": true
+    },
+    {
+      "run": 10,
+      "model": "B",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.01084479100018143,
+      "finite": true
+    },
+    {
+      "run": 11,
+      "model": "A",
+      "cpu_max_abs_diff": 0.005827069282531738,
+      "seconds": 0.011255989999881422,
+      "finite": true
+    }
+  ],
+  "tested_device": "Pixel 10 Pro / Tensor G5",
+  "backend": "native Android EdgeTpuCompiler + NPU SouthBound API",
+  "test_model": "actual Huihui MiniCPM5 first query projection 2048x2048 per-channel int8 weights / FLOAT32 activations",
+  "models": "A original weights; B negated weights; interleaved A/B/A",
+  "whole_model_generation_test": "recorded separately by model host",
+  "npu_graph_node": "kThrNodeTypeNpu",
+  "all_code_kept_valid_until_unload": true,
+  "dma_measurement": "Sum of fdinfo size once per exported DMA-BUF inode field; fd-size sum is also retained and includes duplicated descriptors. Generic anon_inode ino is not used.",
+  "all_request_runtime_resources_unloaded_after_each_request": true,
+  "remaining_idle_dma_buffers": "Two vendor context MessageQueue buffers, 28,672 and 8,192 bytes, each with two file descriptors; total unique 36,864 bytes."
+}

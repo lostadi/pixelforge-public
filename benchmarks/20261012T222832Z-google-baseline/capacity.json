@@ -1,0 +1,330 @@
+{
+  "schema": "pixelforge.hardware-capacity-observation/v1",
+  "observed_utc": "2026-10-12T22:27:28.597346+00:00",
+  "mode": "read-only hardware metadata; no inference invoked",
+  "memory": {
+    "values_bytes": {
+      "MemTotal": 16331845632,
+      "MemFree": 647016448,
+      "MemAvailable": 1658789888,
+      "Cached": 2226315264,
+      "SwapCached": 20922368,
+      "SwapTotal": 8165916672,
+      "SwapFree": 953118720,
+      "CmaTotal": 679477248,
+      "CmaFree": 0
+    },
+    "provenance": "/proc/meminfo (reported kB converted with 1024)",
+    "limits": "Current availability varies; MemTotal is kernel-visible memory, not advertised total. DMA buffers and zram are already backed by system RAM; totals must not be added blindly."
+  },
+  "zram": {
+    "disk_size_bytes": 8165920768,
+    "orig_data_size_bytes": 7211827200,
+    "compressed_data_size_bytes": 2308615297,
+    "mem_used_total_bytes": 2366263296,
+    "mem_limit_bytes": 0,
+    "mem_used_max_bytes": 2432794624,
+    "compression_algorithm_raw": "[lz77eh] deflate zstd lz4hc lz4 lzo lzo-rle",
+    "swap_sources": [
+      {
+        "device": "/dev/block/zram0",
+        "size_bytes": 8165916672,
+        "used_bytes": 7212797952
+      }
+    ],
+    "provenance": [
+      "/proc/swaps",
+      "/sys/block/zram0/disksize",
+      "/sys/block/zram0/mm_stat",
+      "/sys/block/zram0/comp_algorithm"
+    ],
+    "units_source": "https://docs.kernel.org/admin-guide/blockdev/zram.html",
+    "limits": "Compressed swap occupies physical RAM; configured zram size is not additional physical capacity."
+  },
+  "tpu": {
+    "provenance": "/sys/devices/platform/sswrp_tpu@36000000/36500000.buenos",
+    "devfreq_provenance": "/sys/class/devfreq/36500000.buenos",
+    "available_frequencies_hz": [
+      38400000,
+      134400000,
+      192000000,
+      288000000,
+      403200000,
+      480000000,
+      595200000,
+      691200000,
+      768000000,
+      825600000,
+      883200000,
+      960000000,
+      1036800000,
+      1113600000,
+      1209600000,
+      1286400000
+    ],
+    "current_frequency_hz_raw": 0,
+    "minimum_frequency_hz": 38400000,
+    "maximum_frequency_hz": 1286400000,
+    "counters_raw": {
+      "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+      "firmware_type": "prod",
+      "device_utilization": "0",
+      "tpu_utilization": "52 0 0",
+      "inference_count": "0 0 2742",
+      "tpu_active_cycle_count": "0",
+      "tpu_op_count": "0 0 0",
+      "tpu_throttle_stall_count": "0",
+      "firmware_crash_count": "0",
+      "watchdog_timeout_count": "0"
+    },
+    "limits": "Device-wide counters are not model token counts or a TOPS measurement; zero current frequency can indicate idle/gated hardware. Frequency list alone does not establish compute capacity."
+  },
+  "resident_engine_dma_buf": {
+    "pid": 11676,
+    "descriptor_count": 511,
+    "unique_buffer_count": 305,
+    "unique_buffer_bytes": 3413798912,
+    "exporters": {
+      "system": {
+        "unique_buffers": 157,
+        "bytes": 3358429184
+      },
+      "system-uncached": {
+        "unique_buffers": 148,
+        "bytes": 55369728
+      }
+    },
+    "largest_unique_buffer_sizes_bytes": [
+      1107197952,
+      1107197952,
+      1107197952,
+      24707072,
+      6414336,
+      4587520,
+      4194304,
+      3158016,
+      2162688,
+      2162688,
+      2097152,
+      2097152
+    ],
+    "sysfs_verified_buffer_count": 305,
+    "sysfs_verified_bytes": 3413798912,
+    "provenance": [
+      "/proc/11676/fdinfo (only dma-buf metadata; deduplicated by inode)",
+      "/sys/kernel/dmabuf/buffers/<inode>/size"
+    ],
+    "limits": "Referenced buffers are not uniquely owned physical memory; RSS can overlap mapped buffers. No fd targets or buffer contents retained. Do not sum descriptor sizes or add overlapping devicewide totals."
+  },
+  "thermal": {
+    "sensors": {
+      "battery": {
+        "raw": 38000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone0"
+      },
+      "soc_therm": {
+        "raw": 44958,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone15"
+      },
+      "BIG": {
+        "raw": 55000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone16"
+      },
+      "BIG_MID": {
+        "raw": 49000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone17"
+      },
+      "MID": {
+        "raw": 49000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone18"
+      },
+      "LITTLE": {
+        "raw": 49000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone19"
+      },
+      "GPU": {
+        "raw": -274000,
+        "unit": "millidegree Celsius",
+        "usable": false,
+        "provenance": "/sys/class/thermal/thermal_zone20"
+      },
+      "TPU": {
+        "raw": -274000,
+        "unit": "millidegree Celsius",
+        "usable": false,
+        "provenance": "/sys/class/thermal/thermal_zone21"
+      },
+      "MEM": {
+        "raw": 50000,
+        "unit": "millidegree Celsius",
+        "usable": true,
+        "provenance": "/sys/class/thermal/thermal_zone24"
+      }
+    },
+    "limits": "TPU returned -274000, an invalid physical temperature; discard invalid sentinel readings. Battery power-supply temp uses tenths of C, unlike thermal-zone millidegrees."
+  },
+  "power": {
+    "battery_provenance": "/sys/class/power_supply/battery",
+    "battery_units": {
+      "current_now": "microampere",
+      "current_avg": "microampere",
+      "voltage_now": "microvolt",
+      "voltage_avg": "microvolt",
+      "temp": "tenths of degree Celsius",
+      "charge_full": "microampere-hour",
+      "charge_full_design": "microampere-hour"
+    },
+    "battery_units_source": "https://docs.kernel.org/power/power_supply_class.html",
+    "battery_sign_convention": "Observed negative current with Discharging and USB/wireless offline; discharge estimate is -current_now*voltage_now/1e12. Recheck status/sign and charger online fields for every run.",
+    "odpm_provenance": "/sys/bus/iio/devices/iio:device0",
+    "odpm_name": "cpm:ODPM",
+    "odpm_rails": {
+      "CH6[S7M_VDD_TPU]": "TPU",
+      "CH8[S9M_VDD_TPU_M]": "TPU",
+      "CH13[VSYS_PWR_VBATT]": "Battery"
+    },
+    "odpm_energy_unit_basis": "Installed energy_value format matches documented Google ODPM ABI: timestamps/durations in ms and accumulated energy in micro-watt-seconds (microjoules). Exact CPM driver revision not located; conversions are explicitly inferred from format-compatible ABI.",
+    "odpm_energy_unit_reference": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+    "odpm_inst_power_unit_basis": "Decimal output resembles watts but exact CPM unit documentation unverified; stored raw and not relied upon for unit conversion.",
+    "odpm_sampling_rate_raw": "31.250000 (hz)",
+    "odpm_external_sampling_rate_raw": "125.000000 (hz)",
+    "snapshots": [
+      {
+        "utc": "2026-10-12T22:27:28.629745+00:00",
+        "monotonic_seconds": 15435.725960317,
+        "battery": {
+          "status": "Discharging",
+          "capacity": "37",
+          "current_now": "-785156",
+          "current_avg": "-575781",
+          "voltage_now": "3797109",
+          "voltage_avg": "3790703",
+          "temp": "380",
+          "charge_full": "4662500",
+          "charge_full_design": "4940000"
+        },
+        "charger_online": {
+          "usb": "0",
+          "wireless": "0"
+        },
+        "odpm_timestamp_raw": 21244564,
+        "odpm_energy": {
+          "6": {
+            "rail_name": "S7M_VDD_TPU",
+            "energy_counter_raw": 210402603
+          },
+          "8": {
+            "rail_name": "S9M_VDD_TPU_M",
+            "energy_counter_raw": 34127078
+          },
+          "13": {
+            "rail_name": "VSYS_PWR_VBATT",
+            "energy_counter_raw": 25990416467
+          }
+        },
+        "odpm_inst_power_raw": {
+          "6": {
+            "rail_name": "S7M_VDD_TPU",
+            "value_raw_decimal": "0.000000"
+          },
+          "8": {
+            "rail_name": "S9M_VDD_TPU_M",
+            "value_raw_decimal": "0.000000"
+          },
+          "13": {
+            "rail_name": "VSYS_PWR_VBATT",
+            "value_raw_decimal": "2.773132"
+          }
+        },
+        "signed_battery_power_w": -2.981322914004,
+        "estimated_discharge_power_w": 2.981322914004
+      },
+      {
+        "utc": "2026-10-12T22:27:33.655813+00:00",
+        "monotonic_seconds": 15440.752902873,
+        "battery": {
+          "status": "Discharging",
+          "capacity": "37",
+          "current_now": "-278125",
+          "current_avg": "-500000",
+          "voltage_now": "3799296",
+          "voltage_avg": "3791484",
+          "temp": "380",
+          "charge_full": "4662500",
+          "charge_full_design": "4940000"
+        },
+        "charger_online": {
+          "usb": "0",
+          "wireless": "0"
+        },
+        "odpm_timestamp_raw": 21249591,
+        "odpm_energy": {
+          "6": {
+            "rail_name": "S7M_VDD_TPU",
+            "energy_counter_raw": 210402603
+          },
+          "8": {
+            "rail_name": "S9M_VDD_TPU_M",
+            "energy_counter_raw": 34127078
+          },
+          "13": {
+            "rail_name": "VSYS_PWR_VBATT",
+            "energy_counter_raw": 26000109007
+          }
+        },
+        "odpm_inst_power_raw": {
+          "6": {
+            "rail_name": "S7M_VDD_TPU",
+            "value_raw_decimal": "0.000000"
+          },
+          "8": {
+            "rail_name": "S9M_VDD_TPU_M",
+            "value_raw_decimal": "0.000000"
+          },
+          "13": {
+            "rail_name": "VSYS_PWR_VBATT",
+            "value_raw_decimal": "1.881408"
+          }
+        },
+        "signed_battery_power_w": -1.0566792,
+        "estimated_discharge_power_w": 1.0566792
+      }
+    ],
+    "quiet_observation_delta": {
+      "duration_seconds_from_odpm_timestamp": 5.027,
+      "rails": {
+        "6": {
+          "rail_name": "S7M_VDD_TPU",
+          "counter_delta_raw": 0,
+          "inferred_energy_j": 0.0,
+          "inferred_average_power_w": 0.0
+        },
+        "8": {
+          "rail_name": "S9M_VDD_TPU_M",
+          "counter_delta_raw": 0,
+          "inferred_energy_j": 0.0,
+          "inferred_average_power_w": 0.0
+        },
+        "13": {
+          "rail_name": "VSYS_PWR_VBATT",
+          "counter_delta_raw": 9692540,
+          "inferred_energy_j": 9.69254,
+          "inferred_average_power_w": 1.9280962800875272
+        }
+      }
+    },
+    "limits": "No inference invoked. Read-only snapshots advance driver accounting but do not configure rails. Battery figures are whole-device net battery power, not isolated TPU consumption; charging may make them unusable as whole-device load estimates. CH6+CH8 describe observed TPU-labelled rail energy, excluding CPU/DRAM/service overhead and possibly other shared rails. Devicewide activity and background apps prevent causal attribution without matched idle baselines and request-correlated counters."
+  }
+}

@@ -1,0 +1,986 @@
+#!/usr/bin/env bash
+# check_release_claims.sh — release-claim regression guard.
+#
+# Fails when active documentation or source contains known stale or
+# misleading phrases about the current implementation. Run from the
+# repository root (CI runs it via `bash scripts/check_release_claims.sh`).
+#
+# Exclusions:
+#   - c_cpp/legacy_cpp/  : explicitly marked historical C++ prototype; it
+#     genuinely used the obsolete newline-JSON protocol, so those phrases
+#     are correct there and deliberately excluded.
+#   - docs/HGRAPH_EXECUTOR_PLAN.md : detailed executor design/status prose is
+#     guarded by focused assertions below rather than broad stale-phrase scans.
+#   - This script itself and CI config (they name the phrases they ban).
+set -euo pipefail
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+    echo "error: check_release_claims.sh must run inside a Git worktree" >&2
+    exit 2
+}
+cd "$ROOT" || exit 2
+
+# The QEMU evidence manifest is the single source for the aggregate, CI, and
+# public status/checklist projections. Validate its shape, gate scripts, and
+# wiring before scanning prose; the aggregate separately enforces every marker
+# against each gate's captured live transcript.
+python3 scripts/release_evidence.py validate
+python3 scripts/world_alpha_evidence.py --quiet
+
+# Bash 3.2, shipped by macOS, has arrays but not mapfile/readarray.  Keep the
+# NUL-delimited Git path list in a temporary file so spaces and glob characters
+# in tracked paths remain safe on every supported shell.
+FILES_FILE=$(mktemp "${TMPDIR:-/tmp}/ostadix-release-files.XXXXXX") || exit 2
+HITS_FILE=$(mktemp "${TMPDIR:-/tmp}/ostadix-release-hits.XXXXXX") || {
+    rm -f "$FILES_FILE"
+    exit 2
+}
+trap 'rm -f "$FILES_FILE" "$HITS_FILE"' EXIT HUP INT TERM
+
+if ! git ls-files -z -- \
+    '*.md' '*.rs' '*.py' '*.c' '*.h' '*.O' '*.toml' '*.cff' '*.sh' '*.yml' '*.txt' \
+    ':!:c_cpp/legacy_cpp/**' \
+    ':!:docs/HGRAPH_EXECUTOR_PLAN.md' \
+    ':!:scripts/check_release_claims.sh' \
+    ':!:.github/workflows/**' \
+    ':!:codebase_tape.md' \
+    ':!:cvelist*' \
+    >"$FILES_FILE"
+then
+    echo "error: could not enumerate active release-claim files" >&2
+    exit 2
+fi
+
+if [ ! -s "$FILES_FILE" ]; then
+    echo "error: release-claim scan selected no tracked files" >&2
+    exit 2
+fi
+
+fail=0
+
+check() {
+    local pattern="$1" why="$2" file status scanned
+    : >"$HITS_FILE" || exit 2
+    scanned=0
+
+    while IFS= read -r -d '' file; do
+        # A tracked path deleted in the current worktree is not active content
+        # and will disappear from the next commit, so it is safe to skip.
+        [ -f "$file" ] || continue
+        scanned=$((scanned + 1))
+        if grep -nHEi -- "$pattern" "$file" >>"$HITS_FILE"; then
+            :
+        else
+            status=$?
+            if [ "$status" -ne 1 ]; then
+                echo "error: grep failed while scanning $file" >&2
+                exit 2
+            fi
+        fi
+    done <"$FILES_FILE"
+
+    if [ "$scanned" -eq 0 ]; then
+        echo "error: release-claim scan found no existing tracked files" >&2
+        exit 2
+    fi
+
+    if [ -s "$HITS_FILE" ]; then
+        echo "STALE CLAIM: $why"
+        echo "  pattern: $pattern"
+        sed 's/^/  /' "$HITS_FILE"
+        echo
+        fail=1
+    fi
+}
+
+# Current O-core status prose has a narrower scope than the general release
+# scan. docs/ODOMAIN_PLAN.md intentionally contains historical milestone
+# baselines and future acceptance text, so it must not be rejected for phrases
+# that are stale only when used as a present-tense description of the kernel.
+check_current_ocore_docs() {
+    local pattern="$1" why="$2" file status
+    : >"$HITS_FILE" || exit 2
+
+    for file in README.md docs/CLAIMS.md docs/OCORE.md ocore/README.md; do
+        if [ ! -f "$file" ]; then
+            echo "error: required current O-core document is missing: $file" >&2
+            exit 2
+        fi
+        if grep -nHEi -- "$pattern" "$file" >>"$HITS_FILE"; then
+            :
+        else
+            status=$?
+            if [ "$status" -ne 1 ]; then
+                echo "error: grep failed while scanning $file" >&2
+                exit 2
+            fi
+        fi
+    done
+
+    if [ -s "$HITS_FILE" ]; then
+        echo "STALE O-CORE CLAIM: $why"
+        echo "  pattern: $pattern"
+        sed 's/^/  /' "$HITS_FILE"
+        echo
+        fail=1
+    fi
+}
+
+# Obsolete protocol claims: the hosted protocol is 4-byte length-prefixed
+# canonical CBOR.
+check 'newline[- ]?delimited[- ]JSON' \
+    "hosted protocol is canonical CBOR, not newline-delimited JSON"
+check 'newline-JSON|newline JSON' \
+    "hosted protocol is canonical CBOR, not newline-JSON"
+check 'JSON IPC' \
+    "hosted protocol is canonical CBOR, not JSON IPC"
+check 'OValue \+ JSON wire' \
+    "the wire format is canonical CBOR, not JSON"
+
+# The graph executor is now the runtime default: `eval_ir_program_with_scope`
+# drives a readiness-based operation-hypergraph coordinator, with the serial
+# reference executor available behind `O_EXECUTOR=serial`. The former guard
+# against claiming general graph execution is therefore no longer applicable and
+# has been removed.
+
+# Overstated openness claims: the evaluator registry is compile-time/static
+# (registry-extensible), not a runtime-open universe.
+check 'open-world recursive evaluator composition|open-world evaluator' \
+    "evaluator registration is compile-time/static (registry-extensible), not open-world"
+check 'An open evaluator set' \
+    "the evaluator set is registry-extensible at compile time, not open"
+
+# {lazy} is rejected for unrestricted shim backends; nix{lazy} must not be
+# recommended anywhere as a valid pattern.
+check 'nix\{lazy\}\^' \
+    "nix{lazy} is rejected; use nix{defer}^ or bare nix_expr^"
+
+check 'fresh current-master observation' \
+    "the preserved master audit is historical, not a fresh current-checkout observation"
+check 'G0 source-digest lineage is not continuous|G0 and dependent G2 therefore do not validate' \
+    "the sealed attribution-rewrite bridge restores current G0/G2 ledger validation"
+check '26 of 26 fresh portable native execution gates' \
+    "the 26-gate native result is a preserved historical observation, not a fresh result"
+
+# O-core Milestone 0.3 implements capability-returning anonymous/shared page
+# allocation. Historical baseline text may still mention the old bump
+# allocator, but active ABI text must not call syscall 3 reserved.
+check 'reserved [`]*page_alloc|page_alloc.*returns `ERR_NOT_IMPLEMENTED`' \
+    "O-core page_alloc is implemented for typed anonymous/shared memory objects"
+check 'cap_copy and page_alloc remain reserved' \
+    "only cap_copy remains reserved in the current native ABI"
+
+# Milestones 1 and 2 are executable current gates. These checks are scoped to
+# current-facing documents so historical Milestone 0 text in ODOMAIN_PLAN can
+# continue to state the limits that applied at that earlier gate.
+check_current_ocore_docs \
+    'there is no scheduler yet|yield remains an accounting hook, not a scheduler|preemptive schedul(er|ing)[^.]*remain(s)? follow-on work' \
+    "the bounded single-CPU M2 scheduler gate is implemented"
+check_current_ocore_docs \
+    'independent per-process page tables[^.]*(absent|remain[^.]*follow-on)|with no sibling process or second CR3|still one statically linked process in one bootstrap CR3' \
+    "the bounded M1 gate proves independent CR3s and sibling survival"
+check_current_ocore_docs \
+    'no process teardown|process teardown[^.]*(absent|not implemented)|no mapping operation calls it yet|memory objects are real owned kernel objects but are not yet user mappings' \
+    "M1 teardown and the bounded M3 shared-mapping primitive are implemented"
+check_current_ocore_docs \
+    'syscall numbers? (are |remain )?0 through 5|yield[^.]*(only|merely)[^.]*(request|hook) counter|cap_copy and page_alloc remain reserved' \
+    "native ABI v1 includes gated exit and sleep, and page_alloc is implemented"
+
+# The public bounded M3 gate now exists. Reject the older foundation-only
+# wording while retaining the narrower fixed-capacity/single-CPU non-claims.
+check_current_ocore_docs \
+    'Milestone 3 has a verified foundation[^.]*not (a )?(completed|complete)|Milestone 3 is foundation-only|no CPL3 endpoint (ABI|operations)|cap_copy[^.]*(remain|still)[^.]*ERR_NOT_IMPLEMENTED' \
+    "the bounded M3 gate now exposes CPL3 IPC, blocking/wake, transfer, and crash containment"
+check_current_ocore_docs \
+    '(transfer )?ticket[^.]*(bound to|for one validated)[^.]*(destination )?endpoint' \
+    "M3 transfer tickets bind the exact creating process and destination CSpace, not the endpoint object"
+
+# Mode 18 is the scalar M6A dependency slice, mode 19 is the bounded-copy M6B
+# mechanism slice, and mode 24 composes one exact four-byte live bounded call.
+# Full Milestone 6 still requires the wider foreign-ABI and lifecycle-race
+# evidence; none of these bounded gates establishes that ABI.
+check_current_ocore_docs \
+    'Milestone 6 (is )?(complete|implemented)|M6 (complete|implemented|personality[^.]*PASS)' \
+    "only bounded M6A/M6B mechanism and four-byte live slices are implemented; full Milestone 6 remains future work"
+check_current_ocore_docs \
+    '(M6A|Milestone 6A)[^.]*(shared|foreign|request-scoped)[^.]*memory view[^.]*(complete|implemented|PASS)' \
+    "M6A has no shared or request-scoped foreign-process memory view"
+check_current_ocore_docs \
+    '(M6A|Milestone 6A)[^.]*(Linux|foreign operating-system) (ABI|personality)[^.]*(implemented|supported|PASS)' \
+    "M6A is a native scalar test personality, not a foreign operating-system ABI"
+check_current_ocore_docs \
+    '(M6A|Milestone 6A)[^.]*(package-managed personality|installable personality|upgradeable personality)' \
+    "M6A package-loads a pinned test personality but does not implement native personality package management"
+check_current_ocore_docs \
+    '(M6A|Milestone 6A)[^.]*supervisor[^.]*(performs|owns)[^.]*capability rebind' \
+    "the M6A supervisor requests policy actions while O-core performs capability rebind"
+
+# HostedSupervisor now rejects stale durable mutations with an active-set
+# revision compare-and-swap. The CLI's wider transaction lock is not the only
+# protection available to callers of the direct API.
+check 'direct [`]*HostedSupervisor[`]* API[^.]*(do(es)? not|has no)[^.]*(revision|stale.writer)|direct supervisor API has no persisted-revision' \
+    "the hosted supervisor API now rejects stale active-set writers by persisted revision"
+
+# OSTADIX has one native World constitution plus one explicitly non-qualifying
+# hosted reference profile. Pin both truths so a hosted demo or bounded native
+# mode cannot silently acquire G0-G13 or Alpha credit.
+require_fixed() {
+    local file="$1" text="$2" why="$3"
+    if [ ! -f "$file" ]; then
+        echo "MISSING WORLD CONTRACT SURFACE: $file ($why)"
+        fail=1
+        return
+    fi
+    if ! grep -Fq -- "$text" "$file"; then
+        echo "WORLD CONTRACT DRIFT: $why"
+        echo "  file: $file"
+        echo "  required text: $text"
+        echo
+        fail=1
+    fi
+}
+
+require_fixed docs/OSTADIX_WORLD.md \
+    'normative OSTADIX Alpha constitution and implementation program' \
+    'the native constitutional status is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    'A computer is not a box. A computer is a governed structure of computational resources.' \
+    'the governing statement is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    'They do not satisfy the native release gates in this roadmap.' \
+    'the hosted-reference release exclusion is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '## 2.1 OSTADIX Alpha qualifying gate' \
+    'the native Alpha qualification section is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**At least three physical machines boot O-core as the sovereign kernel.**' \
+    'the physical native-node minimum is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**The Governor is logically singular and physically replicated.**' \
+    'the replicated-Governor requirement is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**A real foreign Linux kernel runs as a contained KernelWorld.**' \
+    'the real-Linux KernelWorld requirement is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**A real physical device is controlled through the foreign-kernel machinery.**' \
+    'the physical-device requirement is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '## 3.2 The three crossing kinds remain constitutional' \
+    'the OValue/capability/capsule partition is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '## 3.4 The Governor consistency model is fixed now' \
+    'the replicated consistency model is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    'A minority partition enters **island mode**.' \
+    'the minority-partition fencing rule is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '## 3.6 The memory model is aggregate and explicit, not transparent DSM' \
+    'the honest aggregate-memory model is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '# 21. Integration gate ladder' \
+    'the G0-G13 convergence ladder is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**G0 -- constitutional baseline**' \
+    'the G0 definition is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '**G13 -- eight-node OSTADIX Alpha**' \
+    'the G13 definition is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '# 28. OSTADIX Alpha non-claims' \
+    'the Alpha non-claim section is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    '- uniform coherent RAM across nodes;' \
+    'the coherent-RAM non-claim is missing'
+require_fixed docs/OSTADIX_WORLD.md \
+    'gate is not implemented merely because it is defined here or in the registry.' \
+    'the definition-is-not-evidence rule is missing'
+
+require_fixed docs/HOSTED_WORLD_REFERENCE_PROFILE.md \
+    'non-qualifying for native OSTADIX Alpha' \
+    'the hosted profile is not explicitly non-qualifying'
+require_fixed docs/HOSTED_WORLD_REFERENCE_PROFILE.md \
+    'cannot satisfy G0 through G13' \
+    'the hosted profile could be misread as gate evidence'
+require_fixed docs/HOSTED_WORLD_REFERENCE_PROFILE.md \
+    'G12, G13, or the name **OSTADIX Alpha**' \
+    'the hosted profile Alpha non-claim is missing'
+
+# World remains the runtime ontology, but the release/qualification name is
+# OSTADIX Alpha. Historical append-only evidence records keep their original
+# bytes and are intentionally outside this presentation guard.
+for file in \
+    README.md \
+    docs/CLAIMS.md \
+    docs/HOSTED_WORLD_REFERENCE_PROFILE.md \
+    docs/OCORE.md \
+    docs/OSTADIX_WORLD.md \
+    docs/RELEASE_CHECKLIST.md \
+    ocore/README.md \
+    evidence/gates.toml \
+    evidence/world_alpha_gates.toml \
+    scripts/world_alpha_evidence.py \
+    scripts/build_source_release.py
+do
+    if grep -nHE -- 'Ostadix World Alpha|World Alpha' "$file" >"$HITS_FILE"; then
+        echo "OSTADIX ALPHA BRAND DRIFT: legacy release name remains"
+        sed 's/^/  /' "$HITS_FILE"
+        echo
+        fail=1
+    else
+        status=$?
+        if [ "$status" -ne 1 ]; then
+            echo "error: grep failed while scanning $file" >&2
+            exit 2
+        fi
+    fi
+done
+
+# The release author identity is one coherent public metadata fact.  Pin the
+# full middle name on each active root surface so a future packaging edit
+# cannot silently shorten the author while leaving the other files unchanged.
+require_fixed README.md \
+    '*By Lee Daghlar Ostadi*' \
+    'the README byline does not use the full release author name'
+require_fixed README.md \
+    '### Validation at the historical audited master' \
+    'the historical master audit is presented as current validation'
+require_fixed README.md \
+    'The focused pre-repair World-alpha tests recorded 30 passes, one failure, and' \
+    'the historical World-alpha failure observation was not preserved'
+require_fixed README.md \
+    'append-only ledger now supersedes the old G0 head with that new schema-v3' \
+    'the current World-alpha provenance-bridge repair is missing'
+require_fixed Cargo.toml \
+    'authors     = ["Lee Daghlar Ostadi"]' \
+    'Cargo package metadata does not use the full release author name'
+require_fixed CITATION.cff \
+    'given-names: Lee Daghlar' \
+    'CITATION.cff does not use the full release author given names'
+
+require_fixed docs/CLAIMS.md \
+    'Only G0 and G2 currently derive `passed`' \
+    'the dependency-checked G0/G2 passage boundary is missing'
+require_fixed docs/CLAIMS.md \
+    'G2 is not physical AArch64 or KVM/SVM evidence' \
+    'the AArch64 TCG gate could be promoted to physical or hardware virtualization evidence'
+require_fixed docs/CLAIMS.md \
+    'delivery, boot Linux or Plan 9, provide a general foreign ABI' \
+    'the AArch64 G2 gate could be promoted to foreign-OS or general ABI evidence'
+require_fixed docs/CLAIMS.md \
+    "Mode 23's synthetic guest is not G7 or G8" \
+    'the bounded KernelWorld substitution guard is missing'
+require_fixed docs/CLAIMS.md \
+    'All 20 identity atoms named by' \
+    'the complete shared World identity vocabulary is missing'
+require_fixed docs/CLAIMS.md \
+    'A serialized `CapabilityId` is descriptive data' \
+    'serialized identity must not be promoted to capability authority'
+require_fixed docs/CLAIMS.md \
+    'Mode 28 adds the bounded canonical World wire-codec PR3 gate' \
+    'the implemented PR3 codec boundary is missing'
+require_fixed docs/CLAIMS.md \
+    'fixed 20-record, 1254-byte corpus' \
+    'the exact cross-language World protocol corpus is missing'
+require_fixed docs/CLAIMS.md \
+    'not a stream or network transport' \
+    'the World protocol codec could be misread as a live transport'
+require_fixed docs/CLAIMS.md \
+    'decode and negotiation grant no bearer' \
+    'the World protocol codec could be misread as authority'
+require_fixed docs/CLAIMS.md \
+    'Mode 29 adds the bounded canonical World-value PR4 gate' \
+    'the implemented PR4 portable-value boundary is missing'
+require_fixed docs/CLAIMS.md \
+    'separate self-framed `OWVALUE`' \
+    'OWVALUE must remain separate from frozen OWPROTO v1'
+require_fixed docs/CLAIMS.md \
+    'root-only inert versioned' \
+    'the bounded extension-envelope rule is missing'
+require_fixed docs/CLAIMS.md \
+    'same SHA-256 over each complete record' \
+    'the canonical full-record hash claim is missing'
+require_fixed docs/CLAIMS.md \
+    'fixed 19-record,' \
+    'the exact World-value corpus record count is missing'
+require_fixed docs/CLAIMS.md \
+    '928-byte corpus is 1856 lowercase hex digits' \
+    'the exact World-value corpus byte count is missing'
+require_fixed docs/CLAIMS.md \
+    '264e00550bbbe7561412d9a43f89036667ffbcf27add522131f8e650abef19bc' \
+    'the exact World-value corpus digest is missing'
+require_fixed docs/CLAIMS.md \
+    'does not make the full hosted `OValue` enum portable' \
+    'the bounded portable allowlist could be promoted to the full hosted value enum'
+require_fixed docs/CLAIMS.md \
+    'passes no G0--G13 gate' \
+    'the Mode 29 value slice could be misread as Alpha qualification'
+require_fixed docs/CLAIMS.md \
+    'Mode 30 adds the bounded canonical World-receipt PR5 gate' \
+    'the implemented PR5 canonical-receipt boundary is missing'
+require_fixed docs/CLAIMS.md \
+    '`OWRECEIPT` v1 record binds' \
+    'OWRECEIPT must remain separate from OWPROTO and OWVALUE'
+require_fixed docs/CLAIMS.md \
+    'pinned, explicitly non-secret conformance key' \
+    'the receipt conformance key could be misread as production key material'
+require_fixed docs/CLAIMS.md \
+    'does not implement or prove a general' \
+    'the native signature envelope could be misread as an Ed25519 verifier'
+require_fixed docs/CLAIMS.md \
+    'The Mode 30 corpus is constructed' \
+    'the fixed Mode 30 corpus is no longer distinguished from live receipt integration'
+require_fixed docs/CLAIMS.md \
+    'typed OSTADIX Alpha attestation' \
+    'the PR5 receipt could be misread as qualifying OSTADIX Alpha evidence'
+require_fixed docs/CLAIMS.md \
+    'Hosted ResourceKey PR6 now supplies typed World, Governor, node,' \
+    'the complete hosted PR6 ResourceKey vocabulary is missing'
+require_fixed docs/CLAIMS.md \
+    'This is not O-core Mode 31,' \
+    'the hosted PR6 corpus could be misread as native evidence'
+require_fixed docs/CLAIMS.md \
+    'verify` checks only exact contract/interface/descriptor/set referential' \
+    'the experimental operation verification surface lost its referential-only boundary'
+require_fixed docs/CLAIMS.md \
+    'grant of evidence, admission, capability, lease, or World authority.' \
+    'the experimental operation records could be misread as authorizing execution'
+require_fixed README.md \
+    'World ResourceKey hosted repository-conformance gate' \
+    'the executable hosted PR6 gate is missing from the public status'
+require_fixed README.md \
+    'No production lowering currently emits these' \
+    'the hosted PR6 vocabulary could be misread as production governed lowering'
+check 'PR8[AB]' \
+    'hosted execution milestones are ProjectExec-A/ProjectExec-B; PR8 is reserved for World graph-layer separation'
+require_fixed README.md \
+    'Project HGraph planning and ordered hosted execution gates' \
+    'the hosted project planning/execution gates are missing from public status'
+require_fixed README.md \
+    'World PR8-1 adds a versioned project-profile `LogicalHGraphV1`' \
+    'the canonical project logical-graph slice is missing from public status'
+require_fixed README.md \
+    'World PR8-2 adds canonical `PlacementSnapshotV1` and `DeploymentPlanV1`' \
+    'the canonical project deployment-intention slice is missing from public status'
+# PROJECT_EXECUTION_CLAIMS_BEGIN
+# Current execution and historical-record boundaries are independently required.
+require_fixed README.md \
+    'The coordinator implements all ten route policies.' \
+    'current project policy coverage is missing'
+require_fixed docs/CLAIMS.md \
+    'all ten Project HGraph policies' \
+    'current hosted policy coverage is missing'
+require_fixed docs/CLAIMS.md \
+    'configured execution uses a canonical `LegacyCompatibility` contract;' \
+    'the default project compatibility contract is missing'
+require_fixed docs/CLAIMS.md \
+    '`O_PROJECT_EXECUTOR=hgraph` retains strict idempotence-gated continuation' \
+    'explicit strict execution could silently lose its continuation requirements'
+require_fixed docs/CLAIMS.md \
+    '`legacy` is the explicit previous-runtime opt-out. Graph errors never trigger' \
+    'legacy execution must require an explicit executor choice'
+require_fixed docs/CLAIMS.md \
+    'automatic legacy fallback; unsupported executor settings are rejected.' \
+    'graph errors or unknown executor settings could silently select legacy execution'
+require_fixed docs/CLAIMS.md \
+    'records `legacy_unchecked`; it does not assert safe repetition.' \
+    'compatibility continuation could be mislabeled as safe repetition'
+require_fixed docs/CLAIMS.md \
+    'is bound to logical/deployment identity and checked against the trusted' \
+    'untrusted trace metadata could become continuation authority'
+require_fixed docs/CLAIMS.md \
+    'contract encodes `concurrent_branches_v1` for new parallel graphs.' \
+    'parallel scheduling has lost its explicit versioned source contract'
+require_fixed docs/CLAIMS.md \
+    'field means `serial_host_world_v1`, preserving historical graph bytes and' \
+    'archival graph scheduling could be silently changed'
+require_fixed docs/CLAIMS.md \
+    'identity, while declared shared resources remain ordered.' \
+    'parallel execution could bypass explicit shared-resource ordering'
+require_fixed docs/CLAIMS.md \
+    'requires residual ambient-host admission in deployment and grounding.' \
+    'ambient parallel effects could be misread as governed or isolated effects'
+require_fixed docs/CLAIMS.md \
+    'cancelled cooperatively and drained before final result publication; trace' \
+    'race completion could precede loser drain'
+require_fixed docs/CLAIMS.md \
+    'v7 binds cancellation to its earlier qualifying settlement' \
+    'race cancellation could lose its recorded cause'
+require_fixed docs/CLAIMS.md \
+    'identifier is diagnostic and is not a World `TaskIdentity`' \
+    'a diagnostic trace identifier could be misread as a World task'
+require_fixed docs/CLAIMS.md \
+    'planner snapshot before dispatch. Observation verifies those records against' \
+    'public operation claims no longer require durable pre-dispatch planner state'
+require_fixed docs/CLAIMS.md \
+    '`ostadix.operation-runtime-binding/v2`. Only legacy records without an' \
+    'new operation observations could be downgraded to legacy reconstruction'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'Before dispatch, `begin_with_operation_plan` also durably publishes' \
+    'operation dispatch could precede durable planner snapshot publication'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'must preserve that exact decision.' \
+    'terminal recording could substitute the pre-dispatch operation choice'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'Snapshot corruption fails verification instead of reconstructing missing history.' \
+    'corrupt planner history could silently become reconstruction'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'but **does not rerank the historical operation selection**.' \
+    'historical observation could silently rerank the original choice'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'never upgrades an old record into a persisted original choice.' \
+    'legacy reconstruction could be mislabeled as a retained original decision'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"retained_original_plan_matched_content_verified_run"' \
+    'operation tests no longer verify the retained original decision'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"current_binary_recomputed_plan_matched_content_verified_run"' \
+    'operation tests no longer exercise explicitly degraded legacy reconstruction'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '.begin_with_operation_plan(frozen_seed.clone(), &initial_snapshot)' \
+    'operation tests no longer exercise a frozen pre-dispatch planner snapshot'
+require_fixed scripts/smoke-project-hgraph-exec.sh \
+    'does not establish Governor authority, native execution, or G1' \
+    'the hosted project smoke could be promoted to Governor authority, native execution, or G1 evidence'
+require_fixed scripts/smoke-project-hgraph-exec.sh \
+    'Retry, placement, OWRECEIPT attestation, and exactly-once effects remain outside' \
+    'the hosted project smoke could be promoted to retries, placement, receipts, or exactly-once effects'
+# PROJECT_EXECUTION_CLAIMS_END
+require_fixed README.md \
+    'A separate explicit hosted-reference World entry point consumes the exact' \
+    'the explicit snapshot-derived World executor input is missing'
+require_fixed README.md \
+    'not a whitespace-insensitive' \
+    'the logical graph digest could be misread as source-format-insensitive'
+require_fixed docs/HGRAPH_EXECUTOR_PLAN.md \
+    '`ProjectAttemptTrace` version 7 binds events' \
+    'the executor plan still describes an obsolete project trace version'
+require_fixed docs/HGRAPH_EXECUTOR_PLAN.md \
+    'reconstructs the ordinary hosted-unbound deployment' \
+    'trace v5 is missing its ordinary hosted-unbound deployment-artifact binding'
+require_fixed docs/HGRAPH_EXECUTOR_PLAN.md \
+    'The trace itself remains unsigned' \
+    'the trace could be misread as the signed World receipt'
+require_fixed scripts/o-cli.sh \
+    'exec "$OCLI_BIN" "$@"' \
+    'the repository-owned intent commands no longer reach the compiled Ostadix front door'
+require_fixed src/bin/o-cli/native_dispatch.rs \
+    '"object" | "operation" | "realizations" | "observe" | "replan"' \
+    'the repository dispatcher no longer routes the operation-project commands to o-cli'
+require_fixed src/bin/o-cli.rs \
+    'Plan(PlanArgs)' \
+    'the compiled Ostadix front door no longer owns the plan grammar'
+require_fixed Dockerfile \
+    '--bin O --bin o-cli --bin olangc --bin o-link' \
+    'the runtime image no longer builds the compiled Ostadix front door'
+require_fixed Dockerfile \
+    'COPY --from=builder /src/target/release/o-cli  /usr/local/bin/o-cli' \
+    'the runtime image no longer installs the compiled Ostadix front door'
+require_fixed src/bin/o-cli/native_dispatch.rs \
+    '"--why".into()' \
+    'the repository-owned o why dispatcher no longer reaches the focused admission query'
+require_fixed docs/HGRAPH_EXECUTOR_PLAN.md \
+    '`olangc FILE.O --target ir --why P3` projects the same evidence-bound admission' \
+    'the focused schedule explanation and its non-executing boundary are undocumented'
+require_fixed src/bin/o-cli/native_dispatch.rs \
+    '"kernel" => workflow("scripts/o-kernel.sh", "O_LANG_KERNEL_CLI_BIN", tail),' \
+    'the repository-owned o kernel dispatcher no longer reaches the kernel operator CLI'
+require_fixed scripts/o-kernel.sh \
+    'OCORE_PROBE_MODE=16' \
+    'the O-core operator CLI no longer selects the native console probe for interactive console boots'
+require_fixed scripts/o-kernel.sh \
+    'exec "$SMOKE_LIVE_SCRIPT"' \
+    'the O-core operator CLI no longer exposes the bounded native-console proof'
+require_fixed scripts/o-kernel.sh \
+    'exec "$HOSTED_LIVE_RELEASE_SCRIPT" "$@"' \
+    'the O-core operator CLI no longer exposes the staged-index hosted-live release route'
+require_fixed scripts/o-kernel.sh \
+    'exec "$HOSTED_LIVE_SMOKE_SCRIPT" "$@"' \
+    'the O-core operator CLI no longer exposes the bounded hosted-live ISO proof'
+require_fixed scripts/o-kernel.sh \
+    'exec "$VENTOY_INSTALLER_SCRIPT" prepare "$@"' \
+    'the O-core operator CLI no longer exposes guarded Ventoy target preparation'
+require_fixed scripts/o-kernel.sh \
+    'exec "$VENTOY_INSTALLER_SCRIPT" install "$@"' \
+    'the O-core operator CLI no longer exposes confirmation-bound Ventoy installation'
+require_fixed scripts/o-kernel.sh \
+    'exec "$VENTOY_INSTALLER_SCRIPT" verify "$@"' \
+    'the O-core operator CLI no longer exposes installed Ventoy ISO verification'
+require_fixed README.md \
+    'ostadix-hosted-live-x86_64-uefi-<tree12>_VTGRUB2.iso' \
+    'the staged-tree-addressed hosted-live ISO pattern is missing from public documentation'
+require_fixed README.md \
+    'hosted-live-output:' \
+    'the hosted-live release no longer teaches callers how to discover its exact artifact path'
+require_fixed README.md \
+    'hosted-live-receipt:' \
+    'the hosted-live release no longer teaches callers how to discover its exact receipt path'
+require_fixed README.md \
+    'the exact staged Git' \
+    'the hosted-live release could silently drift from its staged-index source boundary'
+require_fixed README.md \
+    'Ventoy installation is a guarded file copy, not a raw-disk write.' \
+    'the Ventoy ISO workflow could be confused with destructive raw-media writing'
+require_fixed README.md \
+    'requires all seven in-guest markers in order:' \
+    'the hosted-live QEMU claim is no longer bound to its complete marker set'
+require_fixed README.md \
+    '247a51f296e8b07238df32870a44c2a582ff802daafab631be822ea0f4539c6e' \
+    'the documented black-screen failure record is no longer bound to its exact ISO digest'
+require_fixed README.md \
+    'rejects a black or unchanged framebuffer' \
+    'the hosted-live release documentation no longer requires graphical console evidence'
+require_fixed setup.sh \
+    '--repo-root "$PROJECT_ROOT" --bin-dir "$CARGO_BIN_DIR"' \
+    'the cargo-bin native installation no longer uses the repository installer'
+require_fixed setup.sh \
+    '--repo-root "$PROJECT_ROOT" --bin-dir "$HOME/.local/bin" --include-c' \
+    'the local-bin native installation no longer uses the repository installer'
+require_fixed scripts/install_native_binaries.py \
+    '(build / "o-cli", destination / "o")' \
+    'the native installer no longer installs compiled o-cli as lowercase o'
+require_fixed AGENTS.md \
+    'export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$O_LANG_ROOT/target/release:$PATH"' \
+    'the canonical PATH order lets the case-insensitive raw O binary shadow lowercase o'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'PATH="$installed_local_bin:$installed_cargo_bin:$ROOT/target/release:/usr/bin:/bin"' \
+    'the installed o smoke no longer covers the documented target-release shadow path'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'Generated project binary ordered hosted execution: PASS' \
+    'the generated binary immediate short-circuit evidence marker is missing'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'Generated project binary nonzero-to-success continuation: PASS' \
+    'the generated binary continuation evidence marker is missing'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'tests/fixtures/project_hgraph_tools' \
+    'the generated binary continuation shim is no longer wired into its smoke'
+require_fixed docs/CLAIMS.md \
+    'PR7 now provides a bounded hosted project logical planner.' \
+    'the implemented PR7 project-plan boundary is missing'
+require_fixed docs/CLAIMS.md \
+    'World PR8-2 adds bounded canonical `PlacementSnapshotV1` and' \
+    'the bounded World PR8-2 deployment-intention claim is missing'
+require_fixed docs/CLAIMS.md \
+    'explicit hosted-reference World entry point consumes it together' \
+    'the bounded snapshot-derived World entry point is missing'
+require_fixed docs/CLAIMS.md \
+    'Architecture, package, and failure-domain' \
+    'schema vocabulary could be promoted to active architecture/package/failure-domain constraints'
+require_fixed docs/CLAIMS.md \
+    'G1 remains' \
+    'the bounded deployment-intention slice could be promoted to G1 passage'
+require_fixed docs/CLAIMS.md \
+    'conservative fallible `HostWorld` effects' \
+    'untrusted project purity could be misread as verified mediated execution'
+require_fixed docs/CLAIMS.md \
+    'Logical alternative branches may therefore be serialized and' \
+    'logical branches could be misread as independently mediated or parallel execution'
+require_fixed scripts/smoke-project-hgraph-exec.sh \
+    'Project HGraph ordered hosted execution: PASS' \
+    'the exact ProjectExec-A/ProjectExec-B hosted execution evidence marker is missing'
+require_fixed docs/RELEASE_CHECKLIST.md \
+    'plus serial ordered' \
+    'the release checklist omits the bounded ProjectExec-B ordered execution surface'
+require_fixed .github/workflows/ci.yml \
+    'bash scripts/smoke-project-hgraph-exec.sh' \
+    'CI does not invoke the dedicated ProjectExec-A hosted execution smoke'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'LogicalHGraphV1 canonical schema and digest: PASS' \
+    'the project smoke does not prove the canonical LogicalHGraphV1 contract'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'LogicalHGraphV1 HostWorld and no-authority boundary: PASS' \
+    'the project smoke omits the LogicalHGraphV1 authority boundary'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'DeploymentPlanV1 canonical hosted intent and bundle-scoped snapshot proposal: PASS' \
+    'the project smoke omits the canonical deployment-intention evidence marker'
+require_fixed scripts/smoke-project-hgraph.sh \
+    'DeploymentPlanV1 World-epoch, hierarchy/task, and substitution rejection: PASS' \
+    'the project smoke omits the bounded deployment rejection evidence marker'
+require_fixed docs/OSTADIX_WORLD.md \
+    'complete at the bounded hosted logical-planning' \
+    'the PR7 roadmap status is missing'
+require_fixed docs/CLAIMS.md \
+    'Strict decoding rejects malformed' \
+    'invalid-record rejection must remain a decoder claim'
+require_fixed docs/CLAIMS.md \
+    'current/reference checks reject stale generations' \
+    'staleness must remain a current/reference comparison claim'
+require_fixed docs/OSTADIX_WORLD.md \
+    '20-atom Rust/`.oc` vocabulary' \
+    'the shared-identity Move 2 status is missing'
+require_fixed README.md \
+    'passes no G0--G13 gate.' \
+    'the Mode 27 identity slice could be misread as Alpha qualification'
+require_fixed docs/OSTADIX_WORLD.md \
+    'Only active evidence-ledger heads whose' \
+    'the typed World evidence admission boundary is missing'
+require_fixed crates/ostadix-api/src/project/executor.rs \
+    'pub fn new_world_bound(' \
+    'the exact World launch no longer enters the project coordinator before execution'
+require_fixed crates/ostadix-api/src/project/world_execution.rs \
+    'ReceiptCommitFenceV1::Uncommitted' \
+    'the live project receipt is no longer explicitly uncommitted'
+require_fixed crates/ostadix-api/src/project/runtime_graph.rs \
+    'pub struct RuntimeGraphV1' \
+    'the terminal hosted project RuntimeGraph surface is missing'
+require_fixed ocore/kernel/smoke-world-project-receipt-qemu.sh \
+    'canonical structure only; no native execution or Ed25519 verification' \
+    'the native project-receipt comparison lost its bounded non-claim'
+require_fixed docs/OCORE.md \
+    'Mode 32 is the bounded native semantic-structure comparison' \
+    'the Mode 32 native receipt comparison boundary is missing'
+require_fixed evidence/gates.toml \
+    'script = "ocore/kernel/smoke-world-project-runtime-qemu.sh"' \
+    'the required evidence manifest no longer generates and compares a live hosted project receipt'
+require_fixed .github/workflows/ci.yml \
+    'run: ./boot-and-test.sh smoke' \
+    'CI no longer runs the manifest-driven portable QEMU evidence aggregate'
+
+# M3 is one authenticated same-host, distinct-process Fabric proof. Pin its
+# deliberately narrow claim, exact nonclaims, protocol coordinates, and
+# executable evidence without promoting it to physical or distinct-kernel
+# multinode execution.
+fabric_positive_claim='Fabric V1 can authenticate and execute the admitted M2 pure renderer profile on an explicitly selected `o-node`, returning a bounded provisional candidate whose graph publication and settlement remain coordinator-controlled.'
+require_fixed docs/OIR_EXECUTION_FABRIC_V1.md \
+    "$fabric_positive_claim" \
+    'the narrow M3 execution-Fabric claim drifted'
+require_fixed docs/CLAIMS.md \
+    "$fabric_positive_claim" \
+    'the public M3 execution-Fabric claim drifted'
+require_fixed docs/OIR_EXECUTION_FABRIC_V1.md \
+    'The coordinator is the sole graph-commit authority and the sole linearization locus for graph transitions.' \
+    'the coordinator-only graph-commit invariant is missing'
+
+for nonclaim in \
+    'no arbitrary OIR region execution' \
+    'no general `.O` distribution' \
+    'no automatic placement' \
+    'no capacity scheduler' \
+    'no scope transport' \
+    'no object plane' \
+    'no bulk node-to-node data transfer' \
+    'no actors' \
+    'no external effects' \
+    'no automatic retry' \
+    'no coordinator crash recovery' \
+    'no hardware-resource execution' \
+    'no GPU or camera driver mediation' \
+    'no process migration' \
+    'no shared address space' \
+    'no physical multinode claim' \
+    'no distinct-kernel claim' \
+    'no heterogeneous-architecture claim' \
+    'no exactly-once external effect claim'
+do
+    require_fixed docs/OIR_EXECUTION_FABRIC_V1.md "$nonclaim" \
+        "the OIR execution-Fabric contract lost M3 nonclaim: $nonclaim"
+    require_fixed docs/CLAIMS.md "$nonclaim" \
+        "the public claims surface lost M3 nonclaim: $nonclaim"
+done
+
+fabric_coordinates=(
+    'EXECUTION_CAPSULE_SCHEMA_V1|ostadix.oir-execution-capsule/v1'
+    'EXECUTION_CANDIDATE_SCHEMA_V1|ostadix.oir-execution-candidate/v1'
+    'FABRIC_REQUEST_SCHEMA_V1|ostadix.execution-fabric-request/v1'
+    'FABRIC_RESPONSE_SCHEMA_V1|ostadix.execution-fabric-response/v1'
+    'FABRIC_SUBMISSION_SCHEMA_V1|ostadix.execution-fabric-submission/v1'
+    'FABRIC_SOURCE_CLOSURE_SCHEMA_V1|ostadix.execution-source-closure/v1'
+    'FABRIC_SOURCE_CLOSURE_DIALECT_V1|ostadix-source-closure/v1'
+    'FABRIC_PLACEMENT_LEASE_SCHEMA_V3|ostadix.execution-placement-lease/v3'
+    'FABRIC_SIGNED_LEASE_SCHEMA_V3|ostadix.signed-execution-lease/v3'
+    'FABRIC_TERMINAL_RECEIPT_SCHEMA_V1|ostadix.execution-fabric-terminal-receipt/v1'
+    'FABRIC_SIGNED_TERMINAL_RECEIPT_SCHEMA_V1|ostadix.signed-execution-fabric-terminal-receipt/v1'
+    'HOSTED_TLS_ALPN_V1|ostadix-hosted/1'
+    'HOSTED_TLS_ALPN_V2|ostadix-hosted/2'
+    'HOSTED_TLS_ALPN_MESH_V1|ostadix-mesh/1'
+    'EXECUTION_FABRIC_TLS_ALPN_V1|ostadix-execution-fabric/1'
+)
+for coordinate in "${fabric_coordinates[@]}"; do
+    coordinate_name=${coordinate%%|*}
+    coordinate_value=${coordinate#*|}
+    require_fixed docs/VERSIONING.md "\`$coordinate_name\`" \
+        "versioning omits M3 coordinate name $coordinate_name"
+    require_fixed docs/VERSIONING.md "\`$coordinate_value\`" \
+        "versioning omits M3 coordinate value $coordinate_value"
+done
+
+operation_coordinates=(
+    'OPERATION_CONTRACT_SCHEMA_V1|ostadix.operation-contract/v1'
+    'OPERATION_INTERFACE_SCHEMA_V1|ostadix.operation-interface/v1'
+    'REALIZATION_DESCRIPTOR_SCHEMA_V1|ostadix.realization-descriptor/v1'
+    'REALIZATION_SET_SCHEMA_V1|ostadix.realization-set/v1'
+    'PHYSICAL_REPRESENTATION_SCHEMA_V1|ostadix.physical-representation/v1'
+    'TRANSFER_PLAN_SCHEMA_V1|ostadix.transfer-plan/v1'
+    'COST_PROFILE_SCHEMA_V1|ostadix.cost-profile/v1'
+    'OBJECTIVE_SCHEMA_V1|ostadix.objective/v1'
+    'LOGICAL_HGRAPH_SCHEMA_V2|ostadix.logical-hgraph/v2'
+    'DEPLOYMENT_PLAN_SCHEMA_V2|ostadix.deployment-plan/v2'
+    'RUNTIME_GRAPH_SCHEMA_V2|ostadix.runtime-graph/v2'
+    'RECOVERY_PLAN_SCHEMA_V1|ostadix.recovery-plan/v1'
+    'OPERATION_PLANNING_REQUEST_SCHEMA_V1|ostadix.operation-planning-request/v1'
+    'REQUIREMENT_FOOTPRINT_CONTENT_SCHEMA_V1|ostadix.placement.requirement-footprint/v1'
+    'OPERATION_ROUTE_PIPELINE_SCHEMA_V1|ostadix.project-route-pipeline/v1'
+    'OPERATION_RUNTIME_BINDING_SCHEMA_V1|ostadix.operation-runtime-binding/v1'
+    'OPERATION_COMMAND_ERROR_SCHEMA_V1|ostadix.operation-command-error/v1'
+)
+for coordinate in "${operation_coordinates[@]}"; do
+    coordinate_name=${coordinate%%|*}
+    coordinate_value=${coordinate#*|}
+    require_fixed docs/VERSIONING.md "\`$coordinate_name\`" \
+        "versioning omits operation-realization coordinate name $coordinate_name"
+    require_fixed docs/VERSIONING.md "\`$coordinate_value\`" \
+        "versioning omits operation-realization coordinate value $coordinate_value"
+done
+for bridge_coordinate in \
+    'OPERATION_ROUTE_PIPELINE_SCHEMA_V1|ostadix.project-route-pipeline/v1' \
+    'OPERATION_RUNTIME_BINDING_SCHEMA_V1|ostadix.operation-runtime-binding/v1' \
+    'OPERATION_COMMAND_ERROR_SCHEMA_V1|ostadix.operation-command-error/v1'
+do
+    bridge_name=${bridge_coordinate%%|*}
+    bridge_value=${bridge_coordinate#*|}
+    require_fixed src/bin/o-cli.rs \
+        "const $bridge_name: &str = \"$bridge_value\";" \
+        "operation-project bridge coordinate drifted: $bridge_name"
+done
+require_fixed README.md \
+    '[Operation planning and observation V1](docs/OPERATION_PLANNING_V1.md)' \
+    'README omits the operation-planning contract'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'The word *selected* in this document means only that a tuple won the declared' \
+    'operation-planning selection is no longer explicitly authority-free'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'Replanning after a successful run is not recovery and must not be represented' \
+    'operation replanning is no longer separated from failed-run recovery'
+for demo_command in \
+    'cd examples' \
+    'o operation normalize' \
+    'o realizations normalize' \
+    'o plan normalize --explain' \
+    'o run normalize' \
+    'o observe normalize' \
+    'o replan normalize --without-target gpu-1'
+do
+    require_fixed docs/OPERATION_PLANNING_V1.md "$demo_command" \
+        "operation-planning contract lost flagship command: $demo_command"
+    require_fixed README.md "$demo_command" \
+        "README lost flagship operation command: $demo_command"
+done
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'implementation digest must equal the bytes of the named captured' \
+    'operation-project contract no longer states the exact implementation-artifact join'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    '`ostadix.project-route-pipeline/v1` projection of the bound' \
+    'operation-project contract no longer states the exact route-pipeline join'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'Recovery planning is not recovery execution' \
+    'operation recovery planning is no longer separated from recovery execution'
+require_fixed docs/OPERATION_PLANNING_V1.md \
+    'they are not distinct observed machines or failure domains' \
+    'operation demo no longer disclaims independent observed failure domains'
+require_fixed docs/CLAIMS.md \
+    '`StaticallyCompatibleForRanking` is not live target' \
+    'public claims no longer distinguish static rankability from live eligibility'
+require_fixed docs/CLAIMS.md \
+    'Recovery planning is not recovery execution' \
+    'public claims no longer distinguish a recovery plan from recovery execution'
+require_fixed docs/CLAIMS.md \
+    'ambient-Python target offers are static descriptions' \
+    'public claims no longer disclose the ambient-target failure-domain boundary'
+require_fixed docs/CLAIMS.md \
+    'successful source run is not a recovery' \
+    'public claims no longer distinguish successful replanning from recovery'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    'fn marked_normalize_project_plans_runs_observes_and_replans_exactly()' \
+    'the compiled operation-project vertical-slice proof is missing'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"ostadix.runtime-graph/v2"' \
+    'the operation-project test no longer proves RuntimeGraphV2 emission'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    'recovery["recovery_plan_status"], "descriptive"' \
+    'the operation-project test no longer proves conditional RecoveryPlanV1 emission'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"implementation digest does not match captured"' \
+    'the operation-project test no longer proves exact implementation-artifact binding'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    'execution pipeline does not match the exact' \
+    'the operation-project test no longer proves exact route-pipeline binding'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"ostadix.operation-runtime-binding/v1"' \
+    'the operation-project test no longer proves runtime-binding evidence emission'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"descriptive_execution_context_not_verified_physical_node_or_failure_domain"' \
+    'the operation-project test no longer proves descriptive target semantics'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"statically_compatible_descriptive_offer_not_an_independent_failure_domain"' \
+    'the operation-project test no longer proves the alternative failure-domain nonclaim'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    'recovery["recovery_execution"], "not_performed"' \
+    'the operation-project test no longer proves recovery was not executed'
+require_fixed tests/o_cli_operation_planner_blackbox.rs \
+    '"invalid mapping reached dispatch"' \
+    'the operation-project test no longer proves invalid route binding fails before dispatch'
+require_fixed docs/VERSIONING.md \
+    '`crates/ostadix-api/src/execution_fabric/protocol.rs`' \
+    'versioning omits the frozen M2 record source coordinate'
+require_fixed docs/VERSIONING.md \
+    '`crates/ostadix-api/src/execution_fabric_authority/protocol.rs`' \
+    'versioning omits the Fabric authority source coordinate'
+require_fixed docs/VERSIONING.md \
+    '`crates/ostadix-api/src/hosted_remote/tls.rs`' \
+    'versioning omits the Fabric and Hosted ALPN source coordinate'
+require_fixed crates/ostadix-api/src/hosted_remote/tls.rs \
+    'pub const EXECUTION_FABRIC_TLS_ALPN_V1: &[u8] = b"ostadix-execution-fabric/1";' \
+    'the opt-in execution-Fabric ALPN drifted'
+require_fixed crates/ostadix-api/src/hosted_remote/tls.rs \
+    'pub const HOSTED_TLS_ALPN_MESH_V1: &[u8] = b"ostadix-mesh/1";' \
+    'the existing Mesh ALPN drifted during Fabric integration'
+
+require_fixed tests/execution_fabric_two_node.rs \
+    'fn two_real_o_nodes_execute_provisional_pure_candidates_without_graph_authority()' \
+    'the governed two-o-node integration proof is missing'
+require_fixed scripts/smoke-execution-fabric-v1.sh \
+    '--test execution_fabric_two_node "$test_name"' \
+    'the M3 smoke no longer invokes the governed two-o-node test'
+require_fixed scripts/smoke-execution-fabric-v1.sh \
+    'OSTADIX_TEST_RUNTIME_POLICY=required' \
+    'the M3 smoke no longer fails closed when OpenSSL is unavailable'
+require_fixed .github/workflows/ci.yml \
+    'run: bash scripts/smoke-execution-fabric-v1.sh' \
+    'rust-hosted CI no longer invokes the M3 Fabric smoke'
+for marker in \
+    'Fabric V1 authenticated two-o-node pure execution: PASS' \
+    'Fabric V1 wrong-node lease rejection: PASS' \
+    'Fabric V1 wrong-node result no-commit boundary: PASS' \
+    'Fabric V1 stopped-node infrastructure failure and no fallback: PASS' \
+    'Fabric V1 Hosted and Mesh ALPN preservation: PASS' \
+    'Fabric V1 same-host distinct-process boundary: PASS' \
+    'Execution Fabric V1 M3: PASS'
+do
+    require_fixed scripts/smoke-execution-fabric-v1.sh "$marker" \
+        "the M3 Fabric smoke lost evidence marker: $marker"
+done
+
+for file in README.md llms.txt docs/CLAIMS.md docs/ODOMAIN_PLAN.md \
+    okernel-multikernel/MULTIKERNEL_PERSONALITY_PROPOSAL.md
+do
+    require_fixed "$file" 'OSTADIX_WORLD.md' \
+        "$file does not link the native World constitution"
+done
+
+for file in README.md ARCHITECTURE.md docs/CLAIMS.md docs/ODOMAIN_PLAN.md \
+    docs/RELEASE_CHECKLIST.md
+do
+    require_fixed "$file" 'world_alpha_gates.toml' \
+        "$file does not link the G0-G13 qualification registry"
+done
+
+for file in README.md llms.txt ARCHITECTURE.md docs/CLAIMS.md \
+    okernel-multikernel/MULTIKERNEL_PERSONALITY_PROPOSAL.md
+do
+    require_fixed "$file" 'HOSTED_WORLD_REFERENCE_PROFILE.md' \
+        "$file does not preserve the hosted reference as non-qualifying"
+done
+
+check 'M7.?M11[^.]*(are|remain)[^.]*(all )?planned|next PR[^.]*M7[^.]*slice.?1|Mode (23|24|25|26|27|28|29) is the next[^.]*slice' \
+    "Modes 24-29 and KernelWorld Mode 23 are bounded implemented gates, not wholly planned next slices"
+
+exit $fail

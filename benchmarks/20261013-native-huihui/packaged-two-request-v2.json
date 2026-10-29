@@ -1,0 +1,522 @@
+{
+  "schema_version": 1,
+  "test_date_utc": "2026-10-13",
+  "status": "completed",
+  "test": "Two independent chat requests in one native-helper lifetime using the packaged offline Python environment and packaged model/tokenizer assets.",
+  "device": "Pixel 10 Pro / Tensor G5",
+  "compile_host": "Ubuntu aarch64 on the same phone",
+  "source_model": {
+    "repository": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+    "revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+    "gguf_repository": "mradermacher/Huihui-MiniCPM5-2B-abliterated-GGUF",
+    "gguf_revision": "fc1e8318e85635d142e95a0f9977487717c40b58",
+    "gguf_filename": "Huihui-MiniCPM5-2B-abliterated.Q8_0.gguf",
+    "gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+    "gguf_bytes": 2679711680,
+    "parameters": 2516756480,
+    "architecture": "LlamaForCausalLM",
+    "decoder_layers": 42,
+    "hidden_size": 2048,
+    "intermediate_size": 6144,
+    "attention_heads": 16,
+    "key_value_heads": 2,
+    "vocabulary_size": 130560,
+    "rope_theta": 5000000.0,
+    "rms_norm_eps": 1e-06,
+    "custom_huihui_weights_used": true,
+    "google_precompiled_model_used": false
+  },
+  "model_identity_note": "Model/source pins and the recorded executed-artifact provenance were appended after the completed run. The source inventory records a freshly verified GGUF SHA; this publication refresh performs no new model hashing or inference.",
+  "source_pins": {
+    "original_checkpoint_repo": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+    "original_checkpoint_revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+    "quantized_checkpoint_repo": "mradermacher/Huihui-MiniCPM5-2B-abliterated-GGUF",
+    "quantized_checkpoint_revision": "fc1e8318e85635d142e95a0f9977487717c40b58",
+    "quantized_gguf_filename": "Huihui-MiniCPM5-2B-abliterated.Q8_0.gguf",
+    "quantized_gguf_bytes": 2679711680,
+    "quantized_gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+    "quantized_gguf_freshly_sha256_verified": true,
+    "architecture": "LlamaForCausalLM",
+    "tokens": {
+      "bos": 0,
+      "pad": 1,
+      "eos": [
+        1,
+        130073
+      ]
+    },
+    "chat_template_source": "Pinned original checkpoint chat_template.jinja; copied GGUF template was then replaced by original HF download.",
+    "support_files": [
+      {
+        "path": "config.json",
+        "bytes": 704,
+        "sha256": "59613157e5357d62bcb121e04cb90f2170b43d789b142380c12c3d4277d95180",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/config.json"
+      },
+      {
+        "path": "tokenizer.json",
+        "bytes": 9894271,
+        "sha256": "3e065a558a034185fe299917b398685c1facd0169a9eea1e629eb30c171fed81",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/tokenizer.json"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "bytes": 94391,
+        "sha256": "e9b1064649e771d7a8e15637c68b2d2749724877ba3648bd74a4ece31c26303b",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/tokenizer_config.json"
+      },
+      {
+        "path": "chat_template.jinja",
+        "bytes": 9060,
+        "sha256": "cc945752db555d60949b16989df4ccfeb52a313d6b4b5c5229dd786e2e9fcf1c",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/chat_template.jinja"
+      },
+      {
+        "path": "special_tokens_map.json",
+        "bytes": 551,
+        "sha256": "82d96d7a9e6ced037f12394b7ea6a5b02e6ca87e0d11edaa8d60d9be857ce7db",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/special_tokens_map.json"
+      },
+      {
+        "path": "generation_config.json",
+        "bytes": 213,
+        "sha256": "9ac4f32e5f32358697a9f438a3ea89ef80e6ba786c72c49e932f9f21c122fdb1",
+        "source_url": "https://huggingface.co/huihui-ai/Huihui-MiniCPM5-2B-abliterated/resolve/aea962bb5558e659624eeefc8c1b9f418a3e6ffb/generation_config.json"
+      }
+    ]
+  },
+  "model_bytes_observed": 2679711680,
+  "backend": "native-google-tensor-npu-fc",
+  "cpu_dense_linear_fallback": false,
+  "cpu_operations": "embeddings, RMS, RoPE, attention, KV cache, SiLU, tokenizer, sampling",
+  "forbidden_import_check": {
+    "checked_module_names": [
+      "torch",
+      "transformers",
+      "ai_edge_litert",
+      "tensorflow",
+      "jax"
+    ],
+    "present_at_end": [],
+    "scope": "Module presence checked in the packaged Python process after both requests."
+  },
+  "requests": [
+    {
+      "name": "hello",
+      "cache_state": "cold code cache",
+      "user_prompt": "Hi",
+      "prompt_token_ids": [
+        0,
+        130072,
+        8448,
+        220,
+        19301,
+        130073,
+        220,
+        130072,
+        130071,
+        220,
+        8,
+        130063,
+        9,
+        130063
+      ],
+      "generated_token_ids": [
+        19301,
+        33,
+        354,
+        1017
+      ],
+      "output": "Hi, I am",
+      "ended_with_eos": false,
+      "timing": {
+        "request_seconds": 359.3863528520005,
+        "prefill_seconds": 347.9489721400005,
+        "time_to_first_token_seconds": 348.0203322970001,
+        "compile_count": 326,
+        "compile_seconds": 291.5423730020002,
+        "subsequent_token_gaps_seconds": [
+          3.5665898980005295,
+          4.085920550000083,
+          3.7132890650000263
+        ],
+        "subsequent_tokens_per_second": 0.26394975527841086,
+        "subsequent_token_gap_count": 3,
+        "accumulated_native_invoke_call_seconds": 63.76633374703306,
+        "invoke_timer_scope": "Host-side native requests including dispatch load, invocation, unload and IPC; not an isolated accelerator kernel timer.",
+        "throughput_scope": "Only the recorded later-token gaps. The arithmetic request has one gap ending at EOS, so it is not a sustained-generation benchmark."
+      },
+      "coverage": {
+        "native_npu_invocations": 5126,
+        "device_inference_count_delta": [
+          0,
+          0,
+          5126
+        ],
+        "decoder_calls_per_graph": 17,
+        "lm_head_calls_per_graph": 4,
+        "formula": "294 * (14 + 4 - 1) + 32 * 4 = 5126"
+      },
+      "first_logit_array_sha256": "91190e59d6ab323f4e4e99b83fea1927e2d3e1bbfdc36ecd42973dddd830aab5",
+      "first_top10": [
+        {
+          "id": 19301,
+          "text": "Hi",
+          "logit": 26.71497344970703
+        },
+        {
+          "id": 28633,
+          "text": "Hey",
+          "logit": 19.60284996032715
+        },
+        {
+          "id": 36417,
+          "text": "Hello",
+          "logit": 19.34446907043457
+        },
+        {
+          "id": 7466,
+          "text": "hi",
+          "logit": 17.450407028198242
+        },
+        {
+          "id": 34508,
+          "text": " Hi",
+          "logit": 16.18598175048828
+        },
+        {
+          "id": 20907,
+          "text": "HI",
+          "logit": 15.799105644226074
+        },
+        {
+          "id": 3975,
+          "text": "How",
+          "logit": 14.942936897277832
+        },
+        {
+          "id": 37463,
+          "text": " hi",
+          "logit": 14.296819686889648
+        },
+        {
+          "id": 122895,
+          "text": "Hmm",
+          "logit": 14.274831771850586
+        },
+        {
+          "id": 21927,
+          "text": "High",
+          "logit": 13.9979248046875
+        }
+      ],
+      "power": {
+        "charging_samples": 341,
+        "sample_count": 341,
+        "unplugged_net_battery_discharge_window": null,
+        "isolated_npu_power_w": null,
+        "conditional_tpu_rail_estimate": {
+          "abi_assumed": true,
+          "exact_installed_cpm_revision_verified": false,
+          "unit_source": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+          "unit_interpretation": "ABI-compatible inference: energy_value counters assumed µWs=µJ, timestamps/durations assumed ms. Exact installed CPM revision is unverified.",
+          "elapsed_seconds": 359.423,
+          "energy_j_if_assumption_holds": 9.912925,
+          "mean_power_w_if_assumption_holds": 0.027580107561285726,
+          "rails": [
+            {
+              "available": true,
+              "channel": "CH6",
+              "name": "S7M_VDD_TPU",
+              "before_duration_ms": 5048378,
+              "after_duration_ms": 5407801,
+              "before_energy_counter_raw": 47574624,
+              "after_energy_counter_raw": 50643331,
+              "energy_counter_delta_raw": 3068707,
+              "energy_j": 3.068707,
+              "elapsed_seconds": 359.423,
+              "mean_power_w": 0.008537870420089978
+            },
+            {
+              "available": true,
+              "channel": "CH8",
+              "name": "S9M_VDD_TPU_M",
+              "before_duration_ms": 5048378,
+              "after_duration_ms": 5407801,
+              "before_energy_counter_raw": 18382674,
+              "after_energy_counter_raw": 25226892,
+              "energy_counter_delta_raw": 6844218,
+              "energy_j": 6.844218,
+              "elapsed_seconds": 359.423,
+              "mean_power_w": 0.01904223714119575
+            }
+          ],
+          "limitations": "Two device-wide TPU rails only. Exact CPM units/revision unverified; other NPU clients may contribute. Excludes CPU and other device rails. Cold compilation and sequential prefill are part of these windows."
+        }
+      },
+      "cpu_first_logits": {
+        "argmax_match": true,
+        "max_absolute_error": 1.5981950759887695,
+        "relative_l2_error": 0.12651994824409485,
+        "cosine_similarity": 0.9919663667678833
+      },
+      "cpu_first_four_tokens_match": true
+    },
+    {
+      "name": "arithmetic",
+      "cache_state": "warm code cache reused from first request",
+      "user_prompt": "Answer with one digit: what is 2+2?",
+      "prompt_token_ids": [
+        0,
+        130072,
+        8448,
+        220,
+        21742,
+        401,
+        678,
+        22332,
+        47,
+        976,
+        357,
+        242,
+        39,
+        32,
+        39,
+        52,
+        130073,
+        220,
+        130072,
+        130071,
+        220,
+        8,
+        130063,
+        9,
+        130063
+      ],
+      "generated_token_ids": [
+        41,
+        130073
+      ],
+      "output": "4",
+      "ended_with_eos": true,
+      "timing": {
+        "request_seconds": 90.89104046000011,
+        "prefill_seconds": 86.85743115999958,
+        "time_to_first_token_seconds": 86.87969045699992,
+        "compile_count": 0,
+        "compile_seconds": 0.0,
+        "subsequent_token_gaps_seconds": [
+          4.011194611999599
+        ],
+        "subsequent_tokens_per_second": 0.2493022893998891,
+        "subsequent_token_gap_count": 1,
+        "accumulated_native_invoke_call_seconds": 88.67305952195329,
+        "invoke_timer_scope": "Host-side native requests including dispatch load, invocation, unload and IPC; not an isolated accelerator kernel timer.",
+        "throughput_scope": "Only the recorded later-token gaps. The arithmetic request has one gap ending at EOS, so it is not a sustained-generation benchmark."
+      },
+      "coverage": {
+        "native_npu_invocations": 7708,
+        "device_inference_count_delta": [
+          0,
+          0,
+          7708
+        ],
+        "decoder_calls_per_graph": 26,
+        "lm_head_calls_per_graph": 2,
+        "formula": "294 * (25 + 2 - 1) + 32 * 2 = 7708"
+      },
+      "first_logit_array_sha256": "8f2279efbb315a929354b15d8a29be8b8f624e75a342465c2fedd788c5d2cd22",
+      "first_top10": [
+        {
+          "id": 41,
+          "text": "4",
+          "logit": 31.245222091674805
+        },
+        {
+          "id": 39,
+          "text": "2",
+          "logit": 28.38925552368164
+        },
+        {
+          "id": 37,
+          "text": "0",
+          "logit": 19.905445098876953
+        },
+        {
+          "id": 130073,
+          "text": "<|im_end|>",
+          "logit": 19.155189514160156
+        },
+        {
+          "id": 3179,
+          "text": "04",
+          "logit": 18.291460037231445
+        },
+        {
+          "id": 42,
+          "text": "5",
+          "logit": 18.190021514892578
+        },
+        {
+          "id": 45,
+          "text": "8",
+          "logit": 17.529285430908203
+        },
+        {
+          "id": 43,
+          "text": "6",
+          "logit": 17.14288902282715
+        },
+        {
+          "id": 40,
+          "text": "3",
+          "logit": 17.123592376708984
+        },
+        {
+          "id": 38,
+          "text": "1",
+          "logit": 17.013818740844727
+        }
+      ],
+      "power": {
+        "charging_samples": 64,
+        "sample_count": 87,
+        "unplugged_net_battery_discharge_window": {
+          "sample_count": 21,
+          "first_to_last_sample_seconds": 21.059026187999734,
+          "mean_w": 3.035400000275476,
+          "median_w": 2.669078743008,
+          "minimum_w": 1.228812709375,
+          "maximum_w": 7.947128290254,
+          "measurement": "Whole-device net battery discharge estimated from battery current and voltage, restricted to discharging samples with USB and wireless supplies offline.",
+          "limitations": "Short window following unplugging, with no idle baseline subtraction or stabilization test. Includes CPU, display, radios, other apps and accelerator consumption; does not isolate NPU power or establish sustained device wattage."
+        },
+        "isolated_npu_power_w": null,
+        "conditional_tpu_rail_estimate": {
+          "abi_assumed": true,
+          "exact_installed_cpm_revision_verified": false,
+          "unit_source": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+          "unit_interpretation": "ABI-compatible inference: energy_value counters assumed µWs=µJ, timestamps/durations assumed ms. Exact installed CPM revision is unverified.",
+          "elapsed_seconds": 90.959,
+          "energy_j_if_assumption_holds": 7.579265,
+          "mean_power_w_if_assumption_holds": 0.08332616893325565,
+          "rails": [
+            {
+              "available": true,
+              "channel": "CH6",
+              "name": "S7M_VDD_TPU",
+              "before_duration_ms": 5407861,
+              "after_duration_ms": 5498820,
+              "before_energy_counter_raw": 50643331,
+              "after_energy_counter_raw": 55223810,
+              "energy_counter_delta_raw": 4580479,
+              "energy_j": 4.580479,
+              "elapsed_seconds": 90.959,
+              "mean_power_w": 0.05035762266515683
+            },
+            {
+              "available": true,
+              "channel": "CH8",
+              "name": "S9M_VDD_TPU_M",
+              "before_duration_ms": 5407861,
+              "after_duration_ms": 5498820,
+              "before_energy_counter_raw": 25227316,
+              "after_energy_counter_raw": 28226102,
+              "energy_counter_delta_raw": 2998786,
+              "energy_j": 2.998786,
+              "elapsed_seconds": 90.959,
+              "mean_power_w": 0.032968546268098815
+            }
+          ],
+          "limitations": "Two device-wide TPU rails only. Exact CPM units/revision unverified; other NPU clients may contribute. Excludes CPU and other device rails. Cold compilation and sequential prefill are part of these windows."
+        }
+      },
+      "arithmetic_output_begins_with_4": true
+    }
+  ],
+  "cleanup_inclusive_total_seconds": 453.4291462580004,
+  "coverage": {
+    "compiled_graph_count": 326,
+    "compiled_code_cache_bytes": 4723694080,
+    "graphs_retained_in_native_code_cache": 326,
+    "eviction_count": 0,
+    "total_compile_seconds": 291.5423730020002,
+    "native_npu_invocations": 12834,
+    "device_inference_count_delta": [
+      0,
+      0,
+      12834
+    ],
+    "decoder_calls_per_graph_across_requests": 43,
+    "lm_head_calls_per_graph_across_requests": 6,
+    "formula": "294 * ((14 + 4 - 1) + (25 + 2 - 1)) + 32 * (4 + 2) = 12834",
+    "all_recorded_npu_results_finite": true,
+    "compiled_code_residency": "Code cache objects are retained in process memory; graph request resources are loaded and unloaded per invocation. This is not a measure of accelerator SRAM residency."
+  },
+  "graph_reference_comparison": {
+    "reference": "npu-graph-manifest.json",
+    "graph_count": 326,
+    "all_graph_hashes_match": true,
+    "all_tensor_shapes_and_row_ranges_match": true,
+    "canonical_identity_list_sha256": "dff1d12e020355009f89e0963547c525dcf072f721df9b112419cba85df3d14c",
+    "canonical_identity_encoding": "SHA-256 of compact UTF-8 JSON of lexicographically sorted [name,row_start,row_stop,rows,columns,graph_sha256] lists."
+  },
+  "native_library_evidence": {
+    "google_tensor_dispatch_library_mapping_observed": true,
+    "library_basename": "libedgetpu_litert.so",
+    "device_descriptor_observation": "The raw evidence collector recorded no device descriptors; no descriptor claim is made."
+  },
+  "memory": {
+    "hardware_samples": 429,
+    "minimum_sampled_available_kib": 2310044,
+    "available_after_cleanup_kib": 7154472,
+    "native_rss_kib": 4622360,
+    "native_high_water_rss_kib": 4644212,
+    "python_rss_kib": 1009880,
+    "python_high_water_rss_kib": 1486244,
+    "interpretation": "Process RSS includes host allocations and cached compiled code. These short prompts do not establish maximum capacity or long-context memory use."
+  },
+  "power": {
+    "battery_status_counts": {
+      "Charging": 406,
+      "Not charging": 2,
+      "Discharging": 21
+    },
+    "usb_online_counts": {
+      "1": 408,
+      "0": 21
+    },
+    "isolated_npu_power_w": null,
+    "interpretation": "Charging samples do not establish whole-device draw. A short unplugged/discharging window in the arithmetic request permits a qualified whole-device net battery-discharge estimate; it remains distinct from NPU-only power."
+  },
+  "tested_source_provenance": {
+    "artifacts": [
+      {
+        "name": "npu_pipe",
+        "sha256": "b0284c400e66d1d4a74f11dc14015ccf581ede8e550502bbd2186ae1881e3e7c"
+      },
+      {
+        "name": "npu_linear.py",
+        "sha256": "667ab40940084c7fce9a4fab4cce32c840dc3831412a0cecad32897507ac4591"
+      },
+      {
+        "name": "build_constant_fc.py",
+        "sha256": "fecfcfff62fec848b7b22754fda47504b9fbfd90e9ae349e50ac761d1174f70e"
+      },
+      {
+        "name": "schema_py_generated.py",
+        "sha256": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+      },
+      {
+        "name": "model_host.py",
+        "sha256": "7471cd40bb412a116176eb1fa5110b5b61f844519ab639875ee53e79be779719"
+      }
+    ],
+    "native_helper_sha256": "b0284c400e66d1d4a74f11dc14015ccf581ede8e550502bbd2186ae1881e3e7c",
+    "collection_timing": "Provenance appended after the completed run. The recorded hashes were collected immediately after that owned run, before replacing its native executable or changing guard/ID logic.",
+    "artifact_collection_note": "Hashes collected immediately after this owned run, before replacing its native executable or changing guard/ID logic. The native source received a further review afterward; final binary has separate bounded validation.",
+    "post_run_change_boundary": "Later guard and native-ID patches are outside this completed two-request validation run. The final native binary has separate bounded validation; these digests identify the earlier two-request artifacts."
+  },
+  "raw_private_report_sha256": "646c44ecfd8a380c084137d72cd35e2f2cf72527b4832bf33aadac978e90b345",
+  "publication_scope": "Only the two fixed public benchmark prompts, numeric timings/counters, model and graph identities, and summary validation evidence. No private paths, process IDs, weights, activation arrays, or secret tokens."
+}

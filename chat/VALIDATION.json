@@ -1,0 +1,28 @@
+{
+  "schema": "pixelforge.chat.public-source-validation.v1",
+  "date": "2026-10-29",
+  "build": {
+    "mechanism": "Fresh extraction of hash-pinned llama source archive, architecture libraries and new chat bridge compiled from source",
+    "upstream_commit": "254b177307b14d055bbe4c050c9c441a1e06d8a4",
+    "input_archive_sha256": "f9db01544a49f099fc2d5fb94a15e7e570ac81bd46992ac0f3a3b41ead8da860",
+    "command": "bash chat/build_native.sh --archive /path/to/pinned/llama-source.tar.gz",
+    "output_binary_sha256": "0788d03ca9c43eb8c57a27452527ac275f6f9e451246c9e3a72a9245002d8535",
+    "private_static_libraries_reused": false
+  },
+  "offline_tests": {
+    "command": "python3 -m unittest discover -s chat/tests -v",
+    "run": 19,
+    "passed": 19,
+    "skipped": 0,
+    "coverage": [
+      "tiny GGUF native CPU requests and context reset",
+      "simulated persistent matrix broker and explicit selected placement",
+      "selected projection failure aborts without fallback",
+      "request/template validation",
+      "exact process identity cleanup",
+      "bootstrap pins and local dry-run manifest",
+      "isolated installation ownership/source hashes without model or bank copying"
+    ]
+  },
+  "limitations": "Native fixture broker is simulated. This validation did not operate phone hardware or replace a deployment. Hardware reference evidence is separate."
+}

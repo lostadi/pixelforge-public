@@ -1,0 +1,179 @@
+{
+  "schema": "pixelforge.native-protocol-stress.v1",
+  "timestamp_utc": "2026-10-13T22:04:46.690904+00:00",
+  "seed": 5785252250990301269,
+  "seed_hex": "0x504958454c4e5055",
+  "iterations_per_variant": 120000,
+  "vendor_initializations": 0,
+  "npu_invocations": 0,
+  "hardware_touched": false,
+  "runs": [
+    {
+      "variant": "plain",
+      "compile_seconds": 1.225042942998698,
+      "compiler": "/usr/bin/g++",
+      "compiler_flags": [
+        "-std=c++17",
+        "-O1",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "stderr": "",
+      "result": {
+        "seed": 5785252250990301269,
+        "random_cases": 120000,
+        "fixed_edge_cases": 120,
+        "cases": 120120,
+        "elapsed_seconds": 1.17499,
+        "failures": 0,
+        "family_counts": {
+          "decimal": 19853,
+          "valid_model_headers": 19923,
+          "mutated_model_headers": 20127,
+          "matrix_buffer_bounds": 20022,
+          "dgc0": 19983,
+          "command_tail": 20092
+        },
+        "failure_examples": []
+      }
+    },
+    {
+      "variant": "ubsan",
+      "compile_seconds": 1.686574480991112,
+      "compiler": "/usr/bin/g++",
+      "compiler_flags": [
+        "-std=c++17",
+        "-O1",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsanitize=undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "stderr": "",
+      "result": {
+        "seed": 5785252250990301269,
+        "random_cases": 120000,
+        "fixed_edge_cases": 120,
+        "cases": 120120,
+        "elapsed_seconds": 1.80741,
+        "failures": 0,
+        "family_counts": {
+          "decimal": 19853,
+          "valid_model_headers": 19923,
+          "mutated_model_headers": 20127,
+          "matrix_buffer_bounds": 20022,
+          "dgc0": 19983,
+          "command_tail": 20092
+        },
+        "failure_examples": []
+      }
+    }
+  ],
+  "failures": [],
+  "sanitizers": {
+    "requested": [
+      "address",
+      "undefined"
+    ],
+    "status": "partial",
+    "address": {
+      "status": "unavailable",
+      "probes": [
+        {
+          "compiler": "/usr/bin/g++",
+          "compile_exit": 0,
+          "compile_diagnostic": "",
+          "run_exit": -6,
+          "runtime_diagnostic": "AddressSanitizer: CHECK failed: sanitizer_allocator_primary64.h:131 \"((kSpaceBeg)) == ((address_range.Init(TotalSpaceSize, PrimaryAllocatorName, kSpaceBeg)))\" (0x500000000000, 0xfffffffffffffff4) (tid=<probe>)\n    <empty stack>\n\n"
+        },
+        {
+          "compiler": "/usr/bin/clang++",
+          "compile_exit": 1,
+          "compile_diagnostic": "/usr/bin/ld: cannot find /usr/lib/llvm-18/lib/clang/18/lib/linux/libclang_rt.asan_static-aarch64.a: No such file or directory\n/usr/bin/ld: cannot find /usr/lib/llvm-18/lib/clang/18/lib/linux/libclang_rt.asan-aarch64.a: No such file or directory\n/usr/bin/ld: cannot find /usr/lib/llvm-18/lib/clang/18/lib/linux/libclang_rt.asan_cxx-aarch64.a: No such file or directory\nclang++: error: linker command failed with exit code 1 (use -v to see invocation)\n",
+          "runtime_diagnostic": ""
+        }
+      ]
+    },
+    "undefined": {
+      "status": "passed"
+    },
+    "asan_options": "detect_leaks=1:abort_on_error=1:quarantine_size_mb=8:thread_local_quarantine_size_kb=64",
+    "ubsan_options": "halt_on_error=1:print_stacktrace=1"
+  },
+  "limits": {
+    "timeout_seconds": 60,
+    "build_bytes": 16777216
+  },
+  "compiler": {
+    "path": "/usr/bin/g++",
+    "version": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0"
+  },
+  "source_sha256": {
+    "pipe_protocol.h": "6492c4889ae1e4fa1d1fe25db96e2c1214e8fc7cacf3c51e46cfc923f90928c4",
+    "stress_pipe_protocol.cc": "a65048734f67be131c1112c0bf8b30f881cdd42d8cb82b04ae6939e1aafc79fb",
+    "npu_pipe.cc": "067828e3b162bfa5d98baca575b080e0476ffbde7b6c674d19dfba080546c403",
+    "stress_native_cleanup.cc": "fecab5c80f8ff8ae425a960c0593ca8331ce07c9742543d98da4413daaed57c5",
+    "stress_native_protocol.py": "dc5f35bf3665659e167f8ff16fe5b02c8205575e15faba7921a094d0be843526"
+  },
+  "mock_sq_cleanup": {
+    "status": "passed",
+    "cycles": 8,
+    "cases": 56,
+    "vendor_api_calls": 0,
+    "original_native_main_called": false,
+    "scenarios": {
+      "drop-failure": {
+        "expected_exit": 2,
+        "cases": 8,
+        "failures": 0
+      },
+      "make-failure": {
+        "expected_exit": 2,
+        "cases": 8,
+        "failures": 0
+      },
+      "replacement-failure": {
+        "expected_exit": 2,
+        "cases": 8,
+        "failures": 0
+      },
+      "zero-handle-failure": {
+        "expected_exit": 2,
+        "cases": 8,
+        "failures": 0
+      },
+      "invocation-cleanup-failure": {
+        "expected_exit": 2,
+        "cases": 8,
+        "failures": 0
+      },
+      "success": {
+        "expected_exit": 0,
+        "cases": 8,
+        "failures": 0
+      },
+      "double-success": {
+        "expected_exit": 0,
+        "cases": 8,
+        "failures": 0
+      }
+    }
+  },
+  "mock_compiler": {
+    "path": "/data/data/com.termux/files/usr/bin/clang++",
+    "version": "clang version 21.1.8"
+  },
+  "build_bytes_peak": 608350,
+  "elapsed_seconds": 9.721849616995314,
+  "success": true,
+  "case_count": 240240,
+  "mock_cleanup_case_count": 56
+}

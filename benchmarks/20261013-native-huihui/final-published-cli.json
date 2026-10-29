@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "test_date_utc": "2026-10-13",
+  "test": "Final published repository CLI, Hi chat prompt, one emitted token, final native helper.",
+  "device": "Pixel 10 Pro / Tensor G5",
+  "compile_host": "Ubuntu aarch64 on the same phone",
+  "source_model": {
+    "repository": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+    "revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+    "gguf_repository": "mradermacher/Huihui-MiniCPM5-2B-abliterated-GGUF",
+    "gguf_revision": "fc1e8318e85635d142e95a0f9977487717c40b58",
+    "gguf_filename": "Huihui-MiniCPM5-2B-abliterated.Q8_0.gguf",
+    "gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+    "gguf_bytes": 2679711680,
+    "parameters": 2516756480,
+    "architecture": "LlamaForCausalLM",
+    "decoder_layers": 42,
+    "hidden_size": 2048,
+    "intermediate_size": 6144,
+    "attention_heads": 16,
+    "key_value_heads": 2,
+    "vocabulary_size": 130560,
+    "rope_theta": 5000000.0,
+    "rms_norm_eps": 1e-06,
+    "custom_huihui_weights_used": true,
+    "google_precompiled_model_used": false
+  },
+  "provenance": {
+    "original_repository": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+    "original_revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+    "quantized_repository": "mradermacher/Huihui-MiniCPM5-2B-abliterated-GGUF",
+    "quantized_revision": "fc1e8318e85635d142e95a0f9977487717c40b58",
+    "gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+    "model_and_support_sha256_verified": true,
+    "quantization": "Q8_0 GGUF dequantized and requantized per output row to int8 constant FC weights",
+    "native_sha256": "fea5924b2130a1bbdb2819e3b13181d60126c9dd2750c08ea3da55ef1cab2eb0",
+    "installed_native_sha256_verified": true
+  },
+  "source_files": [
+    {
+      "path": "tools/arm_npu/runtime.py",
+      "sha256": "2aca56319ddf32be0d1d8b8f828023d88bcd89f57c46d596de734481d9a1c0ac",
+      "bytes": 10252
+    },
+    {
+      "path": "tools/arm_npu/model_host.py",
+      "sha256": "7471cd40bb412a116176eb1fa5110b5b61f844519ab639875ee53e79be779719",
+      "bytes": 17090
+    },
+    {
+      "path": "tools/arm_npu/npu_linear.py",
+      "sha256": "66599f9370e5055b679c1ad2d0853566ad14cc60852c919ad8e47e7728299a38",
+      "bytes": 18522
+    },
+    {
+      "path": "tools/arm_npu/build_constant_fc.py",
+      "sha256": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+      "bytes": 5074
+    },
+    {
+      "path": "tools/arm_npu/gguf_hf_loader.py",
+      "sha256": "0a9e603be1480aa5d34bf8525949bb5f6e02f7a397622cd4b080a06b189df1f7",
+      "bytes": 13175
+    },
+    {
+      "path": "tools/arm_npu/npu_pipe.cc",
+      "sha256": "6d9577e1c5ea09408473d4a68ff41ced78590620702af9eed619e8211104d9e8",
+      "bytes": 10881
+    }
+  ],
+  "source_hash_collection_timing": "Captured while the published launcher was running, before any subsequent source changes",
+  "backend": "native-google-tensor-npu-fc",
+  "cpu_dense_linear_fallback": false,
+  "cpu_operations": "tokenization, embeddings, RMSNorm, RoPE, attention, KV cache, SiLU, sampling",
+  "user_prompt": "Hi",
+  "prompt_token_ids": [
+    0,
+    130072,
+    8448,
+    220,
+    19301,
+    130073,
+    220,
+    130072,
+    130071,
+    220,
+    8,
+    130063,
+    9,
+    130063
+  ],
+  "output_token_ids": [
+    19301
+  ],
+  "output": "Hi",
+  "timing": {
+    "sha_verification_and_cleanup_inclusive_seconds": 316.53618487699987,
+    "time_to_first_token_seconds": 310.04174078400047,
+    "compile_seconds": 251.76664085801076,
+    "accumulated_native_invoke_call_seconds": 53.430160661004265,
+    "invoke_timer_scope": "Native request duration includes dispatch load, invocation, unload and IPC; not isolated NPU compute.",
+    "scope": "One cold 14-token sequential prefill and one emitted token. No decode-throughput estimate is available from one emitted token."
+  },
+  "coverage": {
+    "compiled_graphs": 326,
+    "all_graph_hashes_and_tensor_row_ranges_match_reference": true,
+    "reference": "npu-graph-manifest.json",
+    "canonical_identity_list_sha256": "dff1d12e020355009f89e0963547c525dcf072f721df9b112419cba85df3d14c",
+    "canonical_identity_encoding": "Compact UTF-8 JSON of sorted [name,row_start,row_stop,rows,columns,graph_sha256] lists.",
+    "decoder_calls_per_graph": 14,
+    "lm_head_calls_per_graph": 1,
+    "native_npu_invocations": 4148,
+    "device_inference_count_before": [
+      0,
+      0,
+      20417
+    ],
+    "device_inference_count_after": [
+      0,
+      0,
+      24565
+    ],
+    "device_inference_count_delta": [
+      0,
+      0,
+      4148
+    ],
+    "formula": "294 * 14 + 32 * 1 = 4148",
+    "all_recorded_npu_results_finite": true
+  },
+  "compiled_code_cache_bytes": 4723694080,
+  "activation_scaling": "max(maxabs(x),1); NPU(x/scale) * scale",
+  "native_identity_recipe": "SHA256(canonical matrix key + full serialized graph SHA256)",
+  "precision_boundary": "Original GGUF Q8_0 blocks are dequantized, then re-quantized to one INT8 scale per output row for hybrid FC graphs. The prior full-model logit comparison remains applicable as a documented precision limitation, rather than a quality-equivalence claim.",
+  "power": {
+    "isolated_npu_power_w": null,
+    "whole_device_average_power_w": null,
+    "available_measurement_scope": "Only before/after hardware snapshots are included in this CLI report; these do not establish sustained average device or NPU power."
+  },
+  "validation_scope": "This covers the final launcher/source files and final helper for a complete 42-layer prefill and one emitted token. The earlier multi-token/arithmetic results retain their own recorded artifacts and are separate runs.",
+  "raw_private_report_sha256": "25b8b3d42f28292d83071dcb67c3644a2b4aa44368aefb1111aaa54737e5ee35",
+  "raw_source_pin_record_sha256": "fb128dbf31661f2164218a38aa9b6dd782bee4503d5e9f8de1db582ee9ed2e9d",
+  "publication_scope": "Fixed public Hi prompt, model/source hashes, graph/counter evidence and numeric timings only. No private paths, process IDs, weights or activation arrays."
+}

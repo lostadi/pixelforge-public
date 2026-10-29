@@ -1,0 +1,695 @@
+{
+  "format": "pixelforge.darwinn.fc.v1",
+  "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+  "complete": true,
+  "completed_weight_dtypes": [
+    "int8"
+  ],
+  "source_gguf": {
+    "bytes": 2632704,
+    "sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+    "embedded": true
+  },
+  "device_fingerprint": {
+    "android_properties": {
+      "ro.board.platform": "laguna",
+      "ro.product.board": "blazer",
+      "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+      "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+    },
+    "author_decoder_sha256": {
+      "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+      "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+      "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+      "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+      "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+      "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+      "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+      "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+    },
+    "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+    "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+    "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+    "machine": "aarch64",
+    "native_protocol_abi": "pixelforge-pipe-DL-v1"
+  },
+  "artifact_count": 16,
+  "banks": [
+    {
+      "bytecode_path": "graphs/3582db3ce83a376674de910080ef33fac1650aef40e73d7590f96ccff8017b50.dgc",
+      "bytecode_sha256": "3582db3ce83a376674de910080ef33fac1650aef40e73d7590f96ccff8017b50",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52840,
+      "graph_sha256": "6acbf420c9b00b3780f5186dcdb42fd476f7a1211d04b51a5fb34fd650e35b6f",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_q.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/e537f07705098ce72c0e5cc28c023343fd80d4fc5ec32bc434f755022ba23160.dgc",
+      "bytecode_sha256": "e537f07705098ce72c0e5cc28c023343fd80d4fc5ec32bc434f755022ba23160",
+      "columns": 512,
+      "compiled_bytes": 728768,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 34416,
+      "graph_sha256": "9d022d3de2e283e5dc3745431c8b5d3eb7e6bee6abb5cf6410a0a68697876361",
+      "input_bytes": 2048,
+      "output_bytes": 256,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 256,
+      "rows": 64,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_down.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/0bdccc0332c2798aea43bb47488b5ea99a70d84c30c67414ad900f7636058e14.dgc",
+      "bytecode_sha256": "0bdccc0332c2798aea43bb47488b5ea99a70d84c30c67414ad900f7636058e14",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52832,
+      "graph_sha256": "4ee61fddb39e411b4113e8d16f74786280e57568e2eed543b782bde6de71321b",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "token_embd.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/f0132a2e0c9454e81e93b998002500eb6a5033bd22fd675e5380b78556df5162.dgc",
+      "bytecode_sha256": "f0132a2e0c9454e81e93b998002500eb6a5033bd22fd675e5380b78556df5162",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52848,
+      "graph_sha256": "6b8672ab6e7fe6a5ae8ad6c477f4b93636b07c46986393e0749aa863b4bb496f",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 384,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_gate.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/b3f1c87dbbd0324e974afac6c9fa2eef491359c8378939c5f44c7b1c903fdfb1.dgc",
+      "bytecode_sha256": "b3f1c87dbbd0324e974afac6c9fa2eef491359c8378939c5f44c7b1c903fdfb1",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52848,
+      "graph_sha256": "1dfc2c1092f661fd6e7d2eee8e0acc4a4bb7865b6ba81aac6569501e2c09d3e0",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_gate.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/0a28da0b4a82c91ab881569ba7739245ed9d477b1a98d6f70af490ddcd38f05a.dgc",
+      "bytecode_sha256": "0a28da0b4a82c91ab881569ba7739245ed9d477b1a98d6f70af490ddcd38f05a",
+      "columns": 256,
+      "compiled_bytes": 727040,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 35440,
+      "graph_sha256": "b071887c5e76466e0eb6cbf09f19a3c076cfd4063bd24eba9b7a5b10970b74df",
+      "input_bytes": 1024,
+      "output_bytes": 512,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 384,
+      "row_stop": 512,
+      "rows": 128,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_gate.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/bf48d038a890e3a83af7c3f1e8477facefc85556ff2203ab854bc586fc4c6bc9.dgc",
+      "bytecode_sha256": "bf48d038a890e3a83af7c3f1e8477facefc85556ff2203ab854bc586fc4c6bc9",
+      "columns": 256,
+      "compiled_bytes": 727040,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 35432,
+      "graph_sha256": "afbc42b848fd6787b44df5ad2b5f7b248ce463542fc0a770e501127c1e3e4f47",
+      "input_bytes": 1024,
+      "output_bytes": 512,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 128,
+      "rows": 128,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_k.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/2f01abbae78914e26a33ce6a698af6d354cb8a8360e246dbc65671baa9407d5a.dgc",
+      "bytecode_sha256": "2f01abbae78914e26a33ce6a698af6d354cb8a8360e246dbc65671baa9407d5a",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52840,
+      "graph_sha256": "488b7221543870f90be6875c18d9cf80872de7ce149cf119ec5ce0535e8b2bcb",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_up.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/d9016931b0f59b452df6909aa18f866686c99a9088e49a10570779b353dcf143.dgc",
+      "bytecode_sha256": "d9016931b0f59b452df6909aa18f866686c99a9088e49a10570779b353dcf143",
+      "columns": 256,
+      "compiled_bytes": 692608,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 18024,
+      "graph_sha256": "efc39cd8f7930883f2eb7dd37c036b0e956df5e9ce8b7d019852132f7462264c",
+      "input_bytes": 1024,
+      "output_bytes": 256,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 256,
+      "rows": 64,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_q.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/2d946a41622cb1c0b6984868b2ca7e5d2530e8313def0e1a19c56f7fda115bab.dgc",
+      "bytecode_sha256": "2d946a41622cb1c0b6984868b2ca7e5d2530e8313def0e1a19c56f7fda115bab",
+      "columns": 256,
+      "compiled_bytes": 692608,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 18040,
+      "graph_sha256": "a2fc14d03679ece5403725785823c1a644b747a9af7dcc11ab8d4530bc0acc38",
+      "input_bytes": 1024,
+      "output_bytes": 256,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 256,
+      "rows": 64,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_output.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/3e8fb0a0470954e219870bea4328970b14d0ab31cba42f3b406968104bf4e1e7.dgc",
+      "bytecode_sha256": "3e8fb0a0470954e219870bea4328970b14d0ab31cba42f3b406968104bf4e1e7",
+      "columns": 256,
+      "compiled_bytes": 710016,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 18840,
+      "graph_sha256": "009ec2c2f982f612c8dd0d258eba67df23fc620345c2173b5eaab9ba8ea46a1a",
+      "input_bytes": 1024,
+      "output_bytes": 268,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 259,
+      "rows": 67,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "token_embd.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/ebe6c6dec9ad5a6a4bf06cff356661e9a81c69422282a4f80c3fd78790d61fbb.dgc",
+      "bytecode_sha256": "ebe6c6dec9ad5a6a4bf06cff356661e9a81c69422282a4f80c3fd78790d61fbb",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52840,
+      "graph_sha256": "fa774ff0bc92930dbc2ac5e25205938bc58755e1719ccca6fb7e665002f5b35b",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 192,
+      "row_stop": 384,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_up.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/5e8fd0e8b8d0af784718d2cb6ef671d5151ccc3bfcb4b91d66789137107ce844.dgc",
+      "bytecode_sha256": "5e8fd0e8b8d0af784718d2cb6ef671d5151ccc3bfcb4b91d66789137107ce844",
+      "columns": 256,
+      "compiled_bytes": 727040,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 35432,
+      "graph_sha256": "5c27b1012d86fd148d6f7f2aa256c33e2bc4330faffcd20dc9baab9d6e86b760",
+      "input_bytes": 1024,
+      "output_bytes": 512,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 128,
+      "rows": 128,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_v.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/9e4a1aab060dfc5e021264ef22395dc2050687f950e7e23ec483996b1e05f0bc.dgc",
+      "bytecode_sha256": "9e4a1aab060dfc5e021264ef22395dc2050687f950e7e23ec483996b1e05f0bc",
+      "columns": 256,
+      "compiled_bytes": 761664,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 52856,
+      "graph_sha256": "c3f1adbf4bf6a511e7f606bcddac010fa2733baf85a74b4ca2eb417d8c146d68",
+      "input_bytes": 1024,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.attn_output.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/1fe6704965f9eb6dac31ee0a0ed503c40cbf1beb566bbe53794aee0b9be5fabd.dgc",
+      "bytecode_sha256": "1fe6704965f9eb6dac31ee0a0ed503c40cbf1beb566bbe53794aee0b9be5fabd",
+      "columns": 256,
+      "compiled_bytes": 727040,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 35432,
+      "graph_sha256": "dc6594c85035c142d40c9145945f37a0a9cb8566550a09fd93e6769ad5f3a333",
+      "input_bytes": 1024,
+      "output_bytes": 512,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 384,
+      "row_stop": 512,
+      "rows": 128,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_up.weight",
+      "weight_dtype": "int8"
+    },
+    {
+      "bytecode_path": "graphs/25b232d20d8825b47de74c332b4116a336e9923db2b013b8d1409aeb3b7852b4.dgc",
+      "bytecode_sha256": "25b232d20d8825b47de74c332b4116a336e9923db2b013b8d1409aeb3b7852b4",
+      "columns": 512,
+      "compiled_bytes": 863360,
+      "device_fingerprint": {
+        "android_properties": {
+          "ro.board.platform": "laguna",
+          "ro.product.board": "blazer",
+          "ro.system.build.fingerprint": "google/generic_system_google/generic:17/CP2A.260805.005/15828068:user/release-keys",
+          "ro.vendor.build.fingerprint": "google/blazer/blazer:17/CP2A.260805.005/15828068:user/release-keys"
+        },
+        "author_decoder_sha256": {
+          "GGUF_QUANTIZATION_PROVENANCE.json": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b",
+          "build_constant_fc.py": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc",
+          "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+          "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+          "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+          "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+          "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+          "schema_py_generated.py": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+        },
+        "compiler_library_sha256": "efc4c6f4bc5dc8933afc260528d188ce5c39a36c107f23b96e6e2e80d29ae193",
+        "firmware_version": "1.0 vii=3 kci=3 cl=895568023",
+        "kernel_release": "6.6.118-android15-8-g1831c2a45d9b-ab15739706-4k",
+        "machine": "aarch64",
+        "native_protocol_abi": "pixelforge-pipe-DL-v1"
+      },
+      "device_fingerprint_sha256": "ab3bae10fab797847b4f5a4211e07de8731f6b4a81843c28b889f3e2527f676f",
+      "graph_bytes": 102000,
+      "graph_sha256": "60452f4aa5bd69a00a3a48c42c17552eb8261379756ea5b1b5834a2e6d125e4d",
+      "input_bytes": 2048,
+      "output_bytes": 768,
+      "recipe": "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants",
+      "row_start": 0,
+      "row_stop": 192,
+      "rows": 192,
+      "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+      "tensor": "blk.0.ffn_down.weight",
+      "weight_dtype": "int8"
+    }
+  ]
+}

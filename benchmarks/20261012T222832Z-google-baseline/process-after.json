@@ -1,0 +1,13 @@
+{
+  "pid": 11676,
+  "mapped_paths": [
+    "/data/data/com.termux/files/home/ostadix-voice/runtime/npu/c_api-0.1.0/lib/android_arm64/liblitert-lm.so",
+    "/data/data/com.termux/files/home/ostadix-voice/runtime/npu/dispatch-2.2.0/google_tensor_runtime/src/main/jni/arm64-v8a/libLiteRtDispatch_GoogleTensor.so",
+    "/vendor/lib64/com.google.edgetpu_app_service-V10-ndk.so",
+    "/vendor/lib64/com.google.edgetpu_vendor_service-V2-ndk.so",
+    "/vendor/lib64/libedgetpu_client.google.so",
+    "/vendor/lib64/libedgetpu_litert.so"
+  ],
+  "device_descriptors": [],
+  "errors": {}
+}

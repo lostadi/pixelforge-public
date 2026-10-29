@@ -1,0 +1,37 @@
+{
+  "format": "pixelforge.gguf-runtime.assets.v1",
+  "engine_revision": "254b177307b14d055bbe4c050c9c441a1e06d8a4",
+  "files": [
+    {
+      "path": "bin/pixelforge-gguf",
+      "bytes": 5343808,
+      "sha256": "1dd8cc343678f4183a14e45ad33c26c43a8b7e5201d180b5080c8b9664882cb3"
+    },
+    {
+      "path": "native/npu_pipe_gguf",
+      "bytes": 85920,
+      "sha256": "45003ec33d56b12daacd312dab5efdebebe214dc7e804faac4b27140bde0caee"
+    },
+    {
+      "path": "requirements-offline.txt",
+      "bytes": 193,
+      "sha256": "2481c036f03ee729de351310338a085959a514b76b8d6954eefd58cf10e0c9bd"
+    },
+    {
+      "path": "source/llama-source.tar.gz",
+      "bytes": 37039474,
+      "sha256": "f9db01544a49f099fc2d5fb94a15e7e570ac81bd46992ac0f3a3b41ead8da860"
+    },
+    {
+      "path": "wheels/flatbuffers-25.12.19-py2.py3-none-any.whl",
+      "bytes": 26661,
+      "sha256": "7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4"
+    },
+    {
+      "path": "wheels/numpy-2.5.4-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl",
+      "bytes": 15695312,
+      "sha256": "fe4d21ab149f15e4e6043dfb0de87e6e5f34ac176cde83060e9802981fca2ac2"
+    }
+  ],
+  "models": "User-supplied GGUF weights are separate; this addon supplies the compiler runtime."
+}

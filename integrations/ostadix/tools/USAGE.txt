@@ -1,0 +1,106 @@
+PixelForge integrated Ostadix NPU tools
+
+Run these commands from your Ubuntu root terminal, with integrations/ostadix
+as your current directory. The executable .O file invokes the installed ostadix-BM O
+evaluator and Python backend. Its embedded
+offline compiler kit extracts into a verified persistent cache on first use.
+
+  ./pixelforge-npu.O help
+  ./pixelforge-npu.O verify
+  ./pixelforge-npu.O setup
+  ./pixelforge-npu.O doctor
+
+For your chosen model:
+
+  ./pixelforge-npu.O inspect /path/to/model.gguf
+  ./pixelforge-npu.O plan --model /path/to/model.gguf --output /path/to/compiled
+  ./pixelforge-npu.O compile --model /path/to/model.gguf --output /path/to/compiled
+  ./pixelforge-npu.O run --model /path/to/model.gguf --artifacts /path/to/compiled --read-only --prompt Hi --tokens 2
+
+The plan reports unsupported operations and required disk space. Its
+would_fit:false result means you need a different destination or smaller
+selection. Interrupted compilation can resume with compile --resume.
+
+Use cpu with the same run flags for an explicit CPU reference. Use compare
+--model MODEL --prompt TEXT --tokens N --output NEW_DIR for fresh CPU and NPU
+runs, or compare-reports CPU_RESULT.json NPU_RESULT.json to check existing
+reports without running a model. Matching token IDs is a bounded functionality
+check; it does not establish full vocabulary equivalence or language quality.
+
+Other integrated commands:
+
+  build-native [FRESH_HELPER_PATH]
+  build-engine [BUILD_DIRECTORY]
+  package FRESH_COMPILER_ARCHIVE.run
+  test
+  test-native
+  fixture FRESH_MODEL.gguf
+  graph --gguf MODEL.gguf --tensor NAME --output NEW_GRAPH.tflite
+  collect --collect-seconds SECONDS --output FRESH_REPORT.json
+  tool SHIPPED_TOOL_NAME [ARGS...]
+
+Use ACTION --help for a command's options. Global --kit-dir, --python, and
+--deadline options go before ACTION. Relative paths use your terminal's
+current directory. Arguments are forwarded as arrays, without additional shell expansion.
+Ctrl-C requests cleanup of this script's own worker processes. Individual
+commands have an explicit deadline; the global maximum is 3500 seconds.
+
+The .O includes the compiler-kit files, the ARM model engine, Android native
+helper, pinned rebuild source, offline NumPy/FlatBuffers wheels, and the
+integration controller and worker guard. Model weights are supplied separately.
+The installed ostadix-BM evaluator/backends, Ubuntu ARM64 Python 3.12, rooted
+Android Tensor vendor runtime, and build toolchains for rebuild commands are
+execution prerequisites. The legacy MiniCPM tool aliases require their own
+model/tokenizer addon and Python environment.
+
+This is Ostadix orchestration of the supplied native tools. Hardware support
+is the same as the underlying GGUF compiler; unsupported operations,
+quantizations, indexed MoE matrices, and split GGUF shards remain excluded.
+
+To invoke the file through the native O CLI instead of its executable launcher,
+set O_LANG_ROOT to your installed ostadix-BM checkout. The path below is the
+existing installation on the validated device:
+
+  export O_LANG_ROOT=/data/data/com.termux/files/home/ostadix-BM
+  export O_BACKENDS_DIR="$O_LANG_ROOT/backends"
+
+  OSTADIX_NPU_SOURCE="$PWD/pixelforge-npu.O" \
+  OSTADIX_NPU_ARGS_JSON='["help"]' \
+  O_BACKEND_OPERATION_TIMEOUT_MS=3600000 \
+  O ./pixelforge-npu.O "$O_BACKENDS_DIR"
+
+The executable launcher preserves the actual child exit code. Native O maps
+backend errors to its own failure status; the error output retains the child
+code. The generated .O.sha256 and .O.json files record the artifact checksum
+and embedded compiler archive provenance.
+
+Verify the downloaded artifact with its adjacent checksum file:
+
+  sha256sum -c pixelforge-npu.O.sha256
+
+The adapter sources and tests are in the local ./tools directory. The external
+ostadix-BM checkout supplies the O evaluator and backends.
+
+Rebuild the integrated file from the development sources, using a compiler
+archive matching the builder release pin and fresh output/receipt paths:
+
+  export O_LANG_ROOT=/path/to/your/ostadix-BM
+  python3 ./tools/build_integrated.py \
+    --archive /path/to/pixelforge-gguf-compiler.run --output ./pixelforge-npu-new.O
+
+Repeat the CPU launcher stress checks from the integration source checkout:
+
+  python3 ./tools/stress_integrated.py \
+    --artifact ./pixelforge-npu.O --kit-dir /path/to/existing/kit \
+    --numeric-python /path/to/existing/venv/bin/python \
+    --model /path/to/tiny-synthetic.gguf --report /tmp/fresh-launcher-stress.json
+
+This requires an existing verified kit and a synthetic GGUF smaller than 4 MiB.
+It checks read-only actions and the embedded worker's cleanup fixtures with at
+most two concurrent calls. It performs no installation or NPU inference.
+
+Run the source tests on Linux with Python and pidfd support:
+
+  python3 -m unittest discover -s ./tools -p 'test_*.py'
+
+These tests use software fixtures and owned subprocesses without NPU calls.

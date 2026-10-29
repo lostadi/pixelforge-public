@@ -1,0 +1,112 @@
+{
+  "format": "pixelforge.ostadix-relocation-validation.v1",
+  "status": "passed",
+  "recorded_utc": "2026-10-14T02:03:19.714949+00:00",
+  "scope": "Source relocation and CPU-only validation; no hardware inference performed.",
+  "relocation": {
+    "from_repository": "lostadi/ostadix-BM",
+    "from_commit": "2441ba99333e68487cd79405a1a94be58f78560a",
+    "from_path": "tools/pixelforge-npu",
+    "to_repository": "PixelForge",
+    "to_path": "integrations/ostadix/tools",
+    "runtime_builder_files_byte_identical": [
+      "bootstrap.py",
+      "controller.py",
+      "worker.py",
+      "build_integrated.py"
+    ],
+    "changed_files": [
+      "USAGE.txt",
+      "test_bootstrap.py",
+      "stress_integrated.py"
+    ],
+    "change_details": "Usage follows local ./tools paths. Optional installed-CBOR test and CPU stress discover the external O evaluator/backends with bootstrap._find_ostadix; stress normalizes the resolved paths before temporary-cwd children.",
+    "source_files_sha256": {
+      "bootstrap.py": "25380990328c9b299e17630175243e6b50778967b4e16459f74097310f9bcb26",
+      "controller.py": "286ed909d1850b111c08b82554a725a9bd568b5aff2b42a8cb3bba7637c0150c",
+      "worker.py": "e8775c17d1a843b2a4cff8c61e8f33a5c5e6f8f681e16a1c15a72b35b9f8bb28",
+      "build_integrated.py": "93ad2333874f693b4e64c9ad3889db64c8a696dfc1134bb054831954b3f82db7",
+      "test_bootstrap.py": "b8fd7d0dc8f94f00296eda40140e8baba28f2efb4770b004e0def1f1cf5110e4",
+      "test_controller.py": "c574bab87d7f27e4be4fbcad2dbad4fa8e39d801d897115c93536dad3353b24b",
+      "test_worker.py": "1fb5a244b4f467888fad8af3577ca021409c95d91e37a47e20fef33374ae51f9",
+      "stress_integrated.py": "34c3ab1b55d8706283dcd7449745d9dfa1e6ed0d8dc33bab6baf236fbf062764",
+      "USAGE.txt": "30d65a1450e687197847d06146c1349215af8d84ec9ddff9be55145ea8805549",
+      "VALIDATION.json": "1a3379b62059062277a66099a3bf5b438e1a86111b3ff4ec79dffc61e6206010"
+    },
+    "readme_sha256": "61aa03d31820f6c034f4c2ffe85c6646af885f4ff82339ed681fc09767f5afdf"
+  },
+  "historical_validation": {
+    "path": "integrations/ostadix/tools/VALIDATION.json",
+    "sha256": "1a3379b62059062277a66099a3bf5b438e1a86111b3ff4ec79dffc61e6206010",
+    "unchanged_from_historical_commit": true,
+    "note": "Preserved as historical evidence; its former BM paths describe the build/test origin."
+  },
+  "artifact": {
+    "path": "integrations/ostadix/pixelforge-npu.O",
+    "bytes": 72513447,
+    "sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+    "unchanged_from_prior_validated_artifact": true,
+    "bytes_independently_hashed": true,
+    "embedded_compiler_archive_sha256": "62fd651ff57242ca5f71a5ce861f90ac320cd536e09bf4d8b8e751485c83bc16"
+  },
+  "source_tests": {
+    "tests_run": 60,
+    "passed": 60,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 11.225,
+    "exit_code": 0,
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-relocation-source-tests.log",
+      "bytes": 8890,
+      "sha256": "f76dcb11b782b281d249a56a3f0b085a35c6f8f91df64c9db1911b6397b7f626"
+    }
+  },
+  "runtime_absent_check": {
+    "tests_run": 2,
+    "passed": 1,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 0.001,
+    "exit_code": 0,
+    "note": "Injected runtime discovery failure. JSON byte-preservation test passes; actual installed-CBOR test explicitly skips. Installed runtime unchanged.",
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-relocation-runtime-absent.log",
+      "bytes": 597,
+      "sha256": "bd11f07f5c9018bb92761a3371bf59767c0bc6428976bde6c6e5c260c81db8a6"
+    }
+  },
+  "cpu_stress": {
+    "artifact_action_checks": 18,
+    "artifact_action_checks_passed": 18,
+    "embedded_guard_tests": 8,
+    "embedded_guard_tests_passed": 8,
+    "skipped": 0,
+    "seconds": 20.820672178000677,
+    "input_files_unchanged": true,
+    "source_model_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+    "cache_directory_identity_unchanged": true,
+    "shell_injection_sentinel_absent": true,
+    "all_owned_guard_cleanup_ok": true,
+    "requested_npu_or_vendor_invocations": 0,
+    "requested_installer_or_extraction_actions": 0,
+    "requested_hardware_observations": 0,
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-relocation-stress.json",
+      "bytes": 86729,
+      "sha256": "986c043b8bc9f45b0c956b84a9e6db12e2df0aa724c69ad7b2485cc093dae0d1"
+    },
+    "log_receipt": {
+      "path_at_validation": "/tmp/pixelforge-relocation-stress.log",
+      "bytes": 191,
+      "sha256": "bc4d3626127dd4bcca98421215ed2ce95ab668b7a02841b40a658013a4b38960"
+    }
+  },
+  "notes": [
+    "Validation of source relocation does not rebuild the unchanged .O artifact or establish new NPU coverage.",
+    "Local /tmp receipt paths are validation inputs; their hashes and outcomes are recorded here.",
+    "Sources frozen after reviewer receipts. Publication owner handles Git and artifact sidecar current-versus-build provenance."
+  ]
+}

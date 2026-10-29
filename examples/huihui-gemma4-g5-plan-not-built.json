@@ -1,0 +1,113 @@
+{
+  "schema": "pixelforge.huihui-offline-conversion-plan/v1",
+  "created_utc": "2026-10-12T22:47:53.992877+00:00",
+  "status": "uncompiled/unvalidated",
+  "plan_only": true,
+  "would_execute": false,
+  "source_provenance": {
+    "repository": "huihui-ai/Huihui-gemma-4-E2B-it-abliterated-v2",
+    "revision": "2f7b088470ce94da58fc1e5319b8ed88aed685a6",
+    "revision_metadata_pinned": true,
+    "source_url": "https://huggingface.co/huihui-ai/Huihui-gemma-4-E2B-it-abliterated-v2/tree/2f7b088470ce94da58fc1e5319b8ed88aed685a6",
+    "weight_checksums_verified": false,
+    "local_files_match_pinned_revision": "unverified"
+  },
+  "checkpoint": {
+    "path": null,
+    "weights": [],
+    "blockers": [
+      "checkpoint_not_supplied"
+    ],
+    "weight_checksums_verified": false,
+    "repository_revision_verified_against_local_files": false
+  },
+  "host": {
+    "system": "Android",
+    "machine": "aarch64",
+    "python": "3.14.6",
+    "physical_memory_bytes": 16331845632,
+    "python_packages": {
+      "litert-torch": null,
+      "ai-edge-litert": null,
+      "torch": null,
+      "transformers": null,
+      "safetensors": null,
+      "ai-edge-quantizer": null,
+      "ai-edge-litert-nightly": null,
+      "ai-edge-quantizer-nightly": null,
+      "ai-edge-litert-sdk-google-tensor-nightly": null
+    },
+    "blockers": [
+      "google_tensor_compilation_requires_external_Linux_x86_64_host",
+      "exporter_or_npu_sdk_python_package_missing",
+      "Google_Tensor_beta_compiler_archive_missing_or_unverified",
+      "Google_Tensor_SDK_wrapper_package_missing"
+    ],
+    "compiler_archive": {
+      "environment_variable_name": "GOOGLE_TENSOR_SDK_BETA",
+      "environment_variable_present": false,
+      "explicit_path_supplied": false,
+      "is_regular_file": false,
+      "has_expected_filename": false,
+      "contents_checksums_verified": false,
+      "sdk_documentation": "https://developers.google.com/edge/litert/next/tensor-sdk",
+      "interpretation": "Metadata only; archive not opened, downloaded or included. Environment variable value is not recorded."
+    },
+    "sdk_binary_and_installed_cli_verified": false
+  },
+  "requirements": {
+    "compile_host": "Linux x86_64",
+    "minimum_host_RAM_bytes": 16000000000,
+    "recommended_large_model_host_RAM_bytes": 64000000000,
+    "checkpoint_format": "local Hugging Face config/tokenizer and safetensors, not GGUF",
+    "software": [
+      "litert-torch",
+      "ai-edge-litert[npu-sdk]",
+      "ai-edge-litert-sdk-google-tensor-nightly",
+      "Google Tensor beta litert_plugin_compiler.tar.gz archive obtained separately"
+    ],
+    "target": "Tensor_G5",
+    "source_revision": "exact 40-character commit SHA",
+    "acceptance": "Successful compilation, artifact checksums, tokenizer/template validation and fresh device inference benchmark still required."
+  },
+  "conversion_candidate": {
+    "argv_display_only": [
+      "litert-torch",
+      "export_hf",
+      "--model=<LOCAL_HF_SAFETENSORS_CHECKPOINT>",
+      "--output_dir=/external-build/pixelforge/compiled-huihui-gemma4-g5",
+      "--split_cache",
+      "--externalize_embedder",
+      "--prefill_lengths=128,",
+      "--cache_length=1280",
+      "--quantization_recipe=weight_only_wi8_afp32",
+      "--aot_backend=GOOGLE",
+      "--aot_soc_model=Tensor_G5",
+      "--use_litert_lm_compiler=False",
+      "--aot_compilation_config_dict={'google_tensor_enable_large_model_support': True}"
+    ],
+    "command_runnable": false,
+    "cli_verification": "export_hf spelling and flags verified against pinned upstream source; installed dependencies and runtime compatibility remain unverified.",
+    "exporter_reference_revision": "91dd077a9584f28bc82f135016358e9433bdf260",
+    "exporter_reference_source": "https://github.com/google-ai-edge/litert-torch/blob/91dd077a9584f28bc82f135016358e9433bdf260/litert_torch/generative/export_hf/export.py",
+    "compiler_path": "Legacy GOOGLE AOT path, deprecated upstream; experimental and unexecuted.",
+    "template_validation": "Preserve the Huihui tokenizer/chat template and verify it. Gemma 4 Jinja compatibility may require explicit model-specific adaptation; no template substitution is applied here.",
+    "documentation": "https://developers.google.com/edge/litert/conversion/pytorch/genai",
+    "trust_remote_code": false,
+    "offline_environment": {
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "GOOGLE_TENSOR_BACKEND_ENABLED": "1"
+    },
+    "architecture_scope": "Documented exporter family support does not guarantee Tensor G5 NPU compilation or deployment."
+  },
+  "blockers": [
+    "checkpoint_not_supplied",
+    "google_tensor_compilation_requires_external_Linux_x86_64_host",
+    "exporter_or_npu_sdk_python_package_missing",
+    "Google_Tensor_beta_compiler_archive_missing_or_unverified",
+    "Google_Tensor_SDK_wrapper_package_missing",
+    "installed_compiler_CLI_and_Tensor_G5_support_not_validated",
+    "source_weights_not_verified_against_pinned_revision"
+  ]
+}

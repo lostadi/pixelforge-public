@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "test": "first next-token logits after the fixed 14-token Hi chat prompt",
+  "reference": "cpu-chat-Hi-golden.json",
+  "vocabulary_size": 130560,
+  "npu_and_cpu_arrays_finite": true,
+  "maximum_absolute_difference": 1.5981950759887695,
+  "mean_absolute_difference": 0.2725259645577549,
+  "relative_l2_difference": 0.12651997323400396,
+  "cpu_greedy_ids": [
+    19301,
+    33,
+    354,
+    1017
+  ],
+  "npu_greedy_ids": [
+    19301,
+    33,
+    354,
+    1017,
+    280,
+    44524,
+    7739,
+    66
+  ],
+  "matching_greedy_prefix_tokens": 4,
+  "cpu_output": "Hi, I am",
+  "npu_output": "Hi, I am a MiniCPM",
+  "first_token_argmax_matches": true,
+  "npu_top20": [
+    {
+      "id": 19301,
+      "text": "Hi",
+      "logit": 26.71497344970703
+    },
+    {
+      "id": 28633,
+      "text": "Hey",
+      "logit": 19.60284996032715
+    },
+    {
+      "id": 36417,
+      "text": "Hello",
+      "logit": 19.34446907043457
+    },
+    {
+      "id": 7466,
+      "text": "hi",
+      "logit": 17.450407028198242
+    },
+    {
+      "id": 34508,
+      "text": " Hi",
+      "logit": 16.18598175048828
+    },
+    {
+      "id": 20907,
+      "text": "HI",
+      "logit": 15.799105644226074
+    },
+    {
+      "id": 3975,
+      "text": "How",
+      "logit": 14.942936897277832
+    },
+    {
+      "id": 37463,
+      "text": " hi",
+      "logit": 14.296819686889648
+    },
+    {
+      "id": 122895,
+      "text": "Hmm",
+      "logit": 14.274831771850586
+    },
+    {
+      "id": 21927,
+      "text": "High",
+      "logit": 13.9979248046875
+    },
+    {
+      "id": 61,
+      "text": "H",
+      "logit": 13.932151794433594
+    },
+    {
+      "id": 101707,
+      "text": "嗨",
+      "logit": 13.854920387268066
+    },
+    {
+      "id": 17344,
+      "text": "Ha",
+      "logit": 13.78797721862793
+    },
+    {
+      "id": 62,
+      "text": "I",
+      "logit": 13.711127281188965
+    },
+    {
+      "id": 37632,
+      "text": " Hello",
+      "logit": 13.306046485900879
+    },
+    {
+      "id": 75828,
+      "text": "你好",
+      "logit": 13.191266059875488
+    },
+    {
+      "id": 3428,
+      "text": "There",
+      "logit": 13.085262298583984
+    },
+    {
+      "id": 50018,
+      "text": "Sure",
+      "logit": 12.998116493225098
+    },
+    {
+      "id": 53639,
+      "text": "Always",
+      "logit": 12.995803833007812
+    },
+    {
+      "id": 60647,
+      "text": "Ready",
+      "logit": 12.758085250854492
+    }
+  ],
+  "reference_logit_array_sha256": "95992f3de8e4af1b2b6cdf46f712e657e57804a648ad8c3e5eaf7f1b11c5e3d1",
+  "npu_logit_array_sha256": "91190e59d6ab323f4e4e99b83fea1927e2d3e1bbfdc36ecd42973dddd830aab5",
+  "array_publication": "The raw arrays are retained locally; these public summaries contain no weights or activation arrays.",
+  "interpretation": "This short greedy prefix agrees, while the logits differ materially. It does not establish equivalent quality, perplexity, long-context behavior, or general task accuracy.",
+  "precision_boundary": "The source GGUF uses Q8_0 blocks of 32 elements. The NPU graphs re-quantize each output row to INT8 and use hybrid floating-point activation computation plus input scaling. The CPU reference uses the original dequantized GGUF weights."
+}

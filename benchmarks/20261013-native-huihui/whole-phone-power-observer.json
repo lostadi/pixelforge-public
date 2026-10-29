@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "test_date_utc": "2026-10-13",
+  "device": "Pixel 10 Pro / Tensor G5",
+  "measurement": "Whole-phone net battery-discharge estimate during observation of the final published CLI launch.",
+  "read_only_observer": true,
+  "requested_sample_interval_seconds": 5,
+  "total_samples": 88,
+  "battery_status_all_samples": "Discharging",
+  "usb_offline_all_samples": true,
+  "wireless_supply_offline_all_samples": true,
+  "units": {
+    "current": "microamperes (µA)",
+    "voltage": "microvolts (µV)",
+    "computed_power": "watts (W)",
+    "unit_source": "https://docs.kernel.org/power/power_supply_class.html#units"
+  },
+  "conversion": "power_W = -current_µA * voltage_µV / 10^12; all observed discharge currents were negative.",
+  "current_voltage_conversion_verified_for_all_samples": true,
+  "aggregation": "Arithmetic sample means, medians and extrema of the instantaneous current-times-voltage estimates; no energy integration or idle subtraction.",
+  "during_observed_cli_worker": {
+    "sample_count": 62,
+    "first_to_last_sample_seconds": 310.20569041900035,
+    "mean_w": 3.3132985727540807,
+    "median_w": 3.1486754287305,
+    "minimum_w": 1.260228089024,
+    "maximum_w": 10.730123059375
+  },
+  "before_observed_cli_worker": {
+    "sample_count": 22,
+    "first_to_last_sample_seconds": 106.77697273800004,
+    "mean_w": 2.929359842877409,
+    "median_w": 2.9414870690040003,
+    "minimum_w": 0.576892950625,
+    "maximum_w": 5.096475098711,
+    "interpretation": "Other work was present. This is not a controlled idle baseline."
+  },
+  "after_observed_cli_worker": {
+    "sample_count": 4,
+    "first_to_last_sample_seconds": 15.248844335000285,
+    "mean_w": 3.19153766339375,
+    "median_w": 1.829652412012,
+    "minimum_w": 1.198117592793,
+    "maximum_w": 7.908728236758
+  },
+  "window_classification": "The raw observer marked whether the CLI worker was running. Only these phase labels determine windows; process identities are excluded.",
+  "related_cli_evidence": "final-published-cli.json",
+  "isolated_npu_power_w": null,
+  "incremental_inference_power_w": null,
+  "limitations": "Includes host CPU, compiler, display, radios, background activity and accelerator. The pre-worker window includes other work; differences between windows cannot establish incremental inference or NPU-only power. These are single-run sampled phone power estimates, not calibrated isolated rail or sustained-generation measurements.",
+  "raw_private_observer_sha256": "db9194dac919fb18a92369b7b0f49add2700f8f59c835ecfe7c0b703fc9c8938",
+  "publication_scope": "Aggregate numeric power statistics only. No samples, private paths, process IDs, weights or activations are published."
+}

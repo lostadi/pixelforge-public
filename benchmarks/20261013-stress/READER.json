@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "seed": 2026101401,
+  "scope": "Synthetic CPU parsing/dequantization only; no inference or NPU/vendor calls",
+  "created_utc": "2026-10-13T22:00:47.973732+00:00",
+  "seconds": 1.1585518240026431,
+  "parser_cases": 1500,
+  "parser_outcomes": {
+    "accepted_safe": 310,
+    "valid_control_accept": 294,
+    "rejected": 1190,
+    "mutation_reject": 33,
+    "expected_reject": 1157,
+    "mutation_accept_safe": 16
+  },
+  "parser_categories": {
+    "valid_geometry": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "valid_metadata": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "valid_skipped_tokens": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "valid_empty": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "unknown_type": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "unknown_type_huge_geometry": {
+      "cases": 49,
+      "accepted_safe": 49
+    },
+    "random_bitflip": {
+      "cases": 49,
+      "rejected": 33,
+      "accepted_safe": 16
+    },
+    "bad_magic": {
+      "cases": 49,
+      "rejected": 49
+    },
+    "bad_version": {
+      "cases": 49,
+      "rejected": 49
+    },
+    "tensor_count_huge": {
+      "cases": 49,
+      "rejected": 49
+    },
+    "metadata_count_huge": {
+      "cases": 49,
+      "rejected": 49
+    },
+    "bad_alignment": {
+      "cases": 49,
+      "rejected": 49
+    },
+    "alignment_wrong_type": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "unaligned_offset": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "offset_outside": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "zero_dimension": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "huge_dimension": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "bad_ndim": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "bad_quantized_row": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "duplicate_metadata": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "duplicate_tensor_name": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "duplicate_tensor_offset": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "overlapping_tensor_extent": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "unknown_metadata_kind": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "nested_array": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "unknown_array_kind": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "huge_array_count": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "huge_skipped_array_count": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "huge_string_length": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "invalid_utf8": {
+      "cases": 48,
+      "rejected": 48
+    },
+    "truncated": {
+      "cases": 48,
+      "rejected": 48
+    }
+  },
+  "decode_cases": 700,
+  "formats": {
+    "F32": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "F16": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q4_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q4_1": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q5_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q5_1": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q8_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q8_1": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-pinned-ggml-C-layout"
+    },
+    "Q2_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q3_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q4_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q5_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q6_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q8_K": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-pinned-ggml-C-layout"
+    },
+    "IQ2_XXS": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ2_XS": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ3_XXS": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ1_S": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ4_NL": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ3_S": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ2_S": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "IQ4_XS": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "I8": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-ggml-storage-ABI"
+    },
+    "I16": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-ggml-storage-ABI"
+    },
+    "I32": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-ggml-storage-ABI"
+    },
+    "I64": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-ggml-storage-ABI"
+    },
+    "F64": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-ggml-storage-ABI"
+    },
+    "IQ1_M": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "BF16": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "TQ1_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "TQ2_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "MXFP4": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "NVFP4": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "pinned-gguf-py"
+    },
+    "Q1_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-pinned-ggml-C-layout"
+    },
+    "Q2_0": {
+      "cases": 20,
+      "passed": 20,
+      "reference": "scalar-pinned-ggml-C-layout"
+    }
+  },
+  "decode_reference_cases": {
+    "pinned-gguf-py": 520,
+    "scalar-pinned-ggml-C-layout": 80,
+    "scalar-ggml-storage-ABI": 100
+  },
+  "decode_comparisons_per_case": 3,
+  "random_block_cases_with_nonfinite_reference": 11,
+  "nonfinite_note": "Arbitrary bitfields can encode nonfinite values; equality includes matching NaNs, not model suitability.",
+  "error_count": 0,
+  "errors": [],
+  "max_fixture_bytes": 14500,
+  "peak_rss_kib": 40204,
+  "bounds": {
+    "address_space_bytes": 536870912,
+    "cpu_soft_seconds": 30,
+    "cpu_hard_seconds": 35,
+    "single_file_cap_bytes": 16777216,
+    "decode_elements_cap": 65536,
+    "wall_timeout_seconds": 45,
+    "temporary_fixture_files": 1
+  },
+  "source_hashes": {
+    "gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4",
+    "gguf_quantizers.py": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28",
+    "gguf_vendor/constants.py": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+    "gguf_vendor/lazy.py": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+    "gguf_vendor/quants.py": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b"
+  },
+  "isolated_worker_exit_code": 0,
+  "driver_seconds": 1.3957471620087745
+}

@@ -1,0 +1,315 @@
+{
+  "schema": "pixelforge.baseline-analysis/v1",
+  "purpose": "Google-precompiled hardware baseline only; does not establish user-selected huihui-ai NPU inference",
+  "suite": {
+    "submitted_requests": 9,
+    "completed_requests": 9,
+    "correctness_passed": 2,
+    "correctness_expected": 3,
+    "measured_generation_requests": 5,
+    "warmup_excluded": true,
+    "client_elapsed_seconds": {
+      "sample_count": 5,
+      "median": 3.5518730499989033,
+      "p95": 3.942633138599194
+    },
+    "service_queue_seconds": {
+      "sample_count": 5,
+      "median": 0.01378178596496582,
+      "p95": 0.025753927230834958
+    },
+    "service_execution_seconds": {
+      "sample_count": 5,
+      "median": 3.5310544967651367,
+      "p95": 3.916756248474121
+    },
+    "effective_completion_tokens_per_second": {
+      "sample_count": 5,
+      "median": 13.367558074218389,
+      "p95": 16.150633887622174
+    },
+    "native_time_to_first_token_seconds": {
+      "sample_count": 5,
+      "median": 0.162956,
+      "p95": 0.32226999999999995
+    },
+    "functional_pass": false
+  },
+  "hardware_phases": {
+    "baseline": {
+      "samples": 19,
+      "rail_power": {
+        "available": true,
+        "abi_assumed": true,
+        "exact_cpm_revision_verified": false,
+        "unit_source": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+        "unit_interpretation": "ABI-compatible inference: energy_value counters assumed \u00b5Ws=\u00b5J, timestamps/durations assumed ms. Exact installed CPM revision is unverified.",
+        "before_timestamp_ms": 21308840,
+        "after_timestamp_ms": 21318696,
+        "elapsed_seconds": 9.856,
+        "tpu": {
+          "energy_j": 0.0,
+          "mean_power_w": 0.0,
+          "rails": [
+            {
+              "available": true,
+              "channel": "CH6",
+              "name": "S7M_VDD_TPU",
+              "before_duration_ms": 21308840,
+              "after_duration_ms": 21318696,
+              "before_energy_counter_raw": 211411748,
+              "after_energy_counter_raw": 211411748,
+              "energy_counter_delta_raw": 0,
+              "energy_j": 0.0,
+              "elapsed_seconds": 9.856,
+              "mean_power_w": 0.0
+            },
+            {
+              "available": true,
+              "channel": "CH8",
+              "name": "S9M_VDD_TPU_M",
+              "before_duration_ms": 21308840,
+              "after_duration_ms": 21318696,
+              "before_energy_counter_raw": 34324889,
+              "after_energy_counter_raw": 34324889,
+              "energy_counter_delta_raw": 0,
+              "energy_j": 0.0,
+              "elapsed_seconds": 9.856,
+              "mean_power_w": 0.0
+            }
+          ],
+          "interpretation": "Combined CH6 TPU and CH8 TPU_M rail energy; all TPU clients may contribute. Excludes host CPU and other rails."
+        },
+        "battery_rail": {
+          "available": true,
+          "channel": "CH13",
+          "name": "VSYS_PWR_VBATT",
+          "before_duration_ms": 21308840,
+          "after_duration_ms": 21318696,
+          "before_energy_counter_raw": 26178531410,
+          "after_energy_counter_raw": 26197986159,
+          "energy_counter_delta_raw": 19454749,
+          "energy_j": 19.454749,
+          "elapsed_seconds": 9.856,
+          "mean_power_w": 1.9738990462662338
+        }
+      },
+      "battery_net": {
+        "available": true,
+        "energy_j": 18.693767277184275,
+        "mean_net_discharge_w": 1.8980462351353868,
+        "observed_duration_seconds": 9.848952533999181,
+        "sample_count": 19,
+        "first_monotonic_seconds": 15499.968122475,
+        "last_monotonic_seconds": 15509.817075009,
+        "current_sign": -1,
+        "interpretation": "Whole-device sampled net battery discharge, not NPU energy. Integration covers first through last sampled point only; no energy/token estimate."
+      }
+    },
+    "inference": {
+      "samples": 38,
+      "rail_power": {
+        "available": true,
+        "abi_assumed": true,
+        "exact_cpm_revision_verified": false,
+        "unit_source": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+        "unit_interpretation": "ABI-compatible inference: energy_value counters assumed \u00b5Ws=\u00b5J, timestamps/durations assumed ms. Exact installed CPM revision is unverified.",
+        "before_timestamp_ms": 21319234,
+        "after_timestamp_ms": 21339342,
+        "elapsed_seconds": 20.108,
+        "tpu": {
+          "energy_j": 11.089424,
+          "mean_power_w": 0.5514931370598766,
+          "rails": [
+            {
+              "available": true,
+              "channel": "CH6",
+              "name": "S7M_VDD_TPU",
+              "before_duration_ms": 21319234,
+              "after_duration_ms": 21339342,
+              "before_energy_counter_raw": 211411748,
+              "after_energy_counter_raw": 220555663,
+              "energy_counter_delta_raw": 9143915,
+              "energy_j": 9.143915,
+              "elapsed_seconds": 20.108,
+              "mean_power_w": 0.4547401531728666
+            },
+            {
+              "available": true,
+              "channel": "CH8",
+              "name": "S9M_VDD_TPU_M",
+              "before_duration_ms": 21319234,
+              "after_duration_ms": 21339342,
+              "before_energy_counter_raw": 34324889,
+              "after_energy_counter_raw": 36270398,
+              "energy_counter_delta_raw": 1945509,
+              "energy_j": 1.945509,
+              "elapsed_seconds": 20.108,
+              "mean_power_w": 0.09675298388701015
+            }
+          ],
+          "interpretation": "Combined CH6 TPU and CH8 TPU_M rail energy; all TPU clients may contribute. Excludes host CPU and other rails."
+        },
+        "battery_rail": {
+          "available": true,
+          "channel": "CH13",
+          "name": "VSYS_PWR_VBATT",
+          "before_duration_ms": 21319234,
+          "after_duration_ms": 21339342,
+          "before_energy_counter_raw": 26199230807,
+          "after_energy_counter_raw": 26312309508,
+          "energy_counter_delta_raw": 113078701,
+          "energy_j": 113.078701,
+          "elapsed_seconds": 20.108,
+          "mean_power_w": 5.62356778396658
+        }
+      },
+      "battery_net": {
+        "available": true,
+        "energy_j": 107.32584986402392,
+        "mean_net_discharge_w": 5.337871250741923,
+        "observed_duration_seconds": 20.106489051999233,
+        "sample_count": 38,
+        "first_monotonic_seconds": 15510.360999045,
+        "last_monotonic_seconds": 15530.467488097,
+        "current_sign": -1,
+        "interpretation": "Whole-device sampled net battery discharge, not NPU energy. Integration covers first through last sampled point only; no energy/token estimate."
+      }
+    },
+    "after": {
+      "samples": 20,
+      "rail_power": {
+        "available": true,
+        "abi_assumed": true,
+        "exact_cpm_revision_verified": false,
+        "unit_source": "https://android.googlesource.com/kernel/google-modules/soc/gs/+/204078758737776959ecc85c527a00fd2cabb62f/drivers/iio/power/odpm-whi.c#1315",
+        "unit_interpretation": "ABI-compatible inference: energy_value counters assumed \u00b5Ws=\u00b5J, timestamps/durations assumed ms. Exact installed CPM revision is unverified.",
+        "before_timestamp_ms": 21339887,
+        "after_timestamp_ms": 21350227,
+        "elapsed_seconds": 10.34,
+        "tpu": {
+          "energy_j": 0.017722,
+          "mean_power_w": 0.0017139264990328822,
+          "rails": [
+            {
+              "available": true,
+              "channel": "CH6",
+              "name": "S7M_VDD_TPU",
+              "before_duration_ms": 21339887,
+              "after_duration_ms": 21350227,
+              "before_energy_counter_raw": 220815526,
+              "after_energy_counter_raw": 220815526,
+              "energy_counter_delta_raw": 0,
+              "energy_j": 0.0,
+              "elapsed_seconds": 10.34,
+              "mean_power_w": 0.0
+            },
+            {
+              "available": true,
+              "channel": "CH8",
+              "name": "S9M_VDD_TPU_M",
+              "before_duration_ms": 21339887,
+              "after_duration_ms": 21350227,
+              "before_energy_counter_raw": 36327131,
+              "after_energy_counter_raw": 36344853,
+              "energy_counter_delta_raw": 17722,
+              "energy_j": 0.017722,
+              "elapsed_seconds": 10.34,
+              "mean_power_w": 0.0017139264990328822
+            }
+          ],
+          "interpretation": "Combined CH6 TPU and CH8 TPU_M rail energy; all TPU clients may contribute. Excludes host CPU and other rails."
+        },
+        "battery_rail": {
+          "available": true,
+          "channel": "CH13",
+          "name": "VSYS_PWR_VBATT",
+          "before_duration_ms": 21339887,
+          "after_duration_ms": 21350227,
+          "before_energy_counter_raw": 26315928858,
+          "after_energy_counter_raw": 26352034017,
+          "energy_counter_delta_raw": 36105159,
+          "energy_j": 36.105159,
+          "elapsed_seconds": 10.34,
+          "mean_power_w": 3.4917948742746616
+        }
+      },
+      "battery_net": {
+        "available": true,
+        "energy_j": 35.735108079158564,
+        "mean_net_discharge_w": 3.4559491962500113,
+        "observed_duration_seconds": 10.340171701000145,
+        "sample_count": 20,
+        "first_monotonic_seconds": 15531.004999113,
+        "last_monotonic_seconds": 15541.345170814,
+        "current_sign": -1,
+        "interpretation": "Whole-device sampled net battery discharge, not NPU energy. Integration covers first through last sampled point only; no energy/token estimate."
+      }
+    }
+  },
+  "native_decode_tokens_per_second_median": 13.927,
+  "mem_available_gib_range": [
+    1.7768821716308594,
+    2.128650665283203
+  ],
+  "inference_count_raw_before": "0 0 2766",
+  "inference_count_raw_after": "0 0 3040",
+  "benchmark_script_sha256_as_run": "8fcbc9e4e279762133143e0cfe770fbeca8c3e73148dec4fdacd9202203890c3",
+  "analysis_script_sha256": "21a33b49c046550258283162b37f90ca34557813f165d88945f823749b25a7cd",
+  "attribution": "Stable engine PID11676;9successfulNPU-onlyresponses;noobservedservicequeueoverlap;devicewidecounters/rails may include otherTPUclients",
+  "limitations": [
+    "Small short warm benchmark; no model comparison/cold-load/sustained-thermal test",
+    "Strict JSON failed because reply included Markdown fences; extracted values were correct",
+    "Generation repetitions check completion/timing, not factual quality; telephone response incorrectly describes radio waves as sound waves",
+    "Wholedevice power varied after workload; baseline subtraction is not a controlled causal estimate",
+    "Rail units use format-compatibleGoogleODPMABI; exactCPMrevisionunverified; instantpowerunitsunused",
+    "Raw snapshot script predates thermal/native-attribution hardening; thermal temperatures for types otherthanbattery/soc_therm are unverified and must be ignored"
+  ],
+  "native_metadata_rechecks": [
+    {
+      "name": "warmup",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 5.499999999997174e-05
+    },
+    {
+      "name": "arithmetic",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 2.9000000000001247e-05
+    },
+    {
+      "name": "literal",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 4.999999999999449e-05
+    },
+    {
+      "name": "json_extraction",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 1.700000000015578e-05
+    },
+    {
+      "name": "generation_1",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 5.200000000016303e-05
+    },
+    {
+      "name": "generation_2",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 0.0023140000000001493
+    },
+    {
+      "name": "generation_3",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 5.500000000013827e-05
+    },
+    {
+      "name": "generation_4",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 6.700000000003925e-05
+    },
+    {
+      "name": "generation_5",
+      "tokens_match_usage": true,
+      "native_timing_difference_seconds": 1.3999999999736445e-05
+    }
+  ]
+}

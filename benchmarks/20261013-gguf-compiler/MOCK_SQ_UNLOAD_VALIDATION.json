@@ -1,0 +1,25 @@
+{
+  "hardware_api_calls": 0,
+  "source_includes_real_Model": true,
+  "tests": [
+    {
+      "case": "drop-failure",
+      "exit": 2,
+      "stdout": "ERR SQ_UNLOAD\n",
+      "stderr": "MOCK OWNER_VALID\n"
+    },
+    {
+      "case": "make-failure",
+      "exit": 2,
+      "stdout": "ERR SQ_UNLOAD\n",
+      "stderr": "MOCK MAKE_FAILED\nMOCK OWNER_VALID\n"
+    },
+    {
+      "case": "success",
+      "exit": 0,
+      "stdout": "MOCK RETURNED_SUCCESS\n",
+      "stderr": "MOCK OWNER_VALID\nMOCK DESTRUCTOR\nMOCK ATEXIT\n"
+    }
+  ],
+  "native_source_sha256": "067828e3b162bfa5d98baca575b080e0476ffbde7b6c674d19dfba080546c403"
+}

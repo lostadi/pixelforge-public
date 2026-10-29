@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<appfunctions>
+    <appfunction>
+        <id>org.ostadix.terminal.OstadixAppFunctionService#executeO</id>
+        <enabledByDefault>false</enabledByDefault>
+        <scope>global</scope>
+        <description>Execute one complete Ostadix .O source document through the primary o_execute MCP tool on the local configured host. Use this for user-requested Ostadix computations combining supported runtimes. Pass complete source text including its input values, and optionally a lower timeout. Nonempty bindings are unsupported. Ostadix owns parsing, planning and execution. Returns the actual structured MCP result with execution state, result and evidence. Report failures precisely; do not automatically repeat a program that may already have produced effects. Example source: bash^(printf 42)_bash .</description>
+        <parameters>
+            <dataTypeMetadata>
+                <id>unused</id>
+                <isNullable>false</isNullable>
+                <type>8</type>
+            </dataTypeMetadata>
+            <id>unused</id>
+            <isRequired>true</isRequired>
+            <name>source</name>
+            <description>One complete UTF-8 .O source document including its input values. Do not pass a path, shell wrapper, OIR, HGraph, or Ostadix command line.</description>
+        </parameters>
+        <parameters>
+            <dataTypeMetadata>
+                <id>unused</id>
+                <isNullable>true</isNullable>
+                <type>8</type>
+            </dataTypeMetadata>
+            <id>unused</id>
+            <isRequired>false</isRequired>
+            <name>bindingsJson</name>
+            <description>Omit this parameter or pass the empty JSON object {}. Nonempty bindings are unsupported and rejected before execution; include input values in source.</description>
+        </parameters>
+        <parameters>
+            <dataTypeMetadata>
+                <id>unused</id>
+                <isNullable>true</isNullable>
+                <type>6</type>
+            </dataTypeMetadata>
+            <id>unused</id>
+            <isRequired>false</isRequired>
+            <name>timeoutMs</name>
+            <description>Optional execution deadline in milliseconds from 1 through 900000, subject to the configured host limit. Default is 120000.</description>
+        </parameters>
+        <response>
+            <id>unused</id>
+            <valueType>
+                <id>unused</id>
+                <isNullable>false</isNullable>
+                <type>8</type>
+            </valueType>
+            <description>Structured JSON returned by the primary o_execute tool, including execution state and the actual result, evidence or failure details supplied by the runtime. Report failures precisely and do not automatically repeat execution.</description>
+        </response>
+        <schemaCategory>ostadix</schemaCategory>
+        <schemaName>executeO</schemaName>
+        <schemaVersion>1</schemaVersion>
+        <functionId>org.ostadix.terminal.OstadixAppFunctionService#executeO</functionId>
+    </appfunction>
+</appfunctions>

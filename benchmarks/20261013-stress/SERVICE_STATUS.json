@@ -1,0 +1,22 @@
+{
+  "before": {
+    "running": true,
+    "ready": true,
+    "active": 0,
+    "queued": 0,
+    "service_enabled": true,
+    "service_phase": "ready",
+    "restart_count": 0,
+    "service_error": null
+  },
+  "after": {
+    "running": true,
+    "ready": true,
+    "active": 0,
+    "queued": 0,
+    "service_enabled": true,
+    "service_phase": "ready",
+    "restart_count": 0,
+    "service_error": null
+  }
+}

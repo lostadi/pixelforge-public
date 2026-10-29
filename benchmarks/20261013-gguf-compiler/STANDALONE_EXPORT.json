@@ -1,0 +1,35 @@
+{
+  "format": "pixelforge.gguf-export.validation.v1",
+  "filename": "pixelforge-gguf-compiler.run",
+  "bytes": 54291517,
+  "sha256": "4e8a10d57a5a545afa183ce30a9117b603555490eab476b1bcb7bf6e451a94c2",
+  "archive_files": 64,
+  "verified_runtime_assets": 6,
+  "payload_extraction_verified": true,
+  "offline_setup_completed": true,
+  "model_weights_included": false,
+  "private_snapshot_included": false,
+  "fresh_extracted_run": {
+    "success": true,
+    "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+    "engine_sha256": "1dd8cc343678f4183a14e45ad33c26c43a8b7e5201d180b5080c8b9664882cb3",
+    "tokens": [
+      246,
+      246,
+      246,
+      246
+    ],
+    "saved_banks_loaded": 16,
+    "compilation_operations": 0,
+    "npu_invocations": 76,
+    "native_cleanup_ok": true,
+    "engine_cleanup_ok": true,
+    "broker_cleanup_ok": true,
+    "full_logits_equal_published_fixture": true,
+    "seconds": 1.2224966150024557
+  },
+  "source_sha256": {
+    "pack_gguf.py": "99e8a583abc17b1bce5498a4c404fe698b5189e6e0dfca426b8086e170d5a569",
+    "test_pack_gguf.py": "6c3fc29ed26c4dcc1a25acd48477057f8c8ebe9629d0293d808700795ed3f6f1"
+  }
+}

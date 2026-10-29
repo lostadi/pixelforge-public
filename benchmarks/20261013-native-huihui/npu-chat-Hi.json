@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "test_date_utc": "2026-10-13",
+  "status": "completed",
+  "device": "Pixel 10 Pro / Tensor G5",
+  "compile_host": "Ubuntu aarch64 on the same phone",
+  "source_model": {
+    "repository": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+    "revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+    "gguf_repository": "mradermacher/Huihui-MiniCPM5-2B-abliterated-GGUF",
+    "gguf_revision": "fc1e8318e85635d142e95a0f9977487717c40b58",
+    "gguf_filename": "Huihui-MiniCPM5-2B-abliterated.Q8_0.gguf",
+    "gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+    "gguf_bytes": 2679711680,
+    "parameters": 2516756480,
+    "architecture": "LlamaForCausalLM",
+    "decoder_layers": 42,
+    "hidden_size": 2048,
+    "intermediate_size": 6144,
+    "attention_heads": 16,
+    "key_value_heads": 2,
+    "vocabulary_size": 130560,
+    "rope_theta": 5000000.0,
+    "rms_norm_eps": 1e-06,
+    "custom_huihui_weights_used": true,
+    "google_precompiled_model_used": false
+  },
+  "backend": "native-google-tensor-npu-fc",
+  "sampling": "greedy",
+  "user_prompt": "Hi",
+  "prompt_token_ids": [
+    0,
+    130072,
+    8448,
+    220,
+    19301,
+    130073,
+    220,
+    130072,
+    130071,
+    220,
+    8,
+    130063,
+    9,
+    130063
+  ],
+  "rendered_prompt": "<s><|im_start|>user\nHi<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "generated_token_ids": [
+    19301,
+    33,
+    354,
+    1017,
+    280,
+    44524,
+    7739,
+    66
+  ],
+  "output": "Hi, I am a MiniCPM",
+  "cpu_operations": "embedding lookup, RMS normalization, RoPE, attention, KV cache, SiLU, tokenization, greedy sampling",
+  "cpu_dense_linear_fallback": false,
+  "activation_scaling": "max(maxabs(x),1); NPU(x/scale) * scale",
+  "timing": {
+    "cold_run_to_completion_seconds": 303.30277189799926,
+    "time_to_first_token_seconds": 280.72591214099975,
+    "graph_compile_seconds": 227.50772990699443,
+    "generation_loop_seconds": 303.218290023,
+    "cleanup_inclusive_seconds": 303.966986378,
+    "subsequent_token_gaps_seconds": [
+      3.6643100029996276,
+      3.328447345999848,
+      3.5057884400002877,
+      3.0084761230000368,
+      3.0251900279999973,
+      2.613895653000327,
+      3.3461331799999243
+    ],
+    "subsequent_token_gap_count": 7,
+    "subsequent_tokens_per_second": 0.3112184361996908,
+    "median_subsequent_token_gap_seconds": 3.328447345999848,
+    "accumulated_native_invoke_call_seconds": 69.71341863600992,
+    "invoke_call_scope": "Host-side native request duration including dispatch load, invocation, unload, and IPC; this is not an isolated NPU kernel timer.",
+    "scope": "Single cold run with lazy per-matrix compilation, sequential one-token prefill, and eight emitted tokens. The seven later-token gaps exclude lazy compilation but include host transformer operations and per-call runtime loading."
+  },
+  "coverage": {
+    "compiled_graphs": 326,
+    "decoder_dense_matrices": 294,
+    "lm_head_banks": 32,
+    "lm_head_rows": 130560,
+    "dense_weight_elements": 2249195520,
+    "native_npu_invocations": 6430,
+    "host_linear_calls": 6182,
+    "formula": "294 * (14 + 8 - 1) + 32 * 8 = 6430",
+    "decoder_calls_per_graph": 21,
+    "lm_head_calls_per_graph": 8,
+    "device_inference_count_before": [
+      0,
+      0,
+      1143
+    ],
+    "device_inference_count_after": [
+      0,
+      0,
+      7573
+    ],
+    "device_inference_count_delta": [
+      0,
+      0,
+      6430
+    ],
+    "all_recorded_npu_results_finite": true,
+    "firmware_crash_count_before": 0,
+    "firmware_crash_count_after": 0,
+    "watchdog_timeout_count_before": 0,
+    "watchdog_timeout_count_after": 0,
+    "scope": "Every Q, K, V, attention-output, FFN gate/up/down matrix in all 42 decoder layers and every vocabulary-head bank used the native NPU hook. Attention, normalization, activations, and cache updates remained on CPU. The inference counter is device-wide; other clients were present."
+  },
+  "compiled_code_cache_bytes": 4723694080,
+  "compiled_code_lifetime": "retained until SQ unload as required by upstream ABI",
+  "experimental_early_code_release": false,
+  "compiled_code_residency": "All 326 compiled code objects were retained in native process memory. Dispatch request resources were loaded and unloaded per invocation; this does not mean all 326 models occupied accelerator SRAM or active runtime resources at once.",
+  "events": [
+    {
+      "event": "start",
+      "elapsed_seconds": 1.5232407299999977,
+      "prompt_tokens": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 215.6088525339992,
+      "index": 1,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 218.32966472399949,
+      "index": 2,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 221.17018748600003,
+      "index": 3,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 224.434654572,
+      "index": 4,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 227.36764926199976,
+      "index": 5,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 230.81581363999976,
+      "index": 6,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 233.60897431899957,
+      "index": 7,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 236.78672439899947,
+      "index": 8,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 239.21939083399957,
+      "index": 9,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 242.54334315399956,
+      "index": 10,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 245.7964581819997,
+      "index": 11,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 248.9019886269998,
+      "index": 12,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 252.05302175499946,
+      "index": 13,
+      "total": 14
+    },
+    {
+      "event": "prefill_token",
+      "elapsed_seconds": 255.08577363199947,
+      "index": 14,
+      "total": 14
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 280.72591214099975,
+      "id": 19301,
+      "text": "Hi",
+      "output": "Hi"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 284.3902221439994,
+      "id": 33,
+      "text": ",",
+      "output": "Hi,"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 287.71866948999923,
+      "id": 354,
+      "text": " I",
+      "output": "Hi, I"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 291.2244579299995,
+      "id": 1017,
+      "text": " am",
+      "output": "Hi, I am"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 294.23293405299955,
+      "id": 280,
+      "text": " a",
+      "output": "Hi, I am a"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 297.25812408099955,
+      "id": 44524,
+      "text": " Mini",
+      "output": "Hi, I am a Mini"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 299.8720197339999,
+      "id": 7739,
+      "text": "CP",
+      "output": "Hi, I am a MiniCP"
+    },
+    {
+      "event": "token",
+      "elapsed_seconds": 303.2181529139998,
+      "id": 66,
+      "text": "M",
+      "output": "Hi, I am a MiniCPM"
+    },
+    {
+      "event": "complete",
+      "elapsed_seconds": 303.30277189799926,
+      "output": "Hi, I am a MiniCPM"
+    }
+  ],
+  "logits_comparison": "logits-comparison.json",
+  "graph_inventory": "npu-graph-manifest.json",
+  "hardware_evidence": "hardware-summary.json",
+  "raw_private_report_sha256": "87e761656d6fcd047582da7f0648ac3579dd597c414e342d13c9c58278338403",
+  "publication_scope": "Only this fixed public Hi prompt, model identities, graph hashes, numeric benchmark telemetry, and validation summaries are published. Private runtime paths, process identities, secret tokens, weights, and activation arrays are excluded.",
+  "capacity_conclusion": "This 2,516,756,480-parameter model completed this short workload. Maximum capacity, optimal model size, long-context memory use, sustained throughput, and general model-architecture coverage are not established."
+}

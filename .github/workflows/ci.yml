@@ -1,0 +1,97 @@
+name: Public source and offline tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-source-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  SOURCE_DATE_EPOCH: '0'
+
+jobs:
+  source:
+    name: Source boundary / Python ${{ matrix.python }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install source-test dependencies
+        run: python -m pip install -r chat/requirements-chat.txt
+      - name: Check the public repository boundary and checksum inventory
+        run: python scripts/check_public_release.py
+      - name: Test release packaging
+        run: python -m unittest discover -s tests -p test_public_release.py -v
+      - name: Test the root inference service without hardware
+        run: python -m unittest discover -s chat/tests -p test_service.py -v
+      - name: Test Ostadix compiler adapter fixtures
+        run: python -m unittest discover -s integrations/ostadix/tools -p 'test_*.py' -q
+      - name: Test GGUF compilation and artifact fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in test_gguf_loader.py test_compiled_model.py test_gguf_run.py test_setup_gguf.py test_npu_protocol.py test_runtime.py test_pack_gguf.py; do
+            python -m unittest discover -s tools/arm_npu -p "$suite" -q
+          done
+      - name: Test voice conversation, tool and terminal fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in test_pixelforge_chat.py test_conversation_protocol.py test_local_chat.py test_terminal_ui.py test_npu_runtime.py test_local_runtime.py; do
+            python -m unittest discover -s source/ostadix-voice/tests -p "$suite" -q
+          done
+      - name: Build and independently verify the public source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          python scripts/release_source.py --version "${{ github.sha }}" --output dist/pixelforge-source.tar.gz
+          python scripts/release_source.py --verify dist/pixelforge-source.tar.gz
+      - name: Verify the published checksum receipt
+        working-directory: dist
+        run: sha256sum --check pixelforge-source.tar.gz.sha256
+      - name: Upload reviewed source artifacts
+        if: matrix.python == '3.12'
+        uses: actions/upload-artifact@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          name: pixelforge-public-source
+          path: |
+            dist/pixelforge-source.tar.gz
+            dist/pixelforge-source.tar.gz.sha256
+            dist/pixelforge-source.tar.gz.json
+          if-no-files-found: error
+
+  native:
+    name: Pinned native decoder and simulated bridge protocol
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install native and fixture dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake g++ ripgrep
+          python -m pip install -r chat/requirements-chat.txt
+      - name: Build from the pinned upstream source revision
+        run: bash chat/build_native.sh --fetch
+      - name: Test actual tiny-model CPU decoding and the simulated NPU protocol
+        run: python -m unittest discover -s chat/tests -p test_native.py -v
+      - name: Test root ownership and cleanup with isolated synthetic fixtures
+        run: sudo "$(command -v python)" -m unittest discover -s chat/tests -p 'test_*.py' -v
+      - name: Check that build outputs cannot enter a source release
+        run: python scripts/check_public_release.py

@@ -1,0 +1,29 @@
+{
+  "backend": "pixelforge-npu-dense+ggml-cpu",
+  "architecture": "qwen35",
+  "model_path": "/srv/models/your-huihui.gguf",
+  "artifacts": "/srv/pixelforge/your-compiled-banks",
+  "state_dir": "/data/adb/ostadix-pixelforge",
+  "termux_prefix": "/data/data/com.termux/files/usr",
+  "native_helper_path": "/data/local/tmp/pixelforge-npu/npu_pipe_gguf",
+  "bank_rows": 4096,
+  "cache_mib": 256,
+  "selected_npu_weight_tensors": [
+    "blk.0.ffn_down.weight",
+    "blk.0.ffn_gate.weight",
+    "blk.0.ffn_up.weight"
+  ],
+  "model": {
+    "model_name": "Your Huihui model",
+    "provenance_repo": "huihui-ai/YOUR_MODEL",
+    "model_sha256": "GENERATED_BY_INSTALLER",
+    "context_per_worker": 8192,
+    "max_output_tokens": 512
+  },
+  "artifacts_manifest_sha256": "GENERATED_BY_INSTALLER",
+  "native_helper_sha256": "GENERATED_BY_INSTALLER",
+  "runtime_sha256": {
+    "service.py": "GENERATED_BY_INSTALLER",
+    "bin/pixelforge-chat": "GENERATED_BY_INSTALLER"
+  }
+}

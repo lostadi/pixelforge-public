@@ -1,0 +1,15 @@
+{
+  "package": "ai-edge-litert",
+  "version": "2.3.0",
+  "source": "https://pypi.org/project/ai-edge-litert/2.3.0/",
+  "wheel": "ai_edge_litert-2.3.0-cp312-cp312-manylinux_2_27_aarch64.whl",
+  "wheel_sha256": "9891611b23a87cc2ace60e4b5ee9a2ee6f0fb7f395f009470961ae6e6310e1b8",
+  "path_in_wheel": "ai_edge_litert/schema_py_generated.py",
+  "vendored_path": "schema_py_generated.py",
+  "vendored_sha256": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2",
+  "unchanged": true,
+  "license": "Apache-2.0",
+  "license_path": "LICENSE.litert",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "purpose": "Author TFLite FlatBuffers on ARM without installing an interpreter, TensorFlow, JAX, PyTorch or the x86-only converter wheel."
+}

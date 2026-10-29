@@ -1,0 +1,66 @@
+python^(
+"""Explicit converted-Huihui NPU access through OSTADIX's Python backend.
+
+Default: status only, without generation or changing the conversation engine.
+Pass PIXELFORGE_REQUEST_JSON in the o_execute child environment to generate:
+{"action":"generate","prompt":"The capital of France is","tokens":2}
+The fixed host launcher enforces its own model pins, limits and cleanup.
+This program returns the host's real JSON as an OValue; it embeds no runtime.
+"""
+import json
+import os
+import subprocess
+
+
+def _unique_fields(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate PixelForge JSON field")
+        result[key] = value
+    return result
+
+
+def _invalid_number(value):
+    raise ValueError("Invalid PixelForge JSON number: " + value)
+
+
+_raw = os.environ.get("PIXELFORGE_REQUEST_JSON", '{"action":"status"}')
+if len(_raw.encode("utf-8")) > 8192:
+    raise ValueError("PixelForge request exceeds 8192 bytes")
+_request = json.loads(_raw, object_pairs_hook=_unique_fields, parse_constant=_invalid_number)
+if not isinstance(_request, dict) or _request.get("action") not in ("status", "generate"):
+    raise ValueError("Use PixelForge action status or generate")
+_allowed = {"action"} if _request["action"] == "status" else {"action", "prompt", "tokens"}
+if set(_request) - _allowed:
+    raise ValueError("Unexpected PixelForge request fields")
+if _request["action"] == "generate":
+    _prompt, _tokens = _request.get("prompt"), _request.get("tokens", 1)
+    if not isinstance(_prompt, str) or not _prompt.strip() or len(_prompt) > 2000 or "\x00" in _prompt:
+        raise ValueError("PixelForge prompt must contain 1 to 2000 characters without NUL")
+    if type(_tokens) is not int or not 1 <= _tokens <= 2:
+        raise ValueError("PixelForge generation supports only 1 or 2 tokens")
+    _request["tokens"] = _tokens
+_payload = json.dumps(_request, ensure_ascii=False, allow_nan=False) + "\n"
+if len(_payload.encode("utf-8")) > 8192:
+    raise ValueError("PixelForge request exceeds 8192 bytes")
+
+_root_command = "/data/data/com.termux/files/usr/bin/python3 -I -S /data/adb/ostadix-pixelforge/run.py"
+_environment = dict(os.environ)
+_environment.pop("LD_PRELOAD", None)
+try:
+    _process = subprocess.run(["/system/bin/su", "-c", _root_command], input=_payload,
+                              capture_output=True, text=True, timeout=120, env=_environment)
+except subprocess.TimeoutExpired as _error:
+    raise RuntimeError("PixelForge delivery timed out; completion is unconfirmed and was not replayed") from _error
+if len(_process.stdout.encode("utf-8")) > 65536:
+    raise RuntimeError("PixelForge returned an oversized response; inspect its saved evidence")
+try:
+    _result = json.loads(_process.stdout, object_pairs_hook=_unique_fields, parse_constant=_invalid_number)
+except (ValueError, TypeError) as _error:
+    raise RuntimeError("PixelForge returned no valid JSON result; it was not replayed") from _error
+if not isinstance(_result, dict) or _result.get("ok") is not True or _process.returncode:
+    _detail = _result.get("error", "Host execution failed") if isinstance(_result, dict) else "Invalid host result"
+    raise RuntimeError("PixelForge: " + str(_detail)[:500])
+__oval_result__ = _result
+)_python

@@ -1,0 +1,20 @@
+{
+  "retrieved_utc": "2026-10-13T04:26:29.884503+00:00",
+  "license": "Apache-2.0",
+  "headers_unchanged": true,
+  "files": [
+    {
+      "path": "edgetpu_compiler_api.h",
+      "source": "https://github.com/google-ai-edge/LiteRT/blob/main/litert/vendors/google_tensor/edgetpu_compiler_api.h",
+      "sha256": "5c5f312e296fd6cdf78a9049e6f7dcdc9e951e11e064cfc35d15f04ded03234c"
+    },
+    {
+      "path": "sb_api.h",
+      "source": "https://github.com/google-ai-edge/LiteRT/blob/main/litert/vendors/google_tensor/dispatch/sb_api.h",
+      "sha256": "bed215440b3d8cb3fba4f6779807a9650d53459eba504cd610ab992667ee410f"
+    }
+  ],
+  "native_compiler_adapter_source": "https://github.com/google-ai-edge/LiteRT/blob/main/litert/vendors/google_tensor/adapter_odc.cc",
+  "binder_thread_pool_declaration_source": "https://android.googlesource.com/platform/frameworks/native/+/refs/heads/main/libs/binder/ndk/include_platform/android/binder_process.h",
+  "vendor_runtime_redistributed": false
+}

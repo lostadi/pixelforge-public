@@ -1,0 +1,15 @@
+{
+  "test": "two_actual_Huihui_layers_sequential_KV_cache_vs_HF_eager_causal_attention",
+  "token_ids": [
+    36417,
+    796
+  ],
+  "layers": 2,
+  "max_abs_difference": 3.814697265625e-06,
+  "mean_abs_difference": 2.123483682225924e-07,
+  "passed": true,
+  "batched_prefill_max_abs_difference": 7.748603820800781e-07,
+  "seconds": 8.193639485000404,
+  "scope": "Real quantized Huihui weights, two layers; not full-model equivalence",
+  "published_artifact_note": "Public fixed-prompt validation. Raw activation arrays remain local and are not published."
+}

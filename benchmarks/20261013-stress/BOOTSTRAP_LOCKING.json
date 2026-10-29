@@ -1,0 +1,59 @@
+{
+  "cases": 8,
+  "passed": 8,
+  "hardware_api_calls": 0,
+  "seconds": 0.37856296901009046,
+  "fixture_cleanup_ok": true,
+  "bootstrap_sha256": "e784efe7c53519cdbdc03322e3a7c5be0172916add6a85176c342a19878184a4",
+  "case_results": [
+    {
+      "case": 0,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 1,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 2,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 3,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 4,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 5,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 6,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    },
+    {
+      "case": 7,
+      "concurrent_creators": 6,
+      "actual_stub_extractions": 1,
+      "cached_tamper_rejected": true
+    }
+  ],
+  "scope": "Pinned dummy shell kit only; no O evaluator, Android helper, or NPU"
+}

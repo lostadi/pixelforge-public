@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "scope": "Final published CLI, bounded native smoke validation, and whole-phone power observer summary on 2026-10-13. Source-file hashes captured during the CLI launch identify the tested version; observer power is not isolated NPU or incremental inference power.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 12705,
+      "sha256": "6353de36e9f8ad0e60a7c34ca20a6ead564e74f54e54877798353d41f0e1051a"
+    },
+    {
+      "path": "final-published-cli.json",
+      "bytes": 6079,
+      "sha256": "ace579398f113e256900ccd422dc25e077aac91616dbab24be67db66561a1372"
+    },
+    {
+      "path": "final-native-smoke.json",
+      "bytes": 2953,
+      "sha256": "c6eaa05e2c531cb0806b3e35d942dfa39ea0470811e4238dc3d9af66ccd39e4c"
+    },
+    {
+      "path": "whole-phone-power-observer.json",
+      "bytes": 2713,
+      "sha256": "67c3017e00ee15cc4119a3a9e17726d968aa008dc5ca8a6c00b6b3d596576cce"
+    }
+  ]
+}

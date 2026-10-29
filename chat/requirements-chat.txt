@@ -1,0 +1,6 @@
+# Reference Python 3.12 deployment pins, with a Python 3.11 CI compatibility pin.
+numpy==2.3.5; python_version < "3.12"
+numpy==2.5.4; python_version >= "3.12"
+flatbuffers==25.12.19
+Jinja2==3.1.6
+MarkupSafe==3.0.4

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "scope": "Sanitized fixed-prompt NPU validation, generated from the completed local run on 2026-10-13. The separate CPU validation manifest remains unchanged.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 12705,
+      "sha256": "6353de36e9f8ad0e60a7c34ca20a6ead564e74f54e54877798353d41f0e1051a"
+    },
+    {
+      "path": "npu-chat-Hi.json",
+      "bytes": 8339,
+      "sha256": "978b621be353f9b6242e0fe7a455a870cc8be7736ca00e3dbec652307056840e"
+    },
+    {
+      "path": "npu-graph-manifest.json",
+      "bytes": 129687,
+      "sha256": "97093b0b67d9e313e2480d7f4e36ab3831af1bcfc58409584796abe917b141b4"
+    },
+    {
+      "path": "logits-comparison.json",
+      "bytes": 3209,
+      "sha256": "a57d67fa9cdc7e619998fd2bd6aaccfe6c7707d9ed63666425d792e060b21ee0"
+    },
+    {
+      "path": "hardware-summary.json",
+      "bytes": 375345,
+      "sha256": "bb624b03a70769659396df357148292092df3ab37f40236a80e06dd234fee81c"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.sqlite3*
+.env*
+.venv/
+runtime/*.json
+runtime/models/
+runtime/ostadix/
+runtime/npu/models/
+runtime/npu/evidence/
+runtime/npu/*.so
+runtime/npu/litert_npu_*
+android_voice/build/
+android_voice/local-signing.*
+android_voice/*verification.json
+android_voice/probe.json
+example-workspace/

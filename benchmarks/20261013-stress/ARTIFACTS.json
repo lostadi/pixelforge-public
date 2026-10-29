@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "seed": 741813,
+  "cases": 120,
+  "passed": 120,
+  "failed": 0,
+  "category_counts": {
+    "concurrent_initialization": 24,
+    "concurrent_publication": 24,
+    "tamper_rejection": 24,
+    "atomic_fault_retry": 16,
+    "resume_readonly_relocation": 16,
+    "source_identity": 8,
+    "native_cpu_stub": 8
+  },
+  "seconds": 9.770268470994779,
+  "hardware_api_calls": 0,
+  "native_transport": "Explicit NumPy-only fake helper, never Android/vendor helper",
+  "largest_case_fixture_bytes_after_operations": 1503386,
+  "fixture_cap_bytes": 16777216,
+  "all_fixtures_removed": true,
+  "limitations": [
+    "Injected publication exceptions do not simulate power loss or storage durability.",
+    "Synthetic DGC0 fixtures validate storage semantics; they are not executable NPU code.",
+    "Native-client numerical checks use CPU stubs; no hardware inference is claimed."
+  ],
+  "fixed_regression": {
+    "trigger": "First MODEL.json rename raises OSError",
+    "before": "Left .lock/graphs and refused clean initialization retry",
+    "after": "Commit initial identity under directory flock before creating auxiliaries",
+    "source_sha256": "bc36b25f4a891b1d87b3347e70fa3228894d8e36943f5f4621c43a37e978f18a"
+  },
+  "failures": []
+}

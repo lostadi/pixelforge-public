@@ -1,0 +1,159 @@
+{
+  "source": "huihui-ai/Huihui-MiniCPM5-2B-abliterated",
+  "original_revision": "aea962bb5558e659624eeefc8c1b9f418a3e6ffb",
+  "source_gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+  "user_prompt": "Hi",
+  "rendered_prompt": "<s><|im_start|>user\nHi<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "prompt_ids": [
+    0,
+    130072,
+    8448,
+    220,
+    19301,
+    130073,
+    220,
+    130072,
+    130071,
+    220,
+    8,
+    130063,
+    9,
+    130063
+  ],
+  "prefill_seconds": 19.60886415599998,
+  "top20": [
+    {
+      "id": 19301,
+      "text": "Hi",
+      "logit": 26.364683151245117
+    },
+    {
+      "id": 36417,
+      "text": "Hello",
+      "logit": 19.117250442504883
+    },
+    {
+      "id": 28633,
+      "text": "Hey",
+      "logit": 18.8922061920166
+    },
+    {
+      "id": 7466,
+      "text": "hi",
+      "logit": 17.01066780090332
+    },
+    {
+      "id": 34508,
+      "text": " Hi",
+      "logit": 16.003662109375
+    },
+    {
+      "id": 20907,
+      "text": "HI",
+      "logit": 15.5645112991333
+    },
+    {
+      "id": 3975,
+      "text": "How",
+      "logit": 15.219797134399414
+    },
+    {
+      "id": 122895,
+      "text": "Hmm",
+      "logit": 14.580296516418457
+    },
+    {
+      "id": 101707,
+      "text": "\u55e8",
+      "logit": 14.009270668029785
+    },
+    {
+      "id": 21927,
+      "text": "High",
+      "logit": 13.95251750946045
+    },
+    {
+      "id": 37463,
+      "text": " hi",
+      "logit": 13.873705863952637
+    },
+    {
+      "id": 17344,
+      "text": "Ha",
+      "logit": 13.766151428222656
+    },
+    {
+      "id": 61,
+      "text": "H",
+      "logit": 13.466933250427246
+    },
+    {
+      "id": 3428,
+      "text": "There",
+      "logit": 13.272191047668457
+    },
+    {
+      "id": 37632,
+      "text": " Hello",
+      "logit": 13.181406021118164
+    },
+    {
+      "id": 62,
+      "text": "I",
+      "logit": 13.022486686706543
+    },
+    {
+      "id": 53639,
+      "text": "Always",
+      "logit": 12.872626304626465
+    },
+    {
+      "id": 50018,
+      "text": "Sure",
+      "logit": 12.856462478637695
+    },
+    {
+      "id": 75828,
+      "text": "\u4f60\u597d",
+      "logit": 12.781304359436035
+    },
+    {
+      "id": 66920,
+      "text": "Done",
+      "logit": 12.767937660217285
+    }
+  ],
+  "logits_path": null,
+  "hidden_path": null,
+  "output_ids": [
+    19301,
+    33,
+    354,
+    1017
+  ],
+  "token_timings": [
+    {
+      "id": 19301,
+      "seconds": 19.609101863999967,
+      "text": "Hi"
+    },
+    {
+      "id": 33,
+      "seconds": 41.62308794899991,
+      "text": ","
+    },
+    {
+      "id": 354,
+      "seconds": 62.37409249600023,
+      "text": " I"
+    },
+    {
+      "id": 1017,
+      "seconds": 83.81040347599992,
+      "text": " am"
+    }
+  ],
+  "output": "Hi, I am",
+  "seconds": 83.81063290300017,
+  "published_artifact_note": "Public fixed-prompt validation. Raw activation arrays remain local and are not published."
+}

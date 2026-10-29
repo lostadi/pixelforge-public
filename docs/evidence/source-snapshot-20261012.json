@@ -1,0 +1,62 @@
+{
+  "reviewed_at": "2026-10-12T19:16:30Z",
+  "exported_source_files": 275,
+  "exported_source_bytes": 4200033,
+  "all_exported_hashes": "matched",
+  "total_tests_run": 183,
+  "tests_passed": 174,
+  "tests_skipped": 9,
+  "skip_reason": "daemon/supervisor integration requires an ordinary application UID; current shell is root",
+  "suites": [
+    {
+      "name": "npu adapter",
+      "tests_run": 17,
+      "skipped": 0
+    },
+    {
+      "name": "local runtime",
+      "tests_run": 27,
+      "skipped": 4
+    },
+    {
+      "name": "service supervisor",
+      "tests_run": 11,
+      "skipped": 5
+    },
+    {
+      "name": "local assistants",
+      "tests_run": 14,
+      "skipped": 0
+    },
+    {
+      "name": "optimizer suites",
+      "tests_run": 91,
+      "skipped": 0
+    },
+    {
+      "name": "native resident protocol with deterministic C API stub",
+      "tests_run": 6,
+      "skipped": 0
+    },
+    {
+      "name": "AppFunction host",
+      "tests_run": 6,
+      "skipped": 0
+    },
+    {
+      "name": "assistant permissions",
+      "tests_run": 7,
+      "skipped": 0
+    },
+    {
+      "name": "assistant service",
+      "tests_run": 4,
+      "skipped": 0
+    }
+  ],
+  "native_protocol": "real resident.c compiled against deterministic C API stub; no Google library or hardware inference",
+  "fresh_npu_or_nano_inference": "not performed",
+  "live_service_configuration": "unchanged",
+  "dispatch_version_swap": "not performed",
+  "android_installation": "not performed"
+}

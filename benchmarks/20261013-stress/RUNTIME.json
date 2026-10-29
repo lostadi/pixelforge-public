@@ -1,0 +1,371 @@
+{
+  "format": "pixelforge.runtime-stress.v1",
+  "success": true,
+  "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+  "method": "Serial fresh engine/broker/helper processes; existing AOT only; no service changes",
+  "limits": [
+    "Tiny synthetic model; no general model-capacity or maximum-throughput claim",
+    "Int8 NPU dense projections; remaining architecture operations use CPU",
+    "Whole-device battery samples and global TPU counters include other workloads"
+  ],
+  "hardware_before": {
+    "utc": "2026-10-13T21:57:38.000542+00:00",
+    "memory_kib": {
+      "MemTotal": 15949068,
+      "MemAvailable": 1569388,
+      "SwapTotal": 7974528,
+      "SwapFree": 525872
+    },
+    "battery": {
+      "status": "Discharging",
+      "current_ua": -1490625,
+      "voltage_uv": 3742031,
+      "temperature_c": 37.9,
+      "net_battery_discharge_w": 5.577964959375,
+      "interpretation": "Whole-device net battery discharge; not NPU power. Raw current sign is retained; charging samples are not discharge power."
+    },
+    "tpu": {
+      "inference_count": "0 48606 91374",
+      "firmware_crash_count": "0",
+      "watchdog_timeout_count": "0"
+    }
+  },
+  "runs": [
+    {
+      "index": 0,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 1,
+      "cache_mib": 0,
+      "owned_npu_invocations": 140,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.014799322320456793,
+        "rmse": 0.024544790585359934,
+        "cosine": 0.9998906187852665,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 25144,
+      "native_fd_count": 40,
+      "samples": 21,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 3.2173597939981846
+    },
+    {
+      "index": 1,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 2,
+      "cache_mib": 0,
+      "owned_npu_invocations": 140,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.014799322320456793,
+        "rmse": 0.024544790585359934,
+        "cosine": 0.9998906187852665,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 25352,
+      "native_fd_count": 39,
+      "samples": 13,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 2.2472817199886777
+    },
+    {
+      "index": 2,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 4,
+      "cache_mib": 0,
+      "owned_npu_invocations": 140,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.014799322320456793,
+        "rmse": 0.024544790585359934,
+        "cosine": 0.9998906187852665,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 25376,
+      "native_fd_count": 37,
+      "samples": 10,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 1.8001716940052575
+    },
+    {
+      "index": 3,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 2,
+      "cache_mib": 1,
+      "owned_npu_invocations": 140,
+      "graph_loads": 136,
+      "graph_compiles": 0,
+      "evictions": 135,
+      "resident_code_bytes_before_cleanup": 710016,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.014799322320456793,
+        "rmse": 0.024544790585359934,
+        "cosine": 0.9998906187852665,
+        "tokens_equal": true
+      },
+      "repeat_comparison": {
+        "values": 2072,
+        "relative_l2": 0.0,
+        "rmse": 0.0,
+        "cosine": 1.0000000000000009,
+        "tokens_equal": true
+      },
+      "native_rss_kib": 14388,
+      "native_fd_count": 39,
+      "samples": 10,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 1.6576089860027423
+    },
+    {
+      "index": 4,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 16,
+      "generated_tokens": 16,
+      "threads": 1,
+      "cache_mib": 4,
+      "owned_npu_invocations": 268,
+      "graph_loads": 256,
+      "graph_compiles": 0,
+      "evictions": 251,
+      "resident_code_bytes_before_cleanup": 3790848,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 4144,
+        "relative_l2": 0.01446637840392712,
+        "rmse": 0.02406913838175688,
+        "cosine": 0.9998953675824025,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 17568,
+      "native_fd_count": 40,
+      "samples": 41,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 4.974446617998183
+    },
+    {
+      "index": 5,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 16,
+      "generated_tokens": 16,
+      "threads": 2,
+      "cache_mib": 0,
+      "owned_npu_invocations": 268,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 4144,
+        "relative_l2": 0.01446637840392712,
+        "rmse": 0.02406913838175688,
+        "cosine": 0.9998953675824025,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 25372,
+      "native_fd_count": 39,
+      "samples": 23,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 3.1139454980002483
+    },
+    {
+      "index": 6,
+      "prompt_utf8_bytes": 33,
+      "prompt_tokens": 34,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 2,
+      "cache_mib": 0,
+      "owned_npu_invocations": 326,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.016903642089427538,
+        "rmse": 0.028453625470112643,
+        "cosine": 0.9998571299272893,
+        "tokens_equal": true
+      },
+      "repeat_comparison": null,
+      "native_rss_kib": 25280,
+      "native_fd_count": 39,
+      "samples": 20,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 2.7763521369925
+    },
+    {
+      "index": 7,
+      "prompt_utf8_bytes": 33,
+      "prompt_tokens": 34,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 2,
+      "cache_mib": 1,
+      "owned_npu_invocations": 326,
+      "graph_loads": 260,
+      "graph_compiles": 0,
+      "evictions": 259,
+      "resident_code_bytes_before_cleanup": 710016,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.016903642089427538,
+        "rmse": 0.028453625470112643,
+        "cosine": 0.9998571299272893,
+        "tokens_equal": true
+      },
+      "repeat_comparison": {
+        "values": 2072,
+        "relative_l2": 0.0,
+        "rmse": 0.0,
+        "cosine": 1.0000000000000007,
+        "tokens_equal": true
+      },
+      "native_rss_kib": 14460,
+      "native_fd_count": 39,
+      "samples": 42,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 5.116609794989927
+    },
+    {
+      "index": 8,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 8,
+      "generated_tokens": 8,
+      "threads": 2,
+      "cache_mib": 0,
+      "owned_npu_invocations": 140,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 2072,
+        "relative_l2": 0.014799322320456793,
+        "rmse": 0.024544790585359934,
+        "cosine": 0.9998906187852665,
+        "tokens_equal": true
+      },
+      "repeat_comparison": {
+        "values": 2072,
+        "relative_l2": 0.0,
+        "rmse": 0.0,
+        "cosine": 1.0000000000000009,
+        "tokens_equal": true
+      },
+      "native_rss_kib": 25372,
+      "native_fd_count": 37,
+      "samples": 8,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 1.502949689005618
+    },
+    {
+      "index": 9,
+      "prompt_utf8_bytes": 2,
+      "prompt_tokens": 3,
+      "requested_tokens": 16,
+      "generated_tokens": 16,
+      "threads": 2,
+      "cache_mib": 0,
+      "owned_npu_invocations": 268,
+      "graph_loads": 16,
+      "graph_compiles": 0,
+      "evictions": 0,
+      "resident_code_bytes_before_cleanup": 11927168,
+      "native_cleanup_ok": true,
+      "cpu_reference": {
+        "values": 4144,
+        "relative_l2": 0.01446637840392712,
+        "rmse": 0.02406913838175688,
+        "cosine": 0.9998953675824025,
+        "tokens_equal": true
+      },
+      "repeat_comparison": {
+        "values": 4144,
+        "relative_l2": 0.0,
+        "rmse": 0.0,
+        "cosine": 1.000000000000001,
+        "tokens_equal": true
+      },
+      "native_rss_kib": 25244,
+      "native_fd_count": 38,
+      "samples": 17,
+      "native_exit_independently_observed": true,
+      "wall_seconds": 2.420385574994725
+    }
+  ],
+  "cpu_reference_runs": 6,
+  "owned_npu_invocations": 2156,
+  "graph_loads": 764,
+  "graph_compiles": 0,
+  "evictions": 645,
+  "hardware_after": {
+    "utc": "2026-10-13T21:58:09.559285+00:00",
+    "memory_kib": {
+      "MemTotal": 15949068,
+      "MemAvailable": 1773696,
+      "SwapTotal": 7974528,
+      "SwapFree": 561200
+    },
+    "battery": {
+      "status": "Discharging",
+      "current_ua": -1060156,
+      "voltage_uv": 3746328,
+      "temperature_c": 38.1,
+      "net_battery_discharge_w": 3.971692107168,
+      "interpretation": "Whole-device net battery discharge; not NPU power. Raw current sign is retained; charging samples are not discharge power."
+    },
+    "tpu": {
+      "inference_count": "0 48606 93554",
+      "firmware_crash_count": "0",
+      "watchdog_timeout_count": "0"
+    }
+  },
+  "seconds": 31.594776169993565,
+  "driver_fault_deltas": {
+    "firmware_crash_count": 0,
+    "watchdog_timeout_count": 0
+  }
+}

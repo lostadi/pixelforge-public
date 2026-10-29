@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "artifact_sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+  "compiler_archive_sha256": "62fd651ff57242ca5f71a5ce861f90ac320cd536e09bf4d8b8e751485c83bc16",
+  "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+  "engine_sha256": "1dd8cc343678f4183a14e45ad33c26c43a8b7e5201d180b5080c8b9664882cb3",
+  "backend": "google-tensor-npu-dense+ggml-cpu",
+  "owned_npu_invocations": 76,
+  "graph_loads": 16,
+  "graph_compiles": 0,
+  "engine_cleanup_ok": true,
+  "broker_cleanup_ok": true,
+  "native_cleanup_ok": true,
+  "generated_tokens": [
+    246,
+    246,
+    246,
+    246
+  ],
+  "full_logit_values": 1036,
+  "published_four_token_npu_reference_bit_identical": true,
+  "seconds": 2.1023145070066676
+}

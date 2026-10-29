@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "test_date_utc": "2026-10-13",
+  "test": "Bounded final-native helper checks with real Huihui query weights and a negative-weight variant.",
+  "device": "Pixel 10 Pro / Tensor G5",
+  "native_sha256": "fea5924b2130a1bbdb2819e3b13181d60126c9dd2750c08ea3da55ef1cab2eb0",
+  "source_gguf_sha256": "ffc8f95be9e7fab3c8d8a50c6634828433b31ca80a803349f47dc3b35aaaeeab",
+  "source_tensor": "blk.0.attn_q.weight",
+  "source_row_range": [
+    0,
+    256
+  ],
+  "matrix_shape": [
+    256,
+    2048
+  ],
+  "cases": [
+    {
+      "name": "real_huihui_q",
+      "max_cpu_absolute_error": 0.00023508071899414062
+    },
+    {
+      "name": "negative_real_huihui_q",
+      "max_cpu_absolute_error": 0.00023508071899414062
+    },
+    {
+      "name": "real_huihui_q",
+      "max_cpu_absolute_error": 0.00023508071899414062
+    },
+    {
+      "name": "F/recompile negative",
+      "max_cpu_absolute_error": 0.00023508071899414062
+    }
+  ],
+  "maximum_recorded_cpu_absolute_error": 0.00023508071899414062,
+  "checks": {
+    "positive_negative_positive_reuse_passed": true,
+    "free_and_recompile_passed": true,
+    "truncated_header_eof_rejected": {
+      "status": "ERR HEADER_SIZE",
+      "exit_code": 2
+    },
+    "all_owned_helpers_closed": true
+  },
+  "coverage": {
+    "native_npu_invocations": 4,
+    "device_inference_count_delta": [
+      0,
+      0,
+      4
+    ],
+    "compile_events": 3,
+    "distinct_graphs": 2
+  },
+  "graphs": [
+    {
+      "name": "real_huihui_q",
+      "rows": 256,
+      "columns": 2048,
+      "graph_sha256": "d1ab01db9a4af846b671366567bcfad840c2eb9c648859594f0bc341e26c258d",
+      "graph_bytes": 528984,
+      "compiled_bytes": 1717056
+    },
+    {
+      "name": "negative_real_huihui_q",
+      "rows": 256,
+      "columns": 2048,
+      "graph_sha256": "1029e3b13cd87d8ab0205330d52a84ef8d9af85f833df4f0db27237f1b336d24",
+      "graph_bytes": 529016,
+      "compiled_bytes": 1717056
+    },
+    {
+      "name": "negative_real_huihui_q",
+      "rows": 256,
+      "columns": 2048,
+      "graph_sha256": "1029e3b13cd87d8ab0205330d52a84ef8d9af85f833df4f0db27237f1b336d24",
+      "graph_bytes": 529016,
+      "compiled_bytes": 1717056
+    }
+  ],
+  "quantization": "Q8_0 GGUF dequantized and requantized per output row to int8 constant FC weights",
+  "activation_scaling": "max(maxabs(x),1); NPU(x/scale) * scale",
+  "native_identity_recipe": "SHA256(canonical matrix key + full serialized graph SHA256)",
+  "scope": "Four FC invocations, signed-weight graph identity/reuse, explicit free and recompile, and a short-header EOF rejection. This is a bounded smoke test, not an independent full-model quality or sustained-performance evaluation.",
+  "raw_private_report_sha256": "748065d32b45ad4211b841741fa4c47143b613a93a9f12ae7689b0d66ea2e55f",
+  "publication_scope": "Only graph identities, error summaries and protocol outcomes. No input/output arrays, weights, process IDs or private paths."
+}

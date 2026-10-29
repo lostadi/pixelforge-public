@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "scope": "Sanitized packaged two-request NPU validation completed on 2026-10-13, with executed-artifact/source provenance appended after the run. Later guard/native-ID changes are outside this run.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 12705,
+      "sha256": "6353de36e9f8ad0e60a7c34ca20a6ead564e74f54e54877798353d41f0e1051a"
+    },
+    {
+      "path": "packaged-two-request-v2.json",
+      "bytes": 20136,
+      "sha256": "85ad508abaf931fdb957e6b4396376cc575c9d2d76bf662e2f50d2eb1a50d064"
+    }
+  ]
+}

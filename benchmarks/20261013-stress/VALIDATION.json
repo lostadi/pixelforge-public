@@ -1,0 +1,162 @@
+{
+  "schema": "pixelforge.stress-validation.v1",
+  "created_utc": "2026-10-13T22:22:38.776388+00:00",
+  "success": true,
+  "scope": "PixelForge packaging/compiler and Ostadix single-file integration; bounded synthetic CPU and real Tensor NPU checks",
+  "fixes": [
+    {
+      "file": "tools/arm_npu/compiled_model.py",
+      "problem": "Failed first manifest publication prevented clean initialization retry",
+      "behavior": "Publish identity under directory flock before creating auxiliary paths"
+    },
+    {
+      "repository": "lostadi/ostadix-BM",
+      "file": "tools/pixelforge-npu/bootstrap.py",
+      "problem": "Escaped argv exceeded per-environment-string limit; non-UTF8 filenames failed strict UTF8 request/result encoding",
+      "behavior": "Private bounded ASCII JSON request file; lossless ASCII JSON result through CBOR"
+    }
+  ],
+  "unit_suites": [
+    {
+      "suite": "snapshot_packaging",
+      "tests": 56,
+      "passed": 56,
+      "skipped": 0,
+      "seconds": 1.436,
+      "log_sha256": "639f2b8e19f3f5e2343eeffe145f1fd21086507ccd68239d5727437e4eae81af"
+    },
+    {
+      "suite": "gguf_compiler_and_stress_driver",
+      "tests": 85,
+      "passed": 85,
+      "skipped": 0,
+      "seconds": 16.297,
+      "log_sha256": "a2801896f3956b7596761ee864eb49754bcc9be6669aec84c6599382e8664dc8"
+    },
+    {
+      "suite": "huihui_planner",
+      "tests": 11,
+      "passed": 11,
+      "skipped": 0,
+      "seconds": 0.026,
+      "log_sha256": "dde191744138c8595daa986fa015d73fe41a62791024712e59b9ae476cfd72c0"
+    },
+    {
+      "suite": "ostadix_integration",
+      "tests": 59,
+      "passed": 59,
+      "skipped": 0,
+      "seconds": 10.506,
+      "log_sha256": "c41f16012fddb3333ca5be5fa4d4ea1c7e9e4dcd4bf9232767ea7470361d9bcd"
+    },
+    {
+      "suite": "ostadix_backend_and_structure",
+      "tests": 22,
+      "passed": 21,
+      "skipped": 1,
+      "seconds": 1.221,
+      "log_sha256": "0ad536471f7e400100ba1843e18b165426fad704e162fa453f734c438dbd46da"
+    },
+    {
+      "suite": "ostadix_python_parser",
+      "tests": 22,
+      "passed": 22,
+      "skipped": 0,
+      "log_sha256": "01dd9cb597147624b8773e96712294f8e6f154ba3ac9d30b80dcd10a7ded57a5"
+    }
+  ],
+  "unit_tests_total": 255,
+  "unit_tests_passed": 254,
+  "unit_tests_skipped": 1,
+  "native_protocol": {
+    "unique_seeded_cases": 120120,
+    "normal_and_ubsan_checks": 240240,
+    "mock_cleanup_cases": 56,
+    "undefined_sanitizer": "passed",
+    "address_sanitizer": "unavailable on host; zero-work probes recorded"
+  },
+  "reader_cases": 2200,
+  "artifact_cases": 120,
+  "launcher": {
+    "artifact_sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+    "artifact_bytes": 72513447,
+    "compiler_archive_sha256": "62fd651ff57242ca5f71a5ce861f90ac320cd536e09bf4d8b8e751485c83bc16",
+    "actual_readonly_or_expected_failure_calls": 18,
+    "exact_embedded_worker_fixture_tests": 8,
+    "bundled_python_tests": 83,
+    "bundled_native_fixture": "passed",
+    "parse_check": "passed",
+    "installer_or_extraction_actions": 0
+  },
+  "hardware": {
+    "fresh_npu_runs": 12,
+    "fresh_cpu_reference_runs": 6,
+    "ten_run_stress_calls": 2156,
+    "cache_fix_smoke_calls": 44,
+    "final_launcher_smoke_calls": 76,
+    "attributed_npu_invocations_total": 2276,
+    "stress_saved_graph_loads": 764,
+    "stress_evictions": 645,
+    "graph_compiles": 0,
+    "firmware_crash_delta": 0,
+    "watchdog_timeout_delta": 0,
+    "all_ten_observed_native_helpers_exited": true,
+    "stress_cpu_tokens_match": true,
+    "stress_generated_tokens": 104,
+    "stress_full_logit_values": 26936,
+    "stress_relative_l2_min": 0.01446637840392712,
+    "stress_relative_l2_max": 0.016903642089427538,
+    "original_service_ready_without_restart": true
+  },
+  "source_validation": {
+    "classified_language_files": 235,
+    "classification_failures": 0,
+    "parser_coverage_run_by_classification_command": false
+  },
+  "limits": [
+    "Tiny synthetic hardware fixture; no maximal capacity or optimal model-size measurement",
+    "NPU dense projections plus CPU architecture operations; no every-GGUF or full-graph NPU claim",
+    "Battery endpoint readings are whole-device power and do not establish NPU energy per token",
+    "Global TPU counters include unattributed calls",
+    "ASan unavailable; UBSan passed",
+    "Publication exceptions simulate software faults, not power-loss durability"
+  ],
+  "evidence": {
+    "ARTIFACTS.json": {
+      "bytes": 1254,
+      "sha256": "f6943ea18758a2ac81f798f005fef5ba53f0cc85458caf6d8dafc5e636368c06"
+    },
+    "BOOTSTRAP_LOCKING.json": {
+      "bytes": 1399,
+      "sha256": "9465efe287214c13f0f2b901c054035009e3516140e471686dbdb793b91618d9"
+    },
+    "CACHE_FIX_SMOKE.json": {
+      "bytes": 409,
+      "sha256": "8224a4625afba75fb294ee08663834001ac7165f33fa26d21e1b6a00af668244"
+    },
+    "INTEGRATED.json": {
+      "bytes": 12742,
+      "sha256": "022953caca68b8d48bf7f6dc67cec2e8f388bb689fba21d8f77a108811e456e3"
+    },
+    "INTEGRATED_NPU_SMOKE.json": {
+      "bytes": 784,
+      "sha256": "4b19c36e8fa085bfba84a9f484d6727e009ecb2d268db30885f4b67cdfdd5918"
+    },
+    "NATIVE.json": {
+      "bytes": 5350,
+      "sha256": "0b17462cdafdac93b3c3ba250a747aad988c15df63ef92dbd757e41cd8610971"
+    },
+    "READER.json": {
+      "bytes": 7600,
+      "sha256": "4f58296a6c20d374d6964441baeb22d888b6183ef5e3b60c21b40257652c16d8"
+    },
+    "RUNTIME.json": {
+      "bytes": 10709,
+      "sha256": "218f9004580c495754718c02a4cd8befbcafb48b02d7ef36f7ba55a3441293cf"
+    },
+    "SERVICE_STATUS.json": {
+      "bytes": 406,
+      "sha256": "d8a6ac60dd2a273dfcdf00c387e6e7262479a4e3e83effed907f687c9165e21e"
+    }
+  }
+}

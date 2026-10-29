@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#122322">
+  <title>Ostadix Voice</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><div><h1>Ostadix Voice</h1><p>Your project, on this device.</p></div><span id="state" role="status" aria-live="polite">Disconnected</span></header>
+    <div id="error" role="alert" hidden></div>
+    <section class="project" aria-label="Selected workspace">
+      <label for="sessions">Conversation</label><select id="sessions"></select>
+      <p id="workspace">Connecting to your saved project…</p>
+      <details><summary>Project & connection</summary>
+        <form id="new-session"><label for="project-path">New conversation in a workspace subfolder</label><div class="row"><input id="project-path" value="." autocomplete="off"><button>Start</button></div></form>
+        <p id="storage"></p>
+        <p>Codex uses your existing ChatGPT sign-in and plan allowance. No paid OpenAI voice API is enabled. Browser recognition may send audio to its speech provider.</p>
+        <p>Closing this page preserves files and history. Android can suspend or kill the server; reopen Termux and restart it when needed.</p>
+        <p id="pair-help" hidden>To pair this browser, run <code>python ~/ostadix-voice/server.py open</code> in Termux.</p>
+      </details>
+    </section>
+    <section class="voice" aria-label="Voice controls">
+      <label class="check"><input type="checkbox" id="auto-approve" disabled> Approve all actions</label>
+      <div class="voice-heading"><h2>Speak to your agent</h2><label class="check"><input type="checkbox" id="auto-speak" checked> Read answers aloud</label></div>
+      <div class="row"><button id="talk" class="primary" disabled>Tap to talk</button><button id="enable-audio">Test speaker</button></div>
+      <p id="voice-help">Tap to start, speak, then tap again to send. You can also use your keyboard’s microphone below.</p>
+      <label for="language">Speech language</label><input id="language" value="en-US" aria-label="Speech language code" autocomplete="off">
+      <div class="row"><button id="stop-speech">Stop speech</button><button id="cancel" class="danger" disabled>Cancel task</button></div>
+      <p class="small">Stop speech only silences audio. Cancel task asks the agent to stop; completed file changes remain.</p>
+    </section>
+    <section id="approval" hidden aria-label="Action approval"><h2>Awaiting your approval</h2><p id="approval-warning"></p><pre id="approval-content"></pre><div class="row"><button id="deny">Deny</button><button id="allow" class="danger">Approve once</button></div></section>
+    <section class="conversation" aria-label="Conversation transcript">
+      <div class="voice-heading"><h2>Conversation</h2><button id="replay" class="quiet">Hear latest</button></div>
+      <div id="transcript"><p class="empty">Ask the agent to inspect a file. Its answer and actual tool results will appear here.</p></div>
+    </section>
+    <form id="composer"><label for="prompt">Your request</label><textarea id="prompt" rows="3" placeholder="Read examples/hello.O and explain what it does."></textarea><button id="send" class="primary" disabled>Send request</button><p class="small">Drafts stay in this browser. Requests and results are saved on this device.</p></form>
+    <details class="local-check"><summary>Local file check · no model call</summary><form id="inspect"><label for="file-path">Relative file path</label><div class="row"><input id="file-path" value="examples/hello.O"><button>Inspect</button></div></form></details>
+  </main>
+</body>
+</html>

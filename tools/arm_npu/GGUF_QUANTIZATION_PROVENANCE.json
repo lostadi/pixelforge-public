@@ -1,0 +1,62 @@
+{
+  "upstream": "ggml-org/llama.cpp",
+  "revision": "254b177307b14d055bbe4c050c9c441a1e06d8a4",
+  "license": "MIT; LICENSE.ggml",
+  "adaptation": "Exact pinned gguf-py constants.py, lazy.py and quants.py bundled under gguf_vendor; a minimal package initializer avoids unrelated reader/writer/downloader imports. Common methods additionally retained in gguf_quantizers.py. Q8_1 and Q8_K decode pinned ggml-common.h layouts. No external gguf installation is required for the bundled IQ/TQ/MXFP4/NVFP4 implementations. Q1_0 and Q2_0 follow the same pinned ggml-quants.c scalar reference routines.",
+  "source_files": [
+    {
+      "path": "gguf-py/gguf/quants.py",
+      "bytes": 64946,
+      "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/254b177307b14d055bbe4c050c9c441a1e06d8a4/gguf-py/gguf/quants.py"
+    },
+    {
+      "path": "gguf-py/gguf/constants.py",
+      "bytes": 237584,
+      "sha256": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/254b177307b14d055bbe4c050c9c441a1e06d8a4/gguf-py/gguf/constants.py"
+    },
+    {
+      "path": "ggml/src/ggml-common.h",
+      "bytes": 135161,
+      "sha256": "0061131b615c5721fc88a78feeb22c1f8c450f1c2646a317d80796a653bf595c",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/254b177307b14d055bbe4c050c9c441a1e06d8a4/ggml/src/ggml-common.h"
+    },
+    {
+      "path": "ggml/src/ggml-quants.c",
+      "bytes": 226703,
+      "sha256": "7878680cc60493f98469a116e9b14af8b84789292ccf891c249230b2fa3d157f",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/254b177307b14d055bbe4c050c9c441a1e06d8a4/ggml/src/ggml-quants.c"
+    },
+    {
+      "path": "gguf-py/gguf/lazy.py",
+      "bytes": 12015,
+      "sha256": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/254b177307b14d055bbe4c050c9c441a1e06d8a4/gguf-py/gguf/lazy.py"
+    }
+  ],
+  "reference_source_pin_verified": true,
+  "reference_pin_verification": "All five recorded local upstream source files match the pinned upstream bytes.",
+  "vendored_files": [
+    {
+      "path": "gguf_vendor/constants.py",
+      "sha256": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517",
+      "bytes": 237584
+    },
+    {
+      "path": "gguf_vendor/lazy.py",
+      "sha256": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85",
+      "bytes": 12015
+    },
+    {
+      "path": "gguf_vendor/quants.py",
+      "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b",
+      "bytes": 64946
+    }
+  ],
+  "dequantizer_module": {
+    "path": "gguf_quantizers.py",
+    "bytes": 10400,
+    "sha256": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28"
+  }
+}

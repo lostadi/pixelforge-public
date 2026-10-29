@@ -1,0 +1,469 @@
+{
+  "format": "ostadix.pixelforge-npu.validation.v1",
+  "recorded_utc": "2026-10-13T22:26:05.492097+00:00",
+  "status": "passed_with_recorded_scope",
+  "scope": {
+    "execution": "O Python-backend orchestration of the pinned GGUF tool suite",
+    "external_runtime_o_core_lowering_claimed": false,
+    "universal_gguf_support_claimed": false,
+    "full_model_npu_execution_claimed": false,
+    "hardware_boundary": "Eligible dense weight matrix multiplies use the NPU; other architecture operations remain on the CPU.",
+    "prerequisites": [
+      "ostadix-BM O evaluator and Python backend",
+      "Ubuntu ARM64 Python 3.12",
+      "compatible rooted Android Tensor vendor runtime",
+      "user-supplied GGUF"
+    ],
+    "receipt_paths_note": "Paths identify local validation inputs. SHA-256 values and extracted results are recorded here; transient /tmp paths are not publication URLs."
+  },
+  "final_artifact": {
+    "filename": "pixelforge-npu.O",
+    "bytes": 72513447,
+    "sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+    "compiler_archive_sha256": "62fd651ff57242ca5f71a5ce861f90ac320cd536e09bf4d8b8e751485c83bc16",
+    "embedded_files": 64,
+    "execution": "ostadix-BM Python backend orchestration",
+    "assembly_metadata_receipt": {
+      "path_at_validation": "/root/pixelforge-npu-final.O.json",
+      "bytes": 563,
+      "sha256": "8e1acddd51c3fbe883d4b9b45f24415bbc81d2536625e856db3c0aaf8dd3224c"
+    },
+    "artifact_bytes_independently_hashed": true,
+    "tracked_copy": {
+      "path": "integrations/ostadix/pixelforge-npu.O",
+      "repository": "PixelForge",
+      "sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+      "bytes_independently_hashed": true
+    },
+    "source_hashes_captured_utc": "2026-10-13T22:23:36.795607+00:00",
+    "source_files": [
+      {
+        "path": "tools/pixelforge-npu/bootstrap.py",
+        "bytes": 12054,
+        "sha256": "25380990328c9b299e17630175243e6b50778967b4e16459f74097310f9bcb26"
+      },
+      {
+        "path": "tools/pixelforge-npu/controller.py",
+        "bytes": 37314,
+        "sha256": "286ed909d1850b111c08b82554a725a9bd568b5aff2b42a8cb3bba7637c0150c"
+      },
+      {
+        "path": "tools/pixelforge-npu/worker.py",
+        "bytes": 12018,
+        "sha256": "e8775c17d1a843b2a4cff8c61e8f33a5c5e6f8f681e16a1c15a72b35b9f8bb28"
+      },
+      {
+        "path": "tools/pixelforge-npu/build_integrated.py",
+        "bytes": 8816,
+        "sha256": "93ad2333874f693b4e64c9ad3889db64c8a696dfc1134bb054831954b3f82db7"
+      },
+      {
+        "path": "tools/pixelforge-npu/test_bootstrap.py",
+        "bytes": 18683,
+        "sha256": "d705db5a466450d575c77a6d0877a45494fa7b83f2272736062330ec6d1d1620"
+      },
+      {
+        "path": "tools/pixelforge-npu/test_controller.py",
+        "bytes": 27377,
+        "sha256": "c574bab87d7f27e4be4fbcad2dbad4fa8e39d801d897115c93536dad3353b24b"
+      },
+      {
+        "path": "tools/pixelforge-npu/test_worker.py",
+        "bytes": 16490,
+        "sha256": "1fb5a244b4f467888fad8af3577ca021409c95d91e37a47e20fef33374ae51f9"
+      },
+      {
+        "path": "tools/pixelforge-npu/USAGE.txt",
+        "bytes": 4055,
+        "sha256": "1a1adc4428d0f71931ee6e2d7b63847e1fcc65ce9431f48032caf061e3ec335a"
+      }
+    ],
+    "source_snapshot_note": "Snapshot captured after the completed final-source test receipt. The published .O hash, rather than earlier candidate hashes, identifies the artifact covered below.",
+    "runtime_and_test_source_snapshot_frozen_checked_utc": "2026-10-13T22:26:05.492097+00:00",
+    "subsequent_documentation_snapshot": [
+      {
+        "path": "tools/pixelforge-npu/USAGE.txt",
+        "bytes": 4642,
+        "sha256": "27c2a97d5ed36f3141b906d9c49b2c0a2948ff838fdf60cc64e6b07abf9d789e",
+        "captured_utc": "2026-10-13T22:26:05.492097+00:00",
+        "note": "Documentation changed after the artifact-era source snapshot; this current documentation hash is not claimed as the artifact-tested bytes."
+      }
+    ]
+  },
+  "final_source_tests": {
+    "status": "passed",
+    "scope": "BM bootstrap/controller/worker integration tests",
+    "tests_run": 59,
+    "duration_seconds": 10.506,
+    "reported_result": "OK",
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-bm-final-integration.log",
+      "bytes": 159,
+      "sha256": "c41f16012fddb3333ca5be5fa4d4ea1c7e9e4dcd4bf9232767ea7470361d9bcd"
+    },
+    "actual_o_artifact_execution_claimed": false,
+    "npu_inference_performed": false,
+    "note": "Source tests are distinct from the bundled artifact tests. The summary receipt does not preserve the exact launch command."
+  },
+  "final_artifact_checks": {
+    "parse": {
+      "status": "passed",
+      "exit_code": 0,
+      "exit_code_evidence": "Publication owner reported command completion; saved log contains ok.",
+      "receipt": {
+        "path_at_validation": "/tmp/pixelforge-publication-final-O-parse.log",
+        "bytes": 3,
+        "sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22"
+      }
+    },
+    "offline_verify": {
+      "status": "passed",
+      "exit_code": 0,
+      "result": {
+        "status": "offline-gguf-addon-verified",
+        "verified_files": 6,
+        "engine_revision": "254b177307b14d055bbe4c050c9c441a1e06d8a4"
+      },
+      "receipt": {
+        "path_at_validation": "/tmp/pixelforge-publication-final-O-verify.log",
+        "bytes": 712,
+        "sha256": "af3826cccc9cc8af87b436ac3c55d3ef88a895a86ab102a006b563b82c867d4e"
+      }
+    },
+    "bundled_python_tests": {
+      "status": "passed",
+      "tests_run": 83,
+      "duration_seconds": 15.734,
+      "exit_code": 0,
+      "cleanup_forced": false,
+      "hardware_used": false,
+      "receipt": {
+        "path_at_validation": "/tmp/pixelforge-publication-final-O-tests.log",
+        "bytes": 13010,
+        "sha256": "053018148309ec60e60c4ae50bc3b07a0852c8e5210cc56db04e98d48415b088"
+      }
+    },
+    "native_protocol_fixture": {
+      "status": "passed",
+      "exit_code": 0,
+      "build_exit_code": 0,
+      "run_exit_code": 0,
+      "build_seconds": 1.4799378919997253,
+      "run_seconds": 0.15568546899885405,
+      "hardware_used": false,
+      "receipt": {
+        "path_at_validation": "/tmp/pixelforge-publication-final-O-tests.log",
+        "bytes": 13010,
+        "sha256": "053018148309ec60e60c4ae50bc3b07a0852c8e5210cc56db04e98d48415b088"
+      }
+    },
+    "note": "Mock broker load/compile events in software-test logs are not physical NPU inference."
+  },
+  "final_artifact_stress": {
+    "status": "passed",
+    "tested_artifact_sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+    "scope": "Actual frozen .O read-only actions and exact embedded worker CPU process fixtures",
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-stress-integrated.json",
+      "bytes": 86138,
+      "sha256": "dfcfa19e732e960f419214f0acb3b2dfc80becec814940aa8b7271c93b07f867"
+    },
+    "durable_receipt": {
+      "repository": "PixelForge",
+      "path": "benchmarks/20261013-stress/INTEGRATED.json",
+      "bytes": 12742,
+      "sha256": "022953caca68b8d48bf7f6dc67cec2e8f388bb689fba21d8f77a108811e456e3"
+    },
+    "artifact_invocations": 18,
+    "artifact_invocations_passed": 18,
+    "invocation_checks": [
+      {
+        "name": "global-help",
+        "expected": "help",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "help",
+        "expected": "help",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "inspect",
+        "expected": "inspect",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "inspect-repeat",
+        "expected": "inspect",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "inspect-tensors",
+        "expected": "inspect",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "invalid-bank-rows",
+        "expected": "failure",
+        "success": true,
+        "returncode": 2,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "invalid-deadline",
+        "expected": "failure",
+        "success": true,
+        "returncode": 2,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "literal-help",
+        "expected": "help",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "long-unicode-help",
+        "expected": "help",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "long-unicode-help-repeat",
+        "expected": "help",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "missing-inspect",
+        "expected": "failure",
+        "success": true,
+        "returncode": 2,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "missing-plan",
+        "expected": "failure",
+        "success": true,
+        "returncode": 1,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "plan",
+        "expected": "plan",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "plan-banks",
+        "expected": "plan",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "plan-rows",
+        "expected": "plan",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "unknown-action",
+        "expected": "failure",
+        "success": true,
+        "returncode": 2,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "verify",
+        "expected": "verify",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      },
+      {
+        "name": "verify-repeat",
+        "expected": "verify",
+        "success": true,
+        "returncode": 0,
+        "outer_guard_cleanup_ok": true
+      }
+    ],
+    "embedded_guard_fixture_tests": 8,
+    "embedded_guard_fixture_failures": 0,
+    "embedded_guard_fixture_errors": 0,
+    "embedded_guard_fixture_unittest_seconds": 6.501,
+    "embedded_guard_fixture_harness_seconds": 6.754566307994537,
+    "embedded_guard_outer_cleanup_ok": true,
+    "embedded_worker_sha256": "e8775c17d1a843b2a4cff8c61e8f33a5c5e6f8f681e16a1c15a72b35b9f8bb28",
+    "fixture_tests_sha256": "1fb5a244b4f467888fad8af3577ca021409c95d91e37a47e20fef33374ae51f9",
+    "harness_sha256": "5459e3e348eed511164c2b640776e21b818a0d3dc39f869776c1e03182e10ddb",
+    "input_files_unchanged": true,
+    "existing_cache_same_directory": true,
+    "shell_injection_sentinel_absent": true,
+    "requested_npu_or_vendor_invocations": 0,
+    "requested_installer_or_extraction_actions": 0,
+    "requested_hardware_observations": 0,
+    "seconds": 20.1038076190016,
+    "bounds": {
+      "artifact_concurrency": 2,
+      "per_invocation_deadline_seconds": 45.0,
+      "owned_cleanup_grace_seconds": 15,
+      "captured_tail_bytes_per_stream": 65536,
+      "fixture_disk_cap_bytes": 8388608
+    },
+    "note": "Nonzero return codes are expected rejection cases and were checked accordingly. These .O action and embedded-worker checks use no NPU; hardware evidence is separate."
+  },
+  "historical_artifact_evidence": [
+    {
+      "status": "historical",
+      "artifact_sha256": "bf5bab8a42794b60f10f697b1371b05eddea21fb91f5a4134f0fef597cf06738",
+      "artifact_bytes": 72511047,
+      "receipt": {
+        "path_at_validation": "/root/pixelforge-npu.O.validation.json",
+        "bytes": 2600,
+        "sha256": "01df79bae510369353302333627923a10c398d12cf807180c8064f3bf266b637"
+      },
+      "npu_validation": {
+        "action": "read-only-npu-compare",
+        "exit_code": 0,
+        "output": "/tmp/pixelforge-integrated-O-npu-1791926840179448097",
+        "tokens_match": true,
+        "npu_invocations": 28,
+        "compiled_models": 0,
+        "loaded_models": 16,
+        "engine_cleanup_ok": true,
+        "broker_cleanup_ok": true,
+        "native_cleanup_ok": true
+      },
+      "launcher_cancellation": {
+        "reviewer": "Oversee and critique agent work",
+        "passed": true,
+        "exit_code": 130,
+        "seconds": 0.918,
+        "owned_processes_confirmed_exited": 8,
+        "actual_runner": "run_gguf.py CPU with synthetic GGUF and fake engine",
+        "engine_cleanup_ok": true,
+        "broker_cleanup_ok": true,
+        "literal_prompt_and_relative_paths_preserved": true
+      },
+      "applies_to_final_artifact": false,
+      "note": "Earlier artifact only. Historical source/bundled test counts are deliberately excluded from final validation counts."
+    }
+  ],
+  "related_runtime_stress": {
+    "status": "passed",
+    "scope": "Separate generic GGUF runtime driver; not a test of the final .O entrypoint.",
+    "receipt": {
+      "path_at_validation": "/tmp/pixelforge-stress-runtime/STRESS.json",
+      "bytes": 10709,
+      "sha256": "218f9004580c495754718c02a4cd8befbcafb48b02d7ef36f7ba55a3441293cf"
+    },
+    "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+    "npu_runs": 10,
+    "cpu_reference_runs": 6,
+    "matching_generated_npu_tokens": 104,
+    "owned_npu_invocations": 2156,
+    "graph_loads": 764,
+    "graph_compiles": 0,
+    "evictions": 645,
+    "native_exit_independently_observed_runs": 10,
+    "native_cleanup_ok_runs": 10,
+    "global_tpu_inference_delta": 2180,
+    "unattributed_global_tpu_delta": 24,
+    "driver_fault_deltas": {
+      "firmware_crash_count": 0,
+      "watchdog_timeout_count": 0
+    },
+    "maximum_relative_l2_against_cpu": 0.016903642089427538,
+    "minimum_cosine_against_cpu": 0.9998571299272893,
+    "seconds": 31.594776169993565,
+    "limitations": [
+      "Tiny synthetic model; no general model-capacity or maximum-throughput claim",
+      "Int8 NPU dense projections; remaining architecture operations use CPU",
+      "Whole-device battery samples and global TPU counters include other workloads",
+      "Helper RSS/FD values are samples, not whole-system memory or driver-capacity measurements.",
+      "Actual token and independently observed helper-exit results were checked; this historical driver did not enforce both conditions in its original pass criteria. Later driver fixes do not change which implementation produced this receipt."
+    ],
+    "durable_receipt": {
+      "repository": "PixelForge",
+      "path": "benchmarks/20261013-stress/RUNTIME.json",
+      "bytes": 10709,
+      "sha256": "218f9004580c495754718c02a4cd8befbcafb48b02d7ef36f7ba55a3441293cf"
+    }
+  },
+  "publication": {
+    "final_commit_sha": null,
+    "note": "Validation evidence frozen for publication. Git commit/push and release provenance are maintained by the publication owner; final_commit_sha remains null to avoid embedding the hash of a commit containing this ledger. PixelForge repository access is private.",
+    "validation_frozen": true
+  },
+  "final_artifact_npu_smoke": {
+    "status": "passed",
+    "durable_receipt": {
+      "repository": "PixelForge",
+      "path": "benchmarks/20261013-stress/INTEGRATED_NPU_SMOKE.json",
+      "bytes": 784,
+      "sha256": "4b19c36e8fa085bfba84a9f484d6727e009ecb2d268db30885f4b67cdfdd5918"
+    },
+    "evidence_level": "Saved summarized receipt; reviewer inspected evidence without rerunning hardware.",
+    "success": true,
+    "artifact_sha256": "7d1d458f424ceea9c9968c26b2d72df06349915dfb93fde4e5b2e13904bc3172",
+    "compiler_archive_sha256": "62fd651ff57242ca5f71a5ce861f90ac320cd536e09bf4d8b8e751485c83bc16",
+    "source_gguf_sha256": "6cc4e73144feabcd7f277b83c67a80f2d5d67ae3102c9d947f376ac6662cc3da",
+    "engine_sha256": "1dd8cc343678f4183a14e45ad33c26c43a8b7e5201d180b5080c8b9664882cb3",
+    "backend": "google-tensor-npu-dense+ggml-cpu",
+    "owned_npu_invocations": 76,
+    "graph_loads": 16,
+    "graph_compiles": 0,
+    "engine_cleanup_ok": true,
+    "broker_cleanup_ok": true,
+    "native_cleanup_ok": true,
+    "generated_tokens": [
+      246,
+      246,
+      246,
+      246
+    ],
+    "full_logit_values": 1036,
+    "published_four_token_npu_reference_bit_identical": true,
+    "seconds": 2.1023145070066676,
+    "note": "One four-token synthetic-model run. Its full logits match the published NPU reference; this is not a general model quality, capacity, performance, or full-model NPU claim."
+  },
+  "related_hardware_validation_ledger": {
+    "status": "passed",
+    "durable_receipt": {
+      "repository": "PixelForge",
+      "path": "benchmarks/20261013-stress/VALIDATION.json",
+      "bytes": 5666,
+      "sha256": "dc4d53759f67f5171e461e878f250c0e0fa254be68a2d3f7f8d747051c76656c"
+    },
+    "scope": "PixelForge packaging/compiler and Ostadix single-file integration; bounded synthetic CPU and real Tensor NPU checks",
+    "fresh_npu_runs": 12,
+    "fresh_cpu_reference_runs": 6,
+    "attributed_npu_invocations_total": 2276,
+    "limits": [
+      "Tiny synthetic hardware fixture; no maximal capacity or optimal model-size measurement",
+      "NPU dense projections plus CPU architecture operations; no every-GGUF or full-graph NPU claim",
+      "Battery endpoint readings are whole-device power and do not establish NPU energy per token",
+      "Global TPU counters include unattributed calls",
+      "ASan unavailable; UBSan passed",
+      "Publication exceptions simulate software faults, not power-loss durability"
+    ],
+    "note": "Separate PixelForge evidence ledger includes ten runtime stress runs, one cache-fix smoke, and one final-artifact smoke; counts must not be added again to those component receipts."
+  }
+}

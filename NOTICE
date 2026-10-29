@@ -1,0 +1,19 @@
+PixelForge
+Copyright 2026 Lee Daghlar Ostadi
+
+Project author and maintainer: Lee Daghlar Ostadi
+https://github.com/lostadi/pixelforge
+
+PixelForge's original compiler, runtime integration, tools and documentation
+are licensed under the GNU Lesser General Public License, version 2.1.
+See LICENSE. Existing upstream files keep their own copyright and license
+notices. Project authorship does not replace those upstream notices.
+
+The native architecture engine and tokenizer are supplied by llama.cpp/ggml
+(MIT). LiteRT headers and the Tensor integration retain their Apache-2.0
+notices. The Ostadix source retains its LGPL-2.1 license and original NOTICE.
+Model weights, Google vendor libraries, Android SDKs and installed system
+services are external dependencies. Their licenses and access conditions
+are separate from this source distribution. They are not bundled here.
+
+See THIRD_PARTY_NOTICES.md for source locations and dependency provenance.

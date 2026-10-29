@@ -1,0 +1,124 @@
+<h1>Ostadix Terminal for Android</h1>
+<p>Ostadix Terminal is a standalone ARM64 Android app with its own terminal UI,
+PTY-backed Android shell, embedded Ostadix evaluator, and device-aware CPU
+controls. It supports Android 9 (API 28) and newer and does not depend on the
+Termux app or Termux private storage.</p>
+<h2>Included in the first standalone build</h2>
+<ul>
+<li>Native PTY sessions backed by a bundled GNU Bash 5.3.15 runtime. A damaged
+Bash extraction falls back explicitly to <code>/system/bin/sh</code>.</li>
+<li>Standalone Bash is the default startup surface; O Console remains one tap away.</li>
+<li>An in-process JNI build of <code>ostadix-api</code> for <code>.O</code> evaluation.</li>
+<li>A real <code>O</code> command available in the app shell without Termux. Try
+<code>command -v O</code>, <code>O --help</code>, or <code>O --eval &#39;2&#39;</code>.</li>
+<li>A real <code>bash</code> command available without Termux. Try <code>command -v bash</code>,
+<code>bash --version</code>, or <code>bash -lc &#39;printf &quot;hello\n&quot;&#39;</code>.</li>
+<li>O Console and bundled offline example actions.</li>
+<li>ANSI/VT rendering, 256/true-color support, scrollback, software keyboard,
+hardware-key input, and an extra-key row.</li>
+<li>Long-press text selection with draggable endpoints, theme-visible
+highlighting, Copy, and Select all actions.</li>
+<li>Binder-safe clipboard export: small selections remain ordinary inline text;
+larger selections are encoded off the UI thread and exposed as a private,
+read-only content URI with a strict 600 MiB UTF-8 limit. Large pastes require
+a receiving app that accepts content URIs or text streams.</li>
+<li>Obsidian, Solarized, Graphite, and Light palettes; adjustable text size,
+cursor shape, scrollback, haptics, wake behavior, startup mode, and O-session
+CPU policy.</li>
+<li>Balanced and CPU-7-priority modes. Balanced is the safe default because it
+leaves the full Android cpuset available to Ostadix&#39;s graph workers. Prime
+CPU7 remains an explicit setting for known-serial work: the O Console pins
+only its evaluator worker, while the non-root app shell pins its PTY child so
+commands inherit CPU 7. Android&#39;s UI thread and explicit root shells remain
+unpinned. Changing the O Console policy restarts its runtime before the next
+evaluation, clearing persistent backend state so actors and graph workers
+cannot retain the previous affinity. An active shell keeps its launch policy
+until a new shell session is opened. Upgrading from the former CPU7-default
+settings schema performs a one-time safety migration to Balanced; users who
+intentionally want Prime can select it again afterward.</li>
+<li>A root shell action that is always explicit. The app never probes for root
+during startup, and a new KernelSU grant is required for this package.</li>
+<li>An explicit <strong>TERMUX</strong> action that uses KernelSU to enter the installed
+Termux prefix and home, then starts the native Termux zsh. It exposes all
+installed Termux packages plus user-local, Cargo, and Ostadix commands,
+including codex, without copying or repackaging them.</li>
+</ul>
+<h2>Deliberate boundary</h2>
+<p>Android gives every package a separate UID and private filesystem. Arbitrary
+Termux packages cannot be reused by the ordinary app-sandbox shell because they
+target Termux&#39;s hard-coded private prefix. That shell deliberately carries only
+a pinned Bash dependency closure;
+its executable, dependency names, SONAMEs, and RUNPATHs are normalized and
+validated for Android APK extraction. Hosted O backends still need their
+language runtimes; a future bundled userland and package repository remains a
+separate distribution project.</p>
+<p>The <code>O</code> and Bash executables and all Bash shared libraries remain in Android&#39;s
+package-manager-owned native library directory. The writable private home
+contains only <code>bin/O</code> and <code>bin/bash</code> symbolic links to read-only APK code. This
+satisfies Android&#39;s W^X rule for apps targeting Android 10 and newer; the app
+never copies or marks downloaded native code executable.</p>
+<p>The non-root Bash child receives a sanitized library path containing only the
+app&#39;s <code>nativeLibraryDir</code>, plus private <code>HOME</code>, <code>TMPDIR</code>, <code>TERMINFO</code>, and
+<code>INPUTRC</code> paths. The explicit <code>/system/bin/su</code> session instead starts in the
+root-owned, read-only <code>/system</code> directory with <code>HOME=/system</code>, <code>PWD=/system</code>, a
+system-only <code>PATH</code>, <code>USER=root</code>, <code>LOGNAME=root</code>, an explicitly empty <code>ENV</code>, and
+no preset temporary directory. It receives no app-private paths, Ostadix
+backend variables, Bash startup hooks, or native loader overrides. Empty <code>ENV</code>
+also prevents KernelSU from injecting its shell startup hook. The app invokes
+KernelSU as <code>su -p</code>, preserving this exact audited allowlist instead of letting
+<code>su</code> replace <code>HOME=/system</code> with the root passwd entry. Root remains opt-in and
+never automatically sources an app-writable Bash startup script.</p>
+<p>Typing <code>su</code> manually inside the non-root Bash session is a separate, explicitly
+unsafe path: KernelSU preserves that shell&#39;s environment, and the command does
+not use the ROOT action&#39;s large-or-multiline paste confirmation. Use the app&#39;s
+ROOT action when a hardened privileged session is required.</p>
+<p>The TERMUX action is the deliberate superset escape hatch. Android package
+isolation makes KernelSU necessary to traverse Termux&#39;s private data tree.
+It requests KernelSU&#39;s global mount namespace so Android&#39;s per-app filtered
+view cannot hide Termux, then enters the canonical package-data tree at
+/data/user/0/com.termux. After elevation, it restores the native prefix,
+command search path, certificates, Ostadix paths, and termux-exec preload, and
+then executes the installed zsh login shell. It has root authority and is
+intentionally separate from the hardened ROOT action.</p>
+<p>The app does not include a root daemon, change SELinux, write thermal or
+governor nodes, install boot scripts, or attempt root hiding. Root access is
+confined to a manually opened PTY.</p>
+<p>The APK carries the repository&#39;s LGPL-2.1 license and notice plus the complete
+Bash, Readline, libiconv, ncurses, and libandroid-support license texts under
+<code>assets/licenses/</code>. <code>Bundled-Bash-SOURCES.txt</code> records exact versions, input
+hashes, pinned Termux recipes and patches, upstream source hashes, and the
+Ostadix ELF transformations required to reproduce the bundled runtime.</p>
+<h2>Build on this Android/Termux machine</h2>
+<p>The local build uses the installed Java 21, <code>aapt2</code>, <code>d8</code>, <code>apksigner</code>, Android
+API 34 platform jar, Rust, Clang, and the pinned local Termux Bash 5.3.15
+runtime inputs—Gradle is not required. Input hashes are checked before use so a
+package upgrade cannot silently change the APK&#39;s licensed native payload.
+The default <code>portable</code> profile uses Rust&#39;s generic AArch64 target and
+<code>-march=armv8-a</code> for the PTY bridge, preserving the Android 9+ compatibility
+claim. Clang/LLD, fat LTO, and explicit 16 KiB ELF page alignment remain on in
+both profiles. If installed, <code>sccache</code> is used for Rust and <code>ccache</code> for the
+compiled PTY object; cache selection is printed at the start of the build.</p>
+<pre><code class="language-sh">cd &quot;$HOME/Ostadix-lang/apps/android-terminal&quot;
+./build.sh
+</code></pre>
+<p>For a device-local build tuned to this machine (and not intended for arbitrary
+ARM64 Android devices), select the explicit native profile:</p>
+<pre><code class="language-sh">OSTADIX_ANDROID_CPU_PROFILE=native ./build.sh
+</code></pre>
+<p>The signed debug APK is written to:</p>
+<pre><code class="language-text">build/outputs/apk/debug/OstadixTerminal-debug.apk
+</code></pre>
+<p>For third-party installer front ends that do not handle v3 signatures
+correctly, the build also writes a v2-signed compatibility APK:</p>
+<pre><code class="language-text">build/outputs/apk/debug/OstadixTerminal-universal.apk
+</code></pre>
+<p>The native profile uses distinct
+<code>OstadixTerminal-device-native-{debug,universal}.apk</code> filenames so it cannot be
+mistaken for the portable artifact.</p>
+<p>Install it from Android&#39;s package installer or with <code>adb install -r</code> from a
+connected development host. A release build should use a private release key
+instead of the Android debug key.</p>
+<p>The build-time Bash, CLI, PTY, and JNI smokes run under the Termux build UID.
+They are pre-install ABI checks, not proof of the standalone package&#39;s separate
+app sandbox. Before treating package-UID independence as device evidence,
+install the APK and exercise Bash, <code>O --eval 2</code>, and the O Console from the app.</p>

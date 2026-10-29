@@ -1,0 +1,2371 @@
+{
+  "boundary": "source-only; no model weights, compiled banks or private deployment state",
+  "files": [
+    {
+      "bytes": 255,
+      "path": ".gitattributes",
+      "sha256": "02b65e220609912de260a3ab22ba45e7d69d977ff3c55cccdc4f7aab025d8301"
+    },
+    {
+      "bytes": 4126,
+      "path": ".github/workflows/ci.yml",
+      "sha256": "06dde5d662631e6865e240efdb419ab1abd654994024a11811fa9066341d33aa"
+    },
+    {
+      "bytes": 163,
+      "path": ".gitignore",
+      "sha256": "f3680096a33b43c7585876f74c1801a9cbf456ee7c1785f09e46c016419dcb17"
+    },
+    {
+      "bytes": 7202,
+      "path": "ARM_NPU.md",
+      "sha256": "2871d7350acac7f07b0c2cd8dc093ddafff3f8448859b02853e50f5457f1c9e3"
+    },
+    {
+      "bytes": 166,
+      "path": "AUTHORS",
+      "sha256": "340cf6e87faed5d972b86e9e313b791a634d368e334d08eda8ce68055880bd4e"
+    },
+    {
+      "bytes": 8806,
+      "path": "BENCHMARKS.md",
+      "sha256": "cb14a58b59cc116dd94e98af9f9abdfeb6e5990eede873cf8a0cc84839b3c033"
+    },
+    {
+      "bytes": 4936,
+      "path": "CUSTOM_MODELS.md",
+      "sha256": "156ee5773d3259b4d0e29f03640c427344fc1bc691c3cffde74d4e73b2af214d"
+    },
+    {
+      "bytes": 2891,
+      "path": "INFERENCE_PATHS.md",
+      "sha256": "6dc0c6b1bcc6bd2484ebac6f663f0cceade80d3f77913870513cabb88f78e28e"
+    },
+    {
+      "bytes": 26530,
+      "path": "LICENSE",
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "bytes": 948,
+      "path": "NOTICE",
+      "sha256": "b5ea774f4b9f93ed64b69a8ac89e7a64ff310e5129c96078cd0fcc16c967ff16"
+    },
+    {
+      "bytes": 5677,
+      "path": "README.md",
+      "sha256": "ea4ddb38de84b2f55127034e90eb4bee638b71ca53318b84c2cccf66b1d0747e"
+    },
+    {
+      "bytes": 1735,
+      "path": "RELEASE_NOTES.md",
+      "sha256": "af1ddb71a666f87b793d20b74c28c69a23a35aba7e2e38a0db7fea115be65a37"
+    },
+    {
+      "bytes": 1647,
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "4369f5728b0081f70b8e70336ad20eac56eeec1b49e4e4708c5991a7bae6d894"
+    },
+    {
+      "bytes": 38292,
+      "path": "benchmark.py",
+      "sha256": "2a46a7963892dcfdc4d38863ce4ed4f3d9b219c4c7e87f13a1a386b8d8d14b48"
+    },
+    {
+      "bytes": 4465,
+      "path": "benchmarks/20261012T222832Z-google-baseline/README.md",
+      "sha256": "634ce957c0fe0a9771d03015f5073bfc9a92014cf211a16e68e8186a58c4672a"
+    },
+    {
+      "bytes": 12468,
+      "path": "benchmarks/20261012T222832Z-google-baseline/analysis.json",
+      "sha256": "e569d794d7408bd485eb42a422461c6086f8fe8d07ae4e6dd798c32331161e66"
+    },
+    {
+      "bytes": 1211,
+      "path": "benchmarks/20261012T222832Z-google-baseline/assistant-check.json",
+      "sha256": "e460bffc16f3d1075b8f71640125e83c2643a95c8fd2dbb875f01e5e2dd5a861"
+    },
+    {
+      "bytes": 11317,
+      "path": "benchmarks/20261012T222832Z-google-baseline/capacity.json",
+      "sha256": "6717ae0809bffa441921fffd7667dbd2cc24dbaa42da011861eaf281386beb54"
+    },
+    {
+      "bytes": 577,
+      "path": "benchmarks/20261012T222832Z-google-baseline/process-after.json",
+      "sha256": "b2efaeda349098853a7f76d08bfcc1c0185215d8df07db883306b515581551ed"
+    },
+    {
+      "bytes": 577,
+      "path": "benchmarks/20261012T222832Z-google-baseline/process-before.json",
+      "sha256": "b2efaeda349098853a7f76d08bfcc1c0185215d8df07db883306b515581551ed"
+    },
+    {
+      "bytes": 309107,
+      "path": "benchmarks/20261012T222832Z-google-baseline/requests.json",
+      "sha256": "db7f78d5aa811a0d7655561f561aa790af95184681340a1e61658751c4c867c1"
+    },
+    {
+      "bytes": 626,
+      "path": "benchmarks/20261013-gguf-compiler/MOCK_SQ_UNLOAD_VALIDATION.json",
+      "sha256": "62f8721cf66c61b80083ff98d210899840afcd173b23637058b8cab269cc2ecb"
+    },
+    {
+      "bytes": 9028,
+      "path": "benchmarks/20261013-gguf-compiler/README.md",
+      "sha256": "5a15ced8e8f0db129a244f680b3949ea3b7e7926f0b14c995820adf39f544ec2"
+    },
+    {
+      "bytes": 1178,
+      "path": "benchmarks/20261013-gguf-compiler/STANDALONE_EXPORT.json",
+      "sha256": "e203460a6c960ff19f875ac6ee539bea10bdee367468490a56ea579ced7d8cc3"
+    },
+    {
+      "bytes": 40948,
+      "path": "benchmarks/20261013-gguf-compiler/TINY_COMPILED_PACKAGE.json",
+      "sha256": "add5b75949d72401c032c2f4a270753a648ce6eeb98316e972cb35c095949ea0"
+    },
+    {
+      "bytes": 143576,
+      "path": "benchmarks/20261013-gguf-compiler/VALIDATION.json",
+      "sha256": "81852e6b6a41acbd2bf6b25294835f039e367271c4c02120e3defe5c04acfaf2"
+    },
+    {
+      "bytes": 45618,
+      "path": "benchmarks/20261013-gguf-compiler/huihui_lfm2_npu-matrices.json",
+      "sha256": "1b6616ccdeea9f8072fedcf04cb6dbc5f02d0fa52b450f1805c6c796b14ae3ae"
+    },
+    {
+      "bytes": 112511,
+      "path": "benchmarks/20261013-gguf-compiler/huihui_lfm2_npu_published-matrices.json",
+      "sha256": "466d4908f6328b11c4df1612413000c4ffd9cfb08c04df0b1fab88063bb10872"
+    },
+    {
+      "bytes": 4703,
+      "path": "benchmarks/20261013-gguf-compiler/tiny_npu_first-matrices.json",
+      "sha256": "85589d5a199bfd770c39beadb3c706ad638de6fba511fa4830a330c66aebdc84"
+    },
+    {
+      "bytes": 4703,
+      "path": "benchmarks/20261013-gguf-compiler/tiny_npu_published-matrices.json",
+      "sha256": "85589d5a199bfd770c39beadb3c706ad638de6fba511fa4830a330c66aebdc84"
+    },
+    {
+      "bytes": 2718,
+      "path": "benchmarks/20261013-native-huihui/HUIHUI_ASSETS.json",
+      "sha256": "0529fcc402054a1b192163ea2edc8f690d5511a4b3a2b9012d372bc21c0a088e"
+    },
+    {
+      "bytes": 1455,
+      "path": "benchmarks/20261013-native-huihui/PUBLIC_CPU_VALIDATION_MANIFEST.json",
+      "sha256": "dde7112854c3d01173736f906f804941e7470a9de8a4771cf2c871a21a631ee9"
+    },
+    {
+      "bytes": 939,
+      "path": "benchmarks/20261013-native-huihui/PUBLIC_FINAL_VALIDATION_MANIFEST.json",
+      "sha256": "6c7ce05b49fccdeb3cba5a7b472d1dfa9d8da2fc18ccedd280a1920457cbd4d3"
+    },
+    {
+      "bytes": 977,
+      "path": "benchmarks/20261013-native-huihui/PUBLIC_NPU_VALIDATION_MANIFEST.json",
+      "sha256": "629cd5e591047163fe4b81345c927c436c9c40bf61c746f1beb71b79fac8adf6"
+    },
+    {
+      "bytes": 554,
+      "path": "benchmarks/20261013-native-huihui/PUBLIC_PACKAGED_VALIDATION_MANIFEST.json",
+      "sha256": "f5f165cf028f8e0e2f2d1c5bed933efaea977b6dae836ffbbb34d25fd9afa4d6"
+    },
+    {
+      "bytes": 12705,
+      "path": "benchmarks/20261013-native-huihui/README.md",
+      "sha256": "6353de36e9f8ad0e60a7c34ca20a6ead564e74f54e54877798353d41f0e1051a"
+    },
+    {
+      "bytes": 14414,
+      "path": "benchmarks/20261013-native-huihui/cpu-BOS0-first-eight-layer-stats.json",
+      "sha256": "595161b6e393704d239c088695c77c2dd1302e723b6ae1c69994451e7357b6eb"
+    },
+    {
+      "bytes": 2960,
+      "path": "benchmarks/20261013-native-huihui/cpu-chat-Hi-golden.json",
+      "sha256": "1c24870303e171ad6ba290cb01bf46ab6a2534c87f894e1801bc2dd3a79ee7d4"
+    },
+    {
+      "bytes": 7825,
+      "path": "benchmarks/20261013-native-huihui/cpu-raw-Hello-golden.json",
+      "sha256": "3b51c0ca9b359cd541ffafcbbd43571bda7d51e3f4c6e7225e0e8ca6c7464e38"
+    },
+    {
+      "bytes": 2953,
+      "path": "benchmarks/20261013-native-huihui/final-native-smoke.json",
+      "sha256": "c6eaa05e2c531cb0806b3e35d942dfa39ea0470811e4238dc3d9af66ccd39e4c"
+    },
+    {
+      "bytes": 6079,
+      "path": "benchmarks/20261013-native-huihui/final-published-cli.json",
+      "sha256": "ace579398f113e256900ccd422dc25e077aac91616dbab24be67db66561a1372"
+    },
+    {
+      "bytes": 849,
+      "path": "benchmarks/20261013-native-huihui/gguf-dequant-validation.json",
+      "sha256": "bfeef2fd1cb642366cd926e9ddaa85b071290729a08c414b212f63838f1bfafd"
+    },
+    {
+      "bytes": 375345,
+      "path": "benchmarks/20261013-native-huihui/hardware-summary.json",
+      "sha256": "bb624b03a70769659396df357148292092df3ab37f40236a80e06dd234fee81c"
+    },
+    {
+      "bytes": 557,
+      "path": "benchmarks/20261013-native-huihui/host-hf-two-layer-validation.json",
+      "sha256": "ea79f2c91308e8b9f8f5eaf528dc8f522677fcdbb1b4c9cd0c5627731bb41cae"
+    },
+    {
+      "bytes": 3209,
+      "path": "benchmarks/20261013-native-huihui/logits-comparison.json",
+      "sha256": "a57d67fa9cdc7e619998fd2bd6aaccfe6c7707d9ed63666425d792e060b21ee0"
+    },
+    {
+      "bytes": 704,
+      "path": "benchmarks/20261013-native-huihui/minicpm5-config.json",
+      "sha256": "59613157e5357d62bcb121e04cb90f2170b43d789b142380c12c3d4277d95180"
+    },
+    {
+      "bytes": 8339,
+      "path": "benchmarks/20261013-native-huihui/npu-chat-Hi.json",
+      "sha256": "978b621be353f9b6242e0fe7a455a870cc8be7736ca00e3dbec652307056840e"
+    },
+    {
+      "bytes": 129687,
+      "path": "benchmarks/20261013-native-huihui/npu-graph-manifest.json",
+      "sha256": "97093b0b67d9e313e2480d7f4e36ab3831af1bcfc58409584796abe917b141b4"
+    },
+    {
+      "bytes": 20136,
+      "path": "benchmarks/20261013-native-huihui/packaged-two-request-v2.json",
+      "sha256": "85ad508abaf931fdb957e6b4396376cc575c9d2d76bf662e2f50d2eb1a50d064"
+    },
+    {
+      "bytes": 2230,
+      "path": "benchmarks/20261013-native-huihui/tokenizer-validation.json",
+      "sha256": "c38374218d32a934b2f880a51509379d6d5321256a4954e0a213ef2c2456a366"
+    },
+    {
+      "bytes": 2713,
+      "path": "benchmarks/20261013-native-huihui/whole-phone-power-observer.json",
+      "sha256": "67c3017e00ee15cc4119a3a9e17726d968aa008dc5ca8a6c00b6b3d596576cce"
+    },
+    {
+      "bytes": 1254,
+      "path": "benchmarks/20261013-stress/ARTIFACTS.json",
+      "sha256": "f6943ea18758a2ac81f798f005fef5ba53f0cc85458caf6d8dafc5e636368c06"
+    },
+    {
+      "bytes": 1399,
+      "path": "benchmarks/20261013-stress/BOOTSTRAP_LOCKING.json",
+      "sha256": "9465efe287214c13f0f2b901c054035009e3516140e471686dbdb793b91618d9"
+    },
+    {
+      "bytes": 409,
+      "path": "benchmarks/20261013-stress/CACHE_FIX_SMOKE.json",
+      "sha256": "8224a4625afba75fb294ee08663834001ac7165f33fa26d21e1b6a00af668244"
+    },
+    {
+      "bytes": 12742,
+      "path": "benchmarks/20261013-stress/INTEGRATED.json",
+      "sha256": "022953caca68b8d48bf7f6dc67cec2e8f388bb689fba21d8f77a108811e456e3"
+    },
+    {
+      "bytes": 784,
+      "path": "benchmarks/20261013-stress/INTEGRATED_NPU_SMOKE.json",
+      "sha256": "4b19c36e8fa085bfba84a9f484d6727e009ecb2d268db30885f4b67cdfdd5918"
+    },
+    {
+      "bytes": 5350,
+      "path": "benchmarks/20261013-stress/NATIVE.json",
+      "sha256": "0b17462cdafdac93b3c3ba250a747aad988c15df63ef92dbd757e41cd8610971"
+    },
+    {
+      "bytes": 7600,
+      "path": "benchmarks/20261013-stress/READER.json",
+      "sha256": "4f58296a6c20d374d6964441baeb22d888b6183ef5e3b60c21b40257652c16d8"
+    },
+    {
+      "bytes": 5300,
+      "path": "benchmarks/20261013-stress/README.md",
+      "sha256": "8a584f7b085be23c4502168423967a1f8bceff55b795b02ea70aa8a294abc6fc"
+    },
+    {
+      "bytes": 10709,
+      "path": "benchmarks/20261013-stress/RUNTIME.json",
+      "sha256": "218f9004580c495754718c02a4cd8befbcafb48b02d7ef36f7ba55a3441293cf"
+    },
+    {
+      "bytes": 406,
+      "path": "benchmarks/20261013-stress/SERVICE_STATUS.json",
+      "sha256": "d8a6ac60dd2a273dfcdf00c387e6e7262479a4e3e83effed907f687c9165e21e"
+    },
+    {
+      "bytes": 5666,
+      "path": "benchmarks/20261013-stress/VALIDATION.json",
+      "sha256": "dc4d53759f67f5171e461e878f250c0e0fa254be68a2d3f7f8d747051c76656c"
+    },
+    {
+      "bytes": 42,
+      "path": "chat/.gitignore",
+      "sha256": "f6f88a183b508aa1acde4f82aa5705c2d483f2c232dd7dbebb999182bd3f31cb"
+    },
+    {
+      "bytes": 7025,
+      "path": "chat/README.md",
+      "sha256": "e78693bf262b288c02103a500b33c67de7fb6c9711bce832d9285c8793186232"
+    },
+    {
+      "bytes": 1465,
+      "path": "chat/REFERENCE_ACCEPTANCE.json",
+      "sha256": "21d028139e5f017967d93ae76760234649173227c8f6ac184e152e0989f991f7"
+    },
+    {
+      "bytes": 1376,
+      "path": "chat/VALIDATION.json",
+      "sha256": "c1381cf27e1c6712a6bda764d38719716d5c48c0836759b613e895dfa640922f"
+    },
+    {
+      "bytes": 4869,
+      "path": "chat/android_launcher.py",
+      "sha256": "09a6a6c611fa1aeb844c90c05659b3f959998e18f17d772ee9a58d1d05ead400"
+    },
+    {
+      "bytes": 4374,
+      "path": "chat/build_native.sh",
+      "sha256": "97f70fd573e2688bdeba909222e9de16eaf61aead4234a7519541cf11124744b"
+    },
+    {
+      "bytes": 1251,
+      "path": "chat/config.py",
+      "sha256": "ca432d8a2cb56f41f2fbb60c864383c60c034b19ea0889332c4138d6562f14f8"
+    },
+    {
+      "bytes": 960,
+      "path": "chat/examples/profile.example.json",
+      "sha256": "159966f7fc2a881c69dea8a20aa086aaea811af91a03d38f261f89336dadba87"
+    },
+    {
+      "bytes": 10764,
+      "path": "chat/install.py",
+      "sha256": "9a2c2dcd243442bb25d78859fb39d37337f257e2813f9232b3eaeb9ae7b5eb80"
+    },
+    {
+      "bytes": 3545,
+      "path": "chat/lifecycle.py",
+      "sha256": "3e4b565bc39e41d32b39973136edad73e87c725a986f053c6efc51d181211012"
+    },
+    {
+      "bytes": 875,
+      "path": "chat/manage.py",
+      "sha256": "37630e23c4480c166848f80abc32c1752483b7f600191846cbc4f1577e17d8d9"
+    },
+    {
+      "bytes": 1078,
+      "path": "chat/native/LICENSE.ggml",
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    {
+      "bytes": 10193,
+      "path": "chat/native/chat_runner.cc",
+      "sha256": "60f1dd4a281282294521f227eb66da8943223efd3e6f5196ae28e50843a305ab"
+    },
+    {
+      "bytes": 18796,
+      "path": "chat/native/ggml_npu_bridge.cc",
+      "sha256": "183a0ee9027aa758abad4aa76193e9364f1a6bb37703509e475bf582237e3a00"
+    },
+    {
+      "bytes": 705,
+      "path": "chat/native/ggml_npu_bridge.h",
+      "sha256": "0b29235eb6541fee3ae54b3b48a0d804f2f1d20f9fba5fec59c500ea9087decd"
+    },
+    {
+      "bytes": 213,
+      "path": "chat/requirements-chat.txt",
+      "sha256": "7244d459cc7d4c0c27e96cbe1695e37b8bad53c8e78e5907e471d8c75263206d"
+    },
+    {
+      "bytes": 14935,
+      "path": "chat/service.py",
+      "sha256": "0271b49aefa246cbf265ffa6b5acff6314fb3d2caf88c1cb7b2d69cd14d39ab9"
+    },
+    {
+      "bytes": 7715,
+      "path": "chat/tests/test_install.py",
+      "sha256": "7f349ab8e62b1d0fdfee5aaddef59c73ddb8963fccf3c28158d9386abb5542c8"
+    },
+    {
+      "bytes": 6523,
+      "path": "chat/tests/test_native.py",
+      "sha256": "4f0e08ebe384a97ba74478b3d5ebf67494590bdced695cf32e040e5c90425833"
+    },
+    {
+      "bytes": 3666,
+      "path": "chat/tests/test_service.py",
+      "sha256": "be492175ef799f4627212fc09570c1b366d350f5ea7165e4f989ed1da255e944"
+    },
+    {
+      "bytes": 1009,
+      "path": "docs/PUBLICATION.md",
+      "sha256": "2e0a6b4f01fc2dd72eb5ba724e64b11b9145b635baf4235b8575ed07bec3e0d4"
+    },
+    {
+      "bytes": 4551,
+      "path": "docs/VALIDATION.md",
+      "sha256": "e7b2505ff7a3fdf4059e095439bf5b0cdece2321391d28dcca9e94027fe86d35"
+    },
+    {
+      "bytes": 8217,
+      "path": "docs/evidence/public-source-hardware-20261029.json",
+      "sha256": "d89e0767ce779e7b3db94235a4a83cbfdd99b5f83acf6f9e0e7fa43c2a404196"
+    },
+    {
+      "bytes": 1487,
+      "path": "docs/evidence/source-snapshot-20261012.json",
+      "sha256": "9a574b231cab16de0afa0c69cce1aa4d8184ae6992738d55f89e1d1f47437cc7"
+    },
+    {
+      "bytes": 4985,
+      "path": "examples/huihui-gemma4-g5-plan-not-built.json",
+      "sha256": "e5bcfe74719db3a35fe60d69cf3f4fbc69e6c97378dc5d0fc5c98ed39e639442"
+    },
+    {
+      "bytes": 26530,
+      "path": "integrations/ostadix/COPYING",
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "bytes": 6221,
+      "path": "integrations/ostadix/README.md",
+      "sha256": "61aa03d31820f6c034f4c2ffe85c6646af885f4ff82339ed681fc09767f5afdf"
+    },
+    {
+      "bytes": 4998,
+      "path": "integrations/ostadix/tools/RELOCATION_VALIDATION.json",
+      "sha256": "a89b5a0677e2efcfb158d189992cf6b5d01fd11dc914474b18beeb40a5bb7826"
+    },
+    {
+      "bytes": 4929,
+      "path": "integrations/ostadix/tools/USAGE.txt",
+      "sha256": "30d65a1450e687197847d06146c1349215af8d84ec9ddff9be55145ea8805549"
+    },
+    {
+      "bytes": 17959,
+      "path": "integrations/ostadix/tools/VALIDATION.json",
+      "sha256": "1a3379b62059062277a66099a3bf5b438e1a86111b3ff4ec79dffc61e6206010"
+    },
+    {
+      "bytes": 12054,
+      "path": "integrations/ostadix/tools/bootstrap.py",
+      "sha256": "25380990328c9b299e17630175243e6b50778967b4e16459f74097310f9bcb26"
+    },
+    {
+      "bytes": 8816,
+      "path": "integrations/ostadix/tools/build_integrated.py",
+      "sha256": "93ad2333874f693b4e64c9ad3889db64c8a696dfc1134bb054831954b3f82db7"
+    },
+    {
+      "bytes": 37314,
+      "path": "integrations/ostadix/tools/controller.py",
+      "sha256": "286ed909d1850b111c08b82554a725a9bd568b5aff2b42a8cb3bba7637c0150c"
+    },
+    {
+      "bytes": 18047,
+      "path": "integrations/ostadix/tools/stress_integrated.py",
+      "sha256": "34c3ab1b55d8706283dcd7449745d9dfa1e6ed0d8dc33bab6baf236fbf062764"
+    },
+    {
+      "bytes": 19435,
+      "path": "integrations/ostadix/tools/test_bootstrap.py",
+      "sha256": "b8fd7d0dc8f94f00296eda40140e8baba28f2efb4770b004e0def1f1cf5110e4"
+    },
+    {
+      "bytes": 27377,
+      "path": "integrations/ostadix/tools/test_controller.py",
+      "sha256": "c574bab87d7f27e4be4fbcad2dbad4fa8e39d801d897115c93536dad3353b24b"
+    },
+    {
+      "bytes": 16490,
+      "path": "integrations/ostadix/tools/test_worker.py",
+      "sha256": "1fb5a244b4f467888fad8af3577ca021409c95d91e37a47e20fef33374ae51f9"
+    },
+    {
+      "bytes": 12018,
+      "path": "integrations/ostadix/tools/worker.py",
+      "sha256": "e8775c17d1a843b2a4cff8c61e8f33a5c5e6f8f681e16a1c15a72b35b9f8bb28"
+    },
+    {
+      "bytes": 16132,
+      "path": "scripts/check_public_release.py",
+      "sha256": "29f13899a527492199384e83ee11b5161f107b037d1f3cd876591f3fca133663"
+    },
+    {
+      "bytes": 9476,
+      "path": "scripts/release_source.py",
+      "sha256": "62f370b5e1dabb69ac2c3b63112e242eebd7d3fa4e9056ee5cfa8f3eb4ccda64"
+    },
+    {
+      "bytes": 956,
+      "path": "setup.sh",
+      "sha256": "3d4300267ff9ccdbba3b9367a1fa356d843455885f6c543456f3342e7c4de39d"
+    },
+    {
+      "bytes": 26530,
+      "path": "source/OSTADIX/LICENSE",
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "bytes": 520,
+      "path": "source/OSTADIX/NOTICE",
+      "sha256": "401abb1a20e44ffe673e1452ca17c5ceaa254810f39b3097966f33944e63e716"
+    },
+    {
+      "bytes": 9289,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/ASSISTANT-USE.md",
+      "sha256": "b541f56396c2a09196a65cc929ed79a7050b29829bbc5adf59d7db4279fcd935"
+    },
+    {
+      "bytes": 7010,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/README.md",
+      "sha256": "27c2a81d4b69f90c8321d852b25befb97012bb661201d9c2054734fff75fbf5a"
+    },
+    {
+      "bytes": 1259,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/AndroidManifest.xml",
+      "sha256": "d84251a55dd0ea8c1572c3f739b12b4329a16ca0bae6e4f60289918ec6e4a024"
+    },
+    {
+      "bytes": 7358,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/AicoreHooks.java",
+      "sha256": "5f9c7381678de0f7cb7ae9207a915bf08db4f2e165fd5e7c2af62c77a56dab47"
+    },
+    {
+      "bytes": 17180,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/AicoreOstadixModule.java",
+      "sha256": "8628042c2193a1848b764bc04f89d16c18247c067d8bf0d442c94be91c83464f"
+    },
+    {
+      "bytes": 940,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/AsiDelegation.java",
+      "sha256": "88e1f78a4ae9bfd136a4373710c55109753ccf485ed43694ac4ec25e6f9cffe0"
+    },
+    {
+      "bytes": 4370,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/AsiHooks.java",
+      "sha256": "ac0412d7b8b5d8ef33c1dd488cb4a01c0b9e5919f9e4888184a0ceddb0fe61ba"
+    },
+    {
+      "bytes": 11933,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/ExtensionGate.java",
+      "sha256": "cc0e6e1716db95b30817dc97770f946146badb0e85e02276ff87fcd50cc11061"
+    },
+    {
+      "bytes": 5669,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiAppFunctionSchemaHooks.java",
+      "sha256": "41c22689cbb4b5248ad6a9b4afc458f63fc4ed236a66043c5046f1dac4d07a97"
+    },
+    {
+      "bytes": 2189,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiHostSymbols.java",
+      "sha256": "cef8198a0aa70294aa18abf3ff13967634d3f5f8a57a32290463cee753eb96b3"
+    },
+    {
+      "bytes": 3436,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiLocalResponse.java",
+      "sha256": "a94c7ebcde0a8c9df4d82a2c2b471ff14a2a46f14c2c69e3dd52df29bed9171d"
+    },
+    {
+      "bytes": 1993,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiLocalRoute.java",
+      "sha256": "6df2510ad799bf53906c0db63c620f6cd3dbd363dbbe8829aefef1462ed47628"
+    },
+    {
+      "bytes": 20218,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiNanoActionHooks.java",
+      "sha256": "f9e1a1ead50918e157464fcc2d4c3894c707a3715575abcb43c6cbac182912ba"
+    },
+    {
+      "bytes": 5926,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiPlainTextInput.java",
+      "sha256": "d33e186ddc13330a994f19119fd126ed8ad7e7934ce33fae49b6f5ed6a4f93e2"
+    },
+    {
+      "bytes": 9249,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/GeminiRouteObservation.java",
+      "sha256": "cb64a3eb5166f549a3cbae9cb92154fb4d51b65d0ce907c59dbf1b440d57000b"
+    },
+    {
+      "bytes": 7614,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoActionClient.java",
+      "sha256": "b46778429c34a8496e9f84b20db6d2104e40e9c85a9911aafcba0098e88e3aa1"
+    },
+    {
+      "bytes": 2800,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoActionReceiver.java",
+      "sha256": "33a1cc5820b873b6f407ff7f727ac5661158dd6bf3d8f3dde282fc7bf4d136eb"
+    },
+    {
+      "bytes": 3545,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoConversationContext.java",
+      "sha256": "5abe829b83f41dce69415928e684ec0bc32ce911a58f78bb531bf0e3ab92eb8f"
+    },
+    {
+      "bytes": 47205,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoLocalProbe.java",
+      "sha256": "55edfd599a8ff1d7d3c0ac1135ce8fc1757ec196faba606ece26a60c0aee6614"
+    },
+    {
+      "bytes": 7290,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoProgramPrompt.java",
+      "sha256": "b580a18b040728c943b9ad14a3ed3f17056f4aa6efbc613dee47c47fb3f8c7c3"
+    },
+    {
+      "bytes": 3249,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoSourcePreparation.java",
+      "sha256": "851881151bb9b50e4aab3671f68b46d1a922f0835c789b39d219da071b7607b0"
+    },
+    {
+      "bytes": 3794,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoToolOutput.java",
+      "sha256": "9046d96d17b12d277deb12d402143f3838ef87a450fc5c9b80d0cc4458d80bf2"
+    },
+    {
+      "bytes": 14832,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoToolTurn.java",
+      "sha256": "a8a36a6f317eb9c480d30c99e8840a8e695a8fd8f991c123dc3e0e4116131f02"
+    },
+    {
+      "bytes": 3237,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/NanoTurnStore.java",
+      "sha256": "101a13e1524470d138a294842832b23e8b49d6d03c9ffe64f568e00a2542fcdc"
+    },
+    {
+      "bytes": 9211,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/OstadixResultBridge.java",
+      "sha256": "7d6366bd1dfd4309e2a2f51b29c5763a53b44b8a24311fb3abd474c91fc13d9b"
+    },
+    {
+      "bytes": 2914,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/RequestCorrelations.java",
+      "sha256": "35c6a062af1a35d3e7758e5b8efe592aa94aa740a5081834b5345dae3d9cb86d"
+    },
+    {
+      "bytes": 642,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/RequestIdentity.java",
+      "sha256": "22c9f8554dc7ddb809841eb8b273b9da2c3f1ecf49942a7823224d17a5b1cf63"
+    },
+    {
+      "bytes": 2497,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/ResultHistory.java",
+      "sha256": "0904c0f6a37e5803ce0eca6a31bcb11a3e67ec82d19643e3b7e8be0a71ebcbe1"
+    },
+    {
+      "bytes": 6960,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/ResultHistoryActivity.java",
+      "sha256": "24d068a7549b2f8c40edecc55bb9701ff8bdfdb6617f4f6d522078a3554c694c"
+    },
+    {
+      "bytes": 5518,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/java/org/ostadix/aicore/extension/ResultHistoryProvider.java",
+      "sha256": "b69ac25d7386ac569a59eea023c1d56128ae71b82b325374dd3ee98eb9bdd413"
+    },
+    {
+      "bytes": 248,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/res/values/strings.xml",
+      "sha256": "d4ea012f9238c84d9197c75fdefb32cf35f24506875ebd30027c7d3e34b0cd29"
+    },
+    {
+      "bytes": 407,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/res/values/styles.xml",
+      "sha256": "edcad8b599a1d2316c0358143badecc3113267e77d53c9721829bb559c8eefa1"
+    },
+    {
+      "bytes": 589,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/resources/META-INF/ostadix/native-sha256.txt",
+      "sha256": "85d6b4740dd78e0a6270877ba68c205d1f56fda8ee327ee4d20c6e4e5cdcf43a"
+    },
+    {
+      "bytes": 49,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/resources/META-INF/xposed/java_init.list",
+      "sha256": "aa3f3006fa46c8db43a45b74d30bfbc738572701063b8addc3faa9f4802b0b9b"
+    },
+    {
+      "bytes": 101,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/resources/META-INF/xposed/module.prop",
+      "sha256": "ee214e5c018a699ba261d08c7e4fb03b77ea7e3ef42c71f10238a72f496ae3ef"
+    },
+    {
+      "bytes": 114,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/main/resources/META-INF/xposed/scope.list",
+      "sha256": "688e82ec90fe7c440dbdf64d271576fcb509d1b1f5531cbdbf45fdd9419b64f0"
+    },
+    {
+      "bytes": 94,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/com/google/android/apps/aicore/aidl/InferenceEventTraceResult.java",
+      "sha256": "b39f2e37a3c09361ceea10fde4062b814a783ba76dd665688fea4cdd7d6ba7db"
+    },
+    {
+      "bytes": 806,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/com/google/android/apps/aicore/aidl/LLMResult.java",
+      "sha256": "74c4bab2ec33d4615e57fd5a5cf587000c8c8a8071ac1bf68837e65df458bde1"
+    },
+    {
+      "bytes": 89,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/com/google/android/apps/aicore/aidl/LegionResultMetadata.java",
+      "sha256": "6f81159214f0c3681d2cb01fe0a94329bebf12b55d6e222573718d64e62c8776"
+    },
+    {
+      "bytes": 503,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/com/google/android/apps/aicore/aidl/SmartReplyReplyEntry.java",
+      "sha256": "aa7c733ccaf9f6fdc169596311f763f1533e87af3b18c69432893a8c16d084a3"
+    },
+    {
+      "bytes": 482,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/com/google/android/apps/aicore/aidl/SmartReplyResult.java",
+      "sha256": "c5a6edb5a8feccc02f22669b276aac6d4b3e10fb08ae869a2d18902f020ad981"
+    },
+    {
+      "bytes": 4758,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/AsiDelegationSelfTest.java",
+      "sha256": "068d8d0d088adcd527b7f01caac0b5d3874bd9c621808d0ae2d2ff2a56b5ab80"
+    },
+    {
+      "bytes": 2286,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/GeminiLocalRouteSelfTest.java",
+      "sha256": "5fe4b8b3003ff82889502835b90d60a2315d36694f96c20d205df3926902965a"
+    },
+    {
+      "bytes": 6348,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/GeminiPlainTextInputSelfTest.java",
+      "sha256": "b165bd608ed47245aef153c682b84bffc6df4083c3d98149ac9dfb5e10619a01"
+    },
+    {
+      "bytes": 4133,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/GeminiReflectiveContractProbe.java",
+      "sha256": "2cda30b45a50422519d976b82f00eff9e00579f13609dec76220afadfa5fab6d"
+    },
+    {
+      "bytes": 7006,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/NanoCandidateSelfTest.java",
+      "sha256": "a8d1f563b37d7f6567ebbb9d917189a3bae867017248a780460c89ed2732517b"
+    },
+    {
+      "bytes": 3101,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/NanoGenerationBudgetSelfTest.java",
+      "sha256": "3d24484dbff8cb6e5c3aa11a8d4289e405ed6aad07b2f56a7481887bea592c82"
+    },
+    {
+      "bytes": 10848,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/NanoProgramPromptSelfTest.java",
+      "sha256": "a134de50d615d2b4d861410e3e81e03a16711c2667aa6fcb972ca6cbe7622f6f"
+    },
+    {
+      "bytes": 5542,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/NanoSourcePreparationSelfTest.java",
+      "sha256": "3c1b45c19faa646f90957833d7987d4c6ffda3d22da7f61d65fb7e7ce4ee7537"
+    },
+    {
+      "bytes": 4303,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/NanoToolOutputSelfTest.java",
+      "sha256": "8a58efd9db70e5ad134b81b1694c60bfa8ead2edb4edf3fe1d32817dc6a17cac"
+    },
+    {
+      "bytes": 2273,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/ResultHistorySelfTest.java",
+      "sha256": "c395cab58deb0d904b0242fc0f6b0ec61eac67dfc89abff072a5dc8921cc898c"
+    },
+    {
+      "bytes": 8367,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/app/src/test/java/org/ostadix/aicore/extension/ResultReplacementSelfTest.java",
+      "sha256": "b4a16c7be93185cc664930052fedacbf9b247172e10e5d80ac6dbb5e4b113a32"
+    },
+    {
+      "bytes": 11576,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/build.sh",
+      "sha256": "b79910aac88131fd2344aabdae2407499caddf4edcb2faf85ddd05ea492b044e"
+    },
+    {
+      "bytes": 1434,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/test-result-output.sh",
+      "sha256": "e9f1355e68f3d7b8177b5403320ff42919d17863589f822e7e3c8ecd3dc375df"
+    },
+    {
+      "bytes": 4557,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/verify-installed-contract.sh",
+      "sha256": "3558f1cc7f4bff2f590e84edec10b1662a06dbd2051583fba81c45a5a4f1922d"
+    },
+    {
+      "bytes": 1917,
+      "path": "source/OSTADIX/apps/aicore-ostadix-extension/verify-source-policy.sh",
+      "sha256": "a813efdff485cde8af71845d8ea04b4c07e5ad931dacf05fbb4674e5461de886"
+    },
+    {
+      "bytes": 8948,
+      "path": "source/OSTADIX/apps/android-terminal/README.html",
+      "sha256": "7c3c34d436f5f66e8bf8be535670eb4d4491aa639eeeb12455d32efcda4cfbb3"
+    },
+    {
+      "bytes": 8046,
+      "path": "source/OSTADIX/apps/android-terminal/README.md",
+      "sha256": "41ce9526c13b8242c0fc4625ddc3a7c8fb30d1f24be575cc79d17a99119c3907"
+    },
+    {
+      "bytes": 3156,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/AndroidManifest.xml",
+      "sha256": "69e8376120b4ae85a443a7f851790381636597ebbe5f864b8a45147f38fdb480"
+    },
+    {
+      "bytes": 112,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/assets/examples/hello.O",
+      "sha256": "7a5bb5e4763f6e10e8ca7cf8606934671973a63d9eaa45ed0a1d8635d62eccb1"
+    },
+    {
+      "bytes": 4018,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/assets/licenses/Bundled-Bash-SOURCES.txt",
+      "sha256": "9b9cd7366be181c43a04ae1f81024ed79aa0c386a549de21a091fc15114af55b"
+    },
+    {
+      "bytes": 3112,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/assets/ostadix_app_function_service.xml",
+      "sha256": "314e0dd7c083f1b45674c790121b688e898e55d32b67bc5e51c7bb74a5266a18"
+    },
+    {
+      "bytes": 19389,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/cpp/ostadix_pty.c",
+      "sha256": "66186079ec01215fb415fa38b5eef41b84fdeb7e379a935530abd24239d66c38"
+    },
+    {
+      "bytes": 24786,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/AnsiParser.java",
+      "sha256": "a4f5cf8c77e04971eaa0b656d0baa1649b8cdfb8f9871086eab21d58b6cc6175"
+    },
+    {
+      "bytes": 14904,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/AppFiles.java",
+      "sha256": "7b6b42cec011a9490917a2bacc75b88b77bab803daddad7af3982fc93d3cc226"
+    },
+    {
+      "bytes": 15299,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/AppPreferences.java",
+      "sha256": "c3c9a64c016484a3739709e2532630b616a82a6fae146bfa9e847636be723786"
+    },
+    {
+      "bytes": 9920,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/ClipboardFileStore.java",
+      "sha256": "fd79bb40a845d452886183fe74848127988cd127f0a7d9431f0c11d84bb36995"
+    },
+    {
+      "bytes": 3900,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/ClipboardPayloadTracker.java",
+      "sha256": "267eb10fe40ac3ad84c9c95069c754a3f89e4ad7e8d5efc4d73ce56fc7b86a5f"
+    },
+    {
+      "bytes": 6848,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/HostMcpClient.java",
+      "sha256": "a644528b2446eaa88ec6aff028e8d95c5a9694999a5552f8b0581b7e2aa666a2"
+    },
+    {
+      "bytes": 4822,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/LargeClipboardProvider.java",
+      "sha256": "aa245d14ed1565c002adc771e0f6de66a37842971ebb44d6043782e667178ab8"
+    },
+    {
+      "bytes": 31092,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/MainActivity.java",
+      "sha256": "2969aa7213d67e459b29d9969bcf3ee70716603b687cccb8edc766fe018833e3"
+    },
+    {
+      "bytes": 14741,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/OReplController.java",
+      "sha256": "6334838f97f8370bd0cf25a346306061c21d8304b9ee8109ee697542e4dd4e61"
+    },
+    {
+      "bytes": 8477,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/OstadixAppFunctionService.java",
+      "sha256": "8086a322838e97231850762a33294f98f03dfec532beb60a0fdbae70e28c9543"
+    },
+    {
+      "bytes": 11326,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/OstadixRuntime.java",
+      "sha256": "bd0e68181c97ae19012bc0cf46f5111e61ef74cc1f811dc50fcb92bd1c3b29fe"
+    },
+    {
+      "bytes": 19137,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/PtySession.java",
+      "sha256": "e8b047fe45fe8a0f7eb8c7182dfc0ea90b20d1cd996027c5ad8a5de2f935c006"
+    },
+    {
+      "bytes": 17481,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/SettingsDialog.java",
+      "sha256": "a46e714d8abbbe8293403c49baf57f730c546506d4628aec7f53a622a137f4a3"
+    },
+    {
+      "bytes": 58187,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/TerminalBuffer.java",
+      "sha256": "e713dc52258a700dac03aa881753d60ecb859e503617f8c800a420a324305bfd"
+    },
+    {
+      "bytes": 4581,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/TerminalSessionService.java",
+      "sha256": "87bdf7bdaacbe31edb15fea7ed40120cab31ee77ddc294ccf13d97d6e70faf89"
+    },
+    {
+      "bytes": 85194,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/java/org/ostadix/terminal/TerminalView.java",
+      "sha256": "783dbfa59223a5225efaefc0a834329b03d116b2703ee5dcae0cdf44cdfb809a"
+    },
+    {
+      "bytes": 1233,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/res/drawable/ic_launcher.xml",
+      "sha256": "12233f3c6a972bd79ca4176c8beb63d56557f0a9179a5b0995224d4100a15ca3"
+    },
+    {
+      "bytes": 393,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/res/drawable/ic_terminal_notification.xml",
+      "sha256": "f971f8090cba7353c6c7dcb510f45d99ff6763abf69871e713012fc5cd984b53"
+    },
+    {
+      "bytes": 529,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/res/values/colors.xml",
+      "sha256": "987fa093ce137d7846546e8b0f9e1d43e0b5cd75d6859228f922ec39612f284f"
+    },
+    {
+      "bytes": 3023,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/res/values/strings.xml",
+      "sha256": "1b16952c0a70e3a888d76e78b71875f26bf7a3c0c89ec47ded83e1b0810c9d2d"
+    },
+    {
+      "bytes": 1783,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/main/res/values/styles.xml",
+      "sha256": "58fc750c4e0137c725e47b7c09d55f649e20aa7b5bb9ad17355e847908b795bd"
+    },
+    {
+      "bytes": 1251,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/test/java/org/ostadix/terminal/OstadixAppFunctionContractSelfTest.java",
+      "sha256": "64788ec8a976c09879270347881d96b0877de357b6951ffa1c2bb9d2e1ffa2e3"
+    },
+    {
+      "bytes": 3995,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/test/java/org/ostadix/terminal/PtyJniSmoke.java",
+      "sha256": "bfd7d5e9958180970331468c585b9887bc2a243238bc990e85f379ba05ebd180"
+    },
+    {
+      "bytes": 14080,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/test/java/org/ostadix/terminal/RuntimeJniSmoke.java",
+      "sha256": "f0675ae80f57f81186de652958ae8a92e632e3bbddf8610a829e8f0bb318fe61"
+    },
+    {
+      "bytes": 17294,
+      "path": "source/OSTADIX/apps/android-terminal/app/src/test/java/org/ostadix/terminal/TerminalCoreSelfTest.java",
+      "sha256": "823a1b09cd17830aefb66b23bf5fcefca11fda7eb2e1b3ca2fad60cbe7596f7d"
+    },
+    {
+      "bytes": 22885,
+      "path": "source/OSTADIX/apps/android-terminal/build.sh",
+      "sha256": "80b13d0d7d9d9fc5e4f3138918b61079da92a5bf6fac4831f913cfd7461c2fba"
+    },
+    {
+      "bytes": 12580,
+      "path": "source/OSTADIX/apps/android-terminal/tools/scrub_elf_runpath.py",
+      "sha256": "facfd89de6f5f028e293d1a4f18e8e5746c3cb228aff6f0a4cdaf982d9c7bdfe"
+    },
+    {
+      "bytes": 4157,
+      "path": "source/OSTADIX/apps/android-terminal/tools/verify_root_environment.py",
+      "sha256": "11f1ba0ad83757e2331b6e1cd19621a42874575a540addeaedb8002890cbc330"
+    },
+    {
+      "bytes": 27811,
+      "path": "source/OSTADIX/scripts/benchmark_hgraph_hosted.sh",
+      "sha256": "e097faf406d1a594960ae06870de196f982a3629e84b2a98f5030af3f8885845"
+    },
+    {
+      "bytes": 35174,
+      "path": "source/OSTADIX/scripts/benchmark_real_world.sh",
+      "sha256": "516720c61eca9264fd31f3aa0bd121ce0d9252291d1ae02c609140b6cd705086"
+    },
+    {
+      "bytes": 5359,
+      "path": "source/OSTADIX/scripts/big_iron_to_my_texas_red.sh",
+      "sha256": "77784929c5ef8fdb649d59b3334eb8586d8fad0e85fc512257156a94a86b5ab4"
+    },
+    {
+      "bytes": 3900,
+      "path": "source/OSTADIX/scripts/bootstrap_offline_kit.sh",
+      "sha256": "bc6e1cb92f355db6861ab4e19d75789538112a3321b46c4be5689291178b84dd"
+    },
+    {
+      "bytes": 5408,
+      "path": "source/OSTADIX/scripts/build-real-linux-payload.sh",
+      "sha256": "dd63365462b2e3b16577ef938c8d3541ca00b3b877a6df6dd9c8339e7862f215"
+    },
+    {
+      "bytes": 42528,
+      "path": "source/OSTADIX/scripts/build-x86_64-hosted-live-linux.sh",
+      "sha256": "ebf1337b6024c52fd0766b37166901824d6f0ef92123cf01158b6b72c4a13945"
+    },
+    {
+      "bytes": 74093,
+      "path": "source/OSTADIX/scripts/build_offline_kit.py",
+      "sha256": "3ab34aa729aef11263f32398b18f93840814e47e1b0a6d77153a9732195163e5"
+    },
+    {
+      "bytes": 181435,
+      "path": "source/OSTADIX/scripts/build_source_release.py",
+      "sha256": "319a5bea6411b3b85c69d350be872fe8dadd4eda53d4b1c19e66e9531cbe2e52"
+    },
+    {
+      "bytes": 124023,
+      "path": "source/OSTADIX/scripts/check_architecture_boundaries.py",
+      "sha256": "86b636502b89779e9c8bde9171b46d455226a657320eebfdfa4f5eb4364171e9"
+    },
+    {
+      "bytes": 14158,
+      "path": "source/OSTADIX/scripts/check_assistant_permissions.py",
+      "sha256": "5742273f857299df7ae0300643d83f8752a72f670f8a1bced45349773e6d8e62"
+    },
+    {
+      "bytes": 15241,
+      "path": "source/OSTADIX/scripts/check_attribution.py",
+      "sha256": "ad89060f4b21f8a3e0ed5c45713ffae7aff07d47a0035cee2b7bf21ed802e956"
+    },
+    {
+      "bytes": 2552,
+      "path": "source/OSTADIX/scripts/check_declared_bins.sh",
+      "sha256": "d252640d35a04616386bdb82151ba256f5402f7f5aea889d277b858582ca4657"
+    },
+    {
+      "bytes": 10255,
+      "path": "source/OSTADIX/scripts/check_language_sources.py",
+      "sha256": "b50b840866bc902f72da07e16e39762ed495adb323a2aa2576201398e4b579ff"
+    },
+    {
+      "bytes": 7957,
+      "path": "source/OSTADIX/scripts/check_lifted_mcp_lifecycle.py",
+      "sha256": "c2d7d6464b65f24482fe269bf492b90e40ca93f7de6c5ddf235b57478201cc43"
+    },
+    {
+      "bytes": 50609,
+      "path": "source/OSTADIX/scripts/check_release_claims.sh",
+      "sha256": "4a72f49ddba1dfd752134a1210b788fc8d262b71d718e1a5ef689f5e185fd1e8"
+    },
+    {
+      "bytes": 19435,
+      "path": "source/OSTADIX/scripts/collect_runtime_rootfs.py",
+      "sha256": "b41bb9231151c115cf915a895c700334cc7a1cd4a52f3066b49d6c816edbfe2e"
+    },
+    {
+      "bytes": 2072,
+      "path": "source/OSTADIX/scripts/configure_gemini_mcp.py",
+      "sha256": "9fb403b3471e14101453ce98d1cbda24f7be2a25ee86df39506bcf1ba6d46c1f"
+    },
+    {
+      "bytes": 22340,
+      "path": "source/OSTADIX/scripts/contract_surfaces.py",
+      "sha256": "5e0739fabfc91e4a91584d3510603b305c3c3b51dc2aa0526d4bc5f9115754b3"
+    },
+    {
+      "bytes": 12675,
+      "path": "source/OSTADIX/scripts/demo_o_link_schedule_why.sh",
+      "sha256": "328d03fa7e1742ce539bee572ba1adfaac2847bd198a615dcc51d5dbe8d40067"
+    },
+    {
+      "bytes": 108678,
+      "path": "source/OSTADIX/scripts/foreign_kernel_lab.py",
+      "sha256": "151ea4322fd4177dd8d58b32824219cb4be8dd5aea5379fbe1c0055df9f1546d"
+    },
+    {
+      "bytes": 422,
+      "path": "source/OSTADIX/scripts/install-o-cli-wrapper.sh",
+      "sha256": "697b807ed01e72bfbac46a11e4b17ecbefae01b62712a65501d7d9d9afaab2f6"
+    },
+    {
+      "bytes": 6085,
+      "path": "source/OSTADIX/scripts/install_native_binaries.py",
+      "sha256": "1336348a2709f21f58fe17a1e7dab691b40fdd4d7669f179a667efe3a1dd0f77"
+    },
+    {
+      "bytes": 47532,
+      "path": "source/OSTADIX/scripts/local_ci_posture.py",
+      "sha256": "309a89c6e326647eae5ccb61fde6a59fa14379777a48e90843b194998c7c7af1"
+    },
+    {
+      "bytes": 422,
+      "path": "source/OSTADIX/scripts/o-cli.sh",
+      "sha256": "bcc2b29f41173281053e7484bd42f79b285b69bef4c7ccf5e0243c4f6a44e751"
+    },
+    {
+      "bytes": 12498,
+      "path": "source/OSTADIX/scripts/o-kernel.sh",
+      "sha256": "914cb9474cb7b9a5d3869930f7c44d471e504d222cca1e984959d51ab2ea62f0"
+    },
+    {
+      "bytes": 12857,
+      "path": "source/OSTADIX/scripts/ostadix-hosted-live-desktop.sh",
+      "sha256": "5769e1c804f2e89deb19a441e640bbc0698b9eee9544ea999dff419efcddf925"
+    },
+    {
+      "bytes": 12184,
+      "path": "source/OSTADIX/scripts/ostadix_appfunction_host.py",
+      "sha256": "f530424100241817b0e863a028d457228ded1c0edf3cfd15b750d5d46c825262"
+    },
+    {
+      "bytes": 2832,
+      "path": "source/OSTADIX/scripts/ostadix_appfunction_supervisor.py",
+      "sha256": "e7c4639c15c5bcbcb8d1c8f1d50d5271c84202b2beb1ef10280c10ed4a27911a"
+    },
+    {
+      "bytes": 6523,
+      "path": "source/OSTADIX/scripts/ostadix_assistant_results.py",
+      "sha256": "9f0eede0582c9972f023af49e87f665b32f31e77f6e5f189abf3bd37ed465afd"
+    },
+    {
+      "bytes": 7639,
+      "path": "source/OSTADIX/scripts/ostadix_assistant_service.py",
+      "sha256": "ab26d5f482b08d6dee369470b8d47c1d0c9e4dbea191ebe3fc91d59edcb3a191"
+    },
+    {
+      "bytes": 25744,
+      "path": "source/OSTADIX/scripts/ostadix_boot_info_qemu.py",
+      "sha256": "0d3f776c98a94f238901f61f0db8f20bc07608925703c380a76b4bc2fd395285"
+    },
+    {
+      "bytes": 43892,
+      "path": "source/OSTADIX/scripts/ostadix_boot_iso.py",
+      "sha256": "f22426a82211ad1ecefc67ff8987b3282d9d3eefb2f0772802da1a0361fc73f6"
+    },
+    {
+      "bytes": 31288,
+      "path": "source/OSTADIX/scripts/ostadix_boot_media.py",
+      "sha256": "e38ad1662325fdd3932a68f0c6bbe202a590e833dec3b65d187adf0c8d936ee2"
+    },
+    {
+      "bytes": 38827,
+      "path": "source/OSTADIX/scripts/ostadix_boot_objects.py",
+      "sha256": "8667827903ac85a47f4324eb7d7e03e814ef40fbb3812a3829bd78872b3e0b5d"
+    },
+    {
+      "bytes": 75655,
+      "path": "source/OSTADIX/scripts/ostadix_capacity.py",
+      "sha256": "152c8dd49c4da26e8663bd823be1c073680899c6290f700b15d110f3b0c3413e"
+    },
+    {
+      "bytes": 86864,
+      "path": "source/OSTADIX/scripts/ostadix_capacity_iso.py",
+      "sha256": "3dd63d91d8dab793871ffd35c5d0b44fcd676647952e702da6f5e6b80a021dfd"
+    },
+    {
+      "bytes": 83781,
+      "path": "source/OSTADIX/scripts/ostadix_hosted_live_release.py",
+      "sha256": "4326b7c635f137b8bf32ab319e5a29063059d91a6ca6f403c370c61a3e05af9f"
+    },
+    {
+      "bytes": 28451,
+      "path": "source/OSTADIX/scripts/ostadix_mcp_client.py",
+      "sha256": "29cd07f0e05f750de62f975f24bd8a6e5695be069c3c15f068d1cf859d90dafe"
+    },
+    {
+      "bytes": 39576,
+      "path": "source/OSTADIX/scripts/ostadix_media_writer.py",
+      "sha256": "89b1b5243b98a29ba8179065ed976163732c048cc0e94c0690688e259431afb3"
+    },
+    {
+      "bytes": 36432,
+      "path": "source/OSTADIX/scripts/ostadix_physical_evidence.py",
+      "sha256": "dafc243462e49faf337a00f8fce5e265ff887c5efb15f03eb7f51527fc2044a6"
+    },
+    {
+      "bytes": 44972,
+      "path": "source/OSTADIX/scripts/ostadix_ventoy_installer.py",
+      "sha256": "0e584d1bad658ac5b859bce13357a5004e204c09e3136cac3c0f2ea60f1d0795"
+    },
+    {
+      "bytes": 13292,
+      "path": "source/OSTADIX/scripts/ostadix_wasm_release.py",
+      "sha256": "7aad0f5a27d404d4eb8a1e61a89027fe4b39c08e1188a0d4b9fc4dd46142852d"
+    },
+    {
+      "bytes": 7808,
+      "path": "source/OSTADIX/scripts/ostadix_xorriso_reproducible.py",
+      "sha256": "ac373a6c8641719fdab7d8dfbde5822f51d7db41e2add959897019c933651956"
+    },
+    {
+      "bytes": 79308,
+      "path": "source/OSTADIX/scripts/prepare-x86_64-capacity-host.sh",
+      "sha256": "912f0850ec8aa894581619aacf9f02e5e70b4960fb4155b10547f4a285428078"
+    },
+    {
+      "bytes": 25920,
+      "path": "source/OSTADIX/scripts/release_evidence.py",
+      "sha256": "db07c95ffd9daa654bcaa7f0ae509c893010b8acea1fb5c3af50a450e6692890"
+    },
+    {
+      "bytes": 4830,
+      "path": "source/OSTADIX/scripts/render_docs.py",
+      "sha256": "88dd6624e5354031fa2507a2be5beb18484cbf6bfaabba75ac6147e17509924c"
+    },
+    {
+      "bytes": 5745,
+      "path": "source/OSTADIX/scripts/semantic_custody_demo.sh",
+      "sha256": "98243d74b1019d9dd74dd017195707e668e4ed6f0a700fd1cd899e6322039300"
+    },
+    {
+      "bytes": 3876,
+      "path": "source/OSTADIX/scripts/smoke-docker.sh",
+      "sha256": "58d6e13e2c36010c37adc1d504d2912a367e4052647208352c81e4e00e54f7be"
+    },
+    {
+      "bytes": 2097,
+      "path": "source/OSTADIX/scripts/smoke-execution-fabric-v1.sh",
+      "sha256": "295eba42683e93aa640cffbf9abd3b04fbd458f0cc28f494733ef799ce977106"
+    },
+    {
+      "bytes": 2323,
+      "path": "source/OSTADIX/scripts/smoke-hosted-live-reference.sh",
+      "sha256": "7e1cf5fc189bca8c79107abee60028013ee7ccc1ff77a9dd0ee91f5953abcda5"
+    },
+    {
+      "bytes": 843,
+      "path": "source/OSTADIX/scripts/smoke-project-hgraph-exec.sh",
+      "sha256": "319c8ecd0dfeeee7528e41b111469681ba8d6fbdc3d2b23ba4fb84d1d73abe54"
+    },
+    {
+      "bytes": 16875,
+      "path": "source/OSTADIX/scripts/smoke-project-hgraph.sh",
+      "sha256": "077b274702e3ec8d2164d95499c5800da3b3fbbb9b83865c909ec630bc2151f7"
+    },
+    {
+      "bytes": 2293,
+      "path": "source/OSTADIX/scripts/smoke-world-g0-conformance.sh",
+      "sha256": "c4a66a2d80985f64b78d8d3898172e68e9fca0dd462d7c4849072ba7d2622e22"
+    },
+    {
+      "bytes": 3818,
+      "path": "source/OSTADIX/scripts/smoke-world-resource-keys.sh",
+      "sha256": "b4ac08d70796698879016828878d22625859746aee4410ee09ed99dfacd8415e"
+    },
+    {
+      "bytes": 19778,
+      "path": "source/OSTADIX/scripts/smoke-zero-config-lan-netns.sh",
+      "sha256": "ddc7ba113bc93ddfadb7b76065b1dac9d3b277579158b54af5f15d9abf807f09"
+    },
+    {
+      "bytes": 100764,
+      "path": "source/OSTADIX/scripts/smoke_ostadix_mcp.py",
+      "sha256": "08b248872c96b7f4af9acc73e6f069d773efdd35d50c86077274801c9526e35d"
+    },
+    {
+      "bytes": 24717,
+      "path": "source/OSTADIX/scripts/smoke_ostadix_mcp_node.py",
+      "sha256": "8298676b81c2bbdf2f00f39f511a315b9d256ca0400f2443bd793c6d0cb68ea0"
+    },
+    {
+      "bytes": 108889,
+      "path": "source/OSTADIX/scripts/world_alpha_evidence.py",
+      "sha256": "d46500586e37e162c84ab9b99e5bf7254b496bf70c027f22bf74b97f573edac0"
+    },
+    {
+      "bytes": 6952,
+      "path": "source/OSTADIX/tests/test_appfunction_host.py",
+      "sha256": "ec20752ecbc80089c3953888309ca29991becaf8eac257e9a2a042f03e099027"
+    },
+    {
+      "bytes": 6433,
+      "path": "source/OSTADIX/tests/test_assistant_permissions.py",
+      "sha256": "6d8c3d25f78b3c6af10e3883b7db818cfff191c409d9167b5cf78d92be5155ce"
+    },
+    {
+      "bytes": 3299,
+      "path": "source/OSTADIX/tests/test_assistant_service.py",
+      "sha256": "41ccb023b915f0f43b8343610c74e3bcd5fdac102d6259fcc725f61899969dce"
+    },
+    {
+      "bytes": 2527,
+      "path": "source/OSTADIX/tools/nano-factory-reader/README.md",
+      "sha256": "d4212f31cc25c57b5618485d71c8c948b1a103b2d6bfe6cdad0c1a3c489fc825"
+    },
+    {
+      "bytes": 916,
+      "path": "source/OSTADIX/tools/nano-factory-reader/android_pidfd.py",
+      "sha256": "b5a0358d2690dcb72568a76ab96429334019634555ffbe978d63795716aca7ae"
+    },
+    {
+      "bytes": 738,
+      "path": "source/OSTADIX/tools/nano-factory-reader/build.sh",
+      "sha256": "95f259e0ab28686305936c99f88b96c93a00e85e60982f441f674ddf22ff9e5d"
+    },
+    {
+      "bytes": 3451,
+      "path": "source/OSTADIX/tools/nano-factory-reader/derive_audio_disabled_config.py",
+      "sha256": "bce3f1e15cce33001be8489800a241d0e6164af398c5bd1d0da0bdf4bc929cf4"
+    },
+    {
+      "bytes": 6099,
+      "path": "source/OSTADIX/tools/nano-factory-reader/materialize.py",
+      "sha256": "8a2df2ee655797c39b2bf12ce7422ed67d43c7c980875039e95a5c685f87f117"
+    },
+    {
+      "bytes": 22357,
+      "path": "source/OSTADIX/tools/nano-factory-reader/run_aicore_probe.py",
+      "sha256": "405d3d13c9680f46c7e1c317b63693c5736369744c24719b68f2a224351f7acb"
+    },
+    {
+      "bytes": 5873,
+      "path": "source/OSTADIX/tools/nano-factory-reader/run_native_probe.py",
+      "sha256": "1e77f81475c21253bca38a92d0daf81f301602cf7f6a9f48bcb7e0cc5c302c40"
+    },
+    {
+      "bytes": 5520,
+      "path": "source/OSTADIX/tools/nano-factory-reader/src/org/ostadix/nano/FactoryReader.java",
+      "sha256": "47c460f5d111c7cd44bc486fadf6e38b4b7990377eb5837fdbd212fe88d49043"
+    },
+    {
+      "bytes": 2379,
+      "path": "source/README.md",
+      "sha256": "5bbcee214332d0e2ac6e6b43723a8ede3766a1559503f89e68954d005563277c"
+    },
+    {
+      "bytes": 12174,
+      "path": "source/device/guardian.py",
+      "sha256": "f3a7959fbf61258ec87f1bbc8abd20b8bad3da7ba1f405c378505b71e3cd60d3"
+    },
+    {
+      "bytes": 303,
+      "path": "source/ostadix-voice/.gitignore",
+      "sha256": "533ddbb69e55a93e845579f73a682a3bab8588664bb0203ddb3db9a441e35891"
+    },
+    {
+      "bytes": 6131,
+      "path": "source/ostadix-voice/COMPUTE_OPTIMIZATION.md",
+      "sha256": "2b3978e771d1485eaf15bfd9c16fc9a45e6289c8604ee2dbf5ac4f3333bb1e46"
+    },
+    {
+      "bytes": 5976,
+      "path": "source/ostadix-voice/LOCAL_AGENT.md",
+      "sha256": "f82f03363dec5272125b0a7616326d66f8738eb8e4679f91ab91e389e1f3dea4"
+    },
+    {
+      "bytes": 6037,
+      "path": "source/ostadix-voice/README.md",
+      "sha256": "65d3247dd6df56296e053da83920b9b194782301b1f3bbdb45c352a42318639d"
+    },
+    {
+      "bytes": 68754,
+      "path": "source/ostadix-voice/agent.py",
+      "sha256": "44b6393836d54820e4fb27de7f6b50ffc125afb28a9283fb8c0c296ea0fd0f46"
+    },
+    {
+      "bytes": 1526,
+      "path": "source/ostadix-voice/android_voice/AndroidManifest.xml",
+      "sha256": "53e79a402881ca162fe817d46d725ed6bef04c918e95afd2e1f666782672d101"
+    },
+    {
+      "bytes": 1972,
+      "path": "source/ostadix-voice/android_voice/README.md",
+      "sha256": "4432ba60cb3cef1ff94a8262c69cd415018c890e062a6a6af829eb120b4a0f57"
+    },
+    {
+      "bytes": 75,
+      "path": "source/ostadix-voice/android_voice/__init__.py",
+      "sha256": "2daf746867956805b3fca8c3905b30ddc2c268026d59fa1569526aaec0ed125c"
+    },
+    {
+      "bytes": 13239,
+      "path": "source/ostadix-voice/android_voice/bridge.py",
+      "sha256": "3ef431a2639b83ff8c2e277afbf3dc356558e1c75ebca3fe8e3f2aa937eb4b40"
+    },
+    {
+      "bytes": 3250,
+      "path": "source/ostadix-voice/android_voice/build.py",
+      "sha256": "d235c524a4e9c1c97b3eb2e346b1d015c5e58cabd6f15aa4616638de40368885"
+    },
+    {
+      "bytes": 2008,
+      "path": "source/ostadix-voice/android_voice/src/org/ostadix/voicebridge/BridgeActivity.java",
+      "sha256": "d84bce021f0088b2ace7574922017a3b95c0498b52f6d8de1072ca1b6d06b959"
+    },
+    {
+      "bytes": 26028,
+      "path": "source/ostadix-voice/android_voice/src/org/ostadix/voicebridge/VoiceService.java",
+      "sha256": "1f1f7df31f32f8de5460c1619aa151b4393c8248b500f1bd8cf94b82e13e5ae8"
+    },
+    {
+      "bytes": 7644,
+      "path": "source/ostadix-voice/android_voice/test_bridge.py",
+      "sha256": "3c3d7d85474d664b88f887ecc80fa996c9eec02fd361669033eed8bed3bef383"
+    },
+    {
+      "bytes": 2240,
+      "path": "source/ostadix-voice/android_voice/verify_stop.py",
+      "sha256": "a6807727605bc076ff9913d57fa1ed2a2e3f4fe721a38c2c7f8d2e7ad768931d"
+    },
+    {
+      "bytes": 15084,
+      "path": "source/ostadix-voice/benchmarks/compile_affinity.py",
+      "sha256": "bfaa8cd8c039ea52d1f1f1110dd01983b5f101164e71c03309017d0fc6146e32"
+    },
+    {
+      "bytes": 17717,
+      "path": "source/ostadix-voice/companion.py",
+      "sha256": "0daa85ecee10aedc4bedfccd763791c6867af6ee57e8389e4543e8bb3f2058c5"
+    },
+    {
+      "bytes": 11506,
+      "path": "source/ostadix-voice/companion_notify.py",
+      "sha256": "1e833b426222c019045356cb37db06762d5b5c8f5ca9a127e21fc6e52237d84a"
+    },
+    {
+      "bytes": 7665,
+      "path": "source/ostadix-voice/companion_probe.py",
+      "sha256": "ac0e0eb9d8b415ef9c080376dc27daec4ee0e9ef9df721bd1232154c6464a234"
+    },
+    {
+      "bytes": 9993,
+      "path": "source/ostadix-voice/conversation_protocol.py",
+      "sha256": "98494e0592275a407cdb04f8d1767a0db1399c35e9079405a3f2fce0b922fb85"
+    },
+    {
+      "bytes": 21619,
+      "path": "source/ostadix-voice/duplex_speech.py",
+      "sha256": "c7e39e0d92e9d12754b8b3e7c91cfde548421952f4ff531a8bd9da7b529c5924"
+    },
+    {
+      "bytes": 2321,
+      "path": "source/ostadix-voice/exact_compute.py",
+      "sha256": "b98f9bd61eeb888f8209eab0deb406ecad4c1dd41a04ed55b2b8192adadf2371"
+    },
+    {
+      "bytes": 24326,
+      "path": "source/ostadix-voice/gemini_client.py",
+      "sha256": "b702d70b2c0e820a5dcf6babfb375ef181484aa518ce728a24c3fcc52b78eca9"
+    },
+    {
+      "bytes": 7452,
+      "path": "source/ostadix-voice/gemini_transport.mjs",
+      "sha256": "97709eb5ea49cb2a15c377abda515d8d58d5c0bdd4478601def1ef056fdecd15"
+    },
+    {
+      "bytes": 8874,
+      "path": "source/ostadix-voice/hardware_info.py",
+      "sha256": "cecb4ca8a23c6b262a05f17f32abadf6683cad44c429d7f234b557595f9a4c85"
+    },
+    {
+      "bytes": 3132,
+      "path": "source/ostadix-voice/install_shortcut.py",
+      "sha256": "deff81d0748bb5925cf62d48ec71cad14cf26ccbdba56e0a642f4bb424214fa6"
+    },
+    {
+      "bytes": 10093,
+      "path": "source/ostadix-voice/interface_tools.py",
+      "sha256": "697dfa8f9adfcb4c4d4693256f3b96746af823c71146aaf3c0a72db20ce1db80"
+    },
+    {
+      "bytes": 27889,
+      "path": "source/ostadix-voice/launch.py",
+      "sha256": "61fe98e9f29e6776490ee88b43a99f5c0b8f60db10a665093a041242e6cd0942"
+    },
+    {
+      "bytes": 6539,
+      "path": "source/ostadix-voice/local_actions.py",
+      "sha256": "3d4c6566ceaba2993d7b8c0198af8b2e68c89e6992db15486f29a4b44110ff94"
+    },
+    {
+      "bytes": 18571,
+      "path": "source/ostadix-voice/local_agent.py",
+      "sha256": "b034476dee66129b4f9a0f4de1b8fab322ab64730757d87cc507cc242bdd912c"
+    },
+    {
+      "bytes": 23946,
+      "path": "source/ostadix-voice/local_assistants.py",
+      "sha256": "1cb90955e8f1fc7dd6cd300b5e68ca9b9b8a8220b60b35a11fa2ea25b240b04b"
+    },
+    {
+      "bytes": 57509,
+      "path": "source/ostadix-voice/local_chat.py",
+      "sha256": "05785c06f54cc659d681dab610bb148ceb4c105846a2103969be920e393b91c2"
+    },
+    {
+      "bytes": 67025,
+      "path": "source/ostadix-voice/local_runtime.py",
+      "sha256": "7071ab9e81b2e49a0fc65a2a2b3c965cf0d7620706b040b44cf84ae4978e14c3"
+    },
+    {
+      "bytes": 19828,
+      "path": "source/ostadix-voice/local_service.py",
+      "sha256": "2eaad777b824ea0fd6b7ab89633c843248983549efe0017476523556c59ce69f"
+    },
+    {
+      "bytes": 19094,
+      "path": "source/ostadix-voice/local_workers.py",
+      "sha256": "739558c9b69f74b553f3c411e0b93b10a546b76d3e23a3dc493698d0647473ea"
+    },
+    {
+      "bytes": 12642,
+      "path": "source/ostadix-voice/mcp_transport.py",
+      "sha256": "42ffe4866749ec5f5dc24f2dc7238ade863566c84900cc03f820515c6be6af8b"
+    },
+    {
+      "bytes": 11476,
+      "path": "source/ostadix-voice/npu_chat.py",
+      "sha256": "432f546e3c84bc86532d117362fe5f6d66e6dc12dfb1a9ca01046af3fe127019"
+    },
+    {
+      "bytes": 18398,
+      "path": "source/ostadix-voice/npu_runtime.py",
+      "sha256": "68b8f51650e5ccd196ebf4959a41ce9b8531878625f329f9ef58126c7878211e"
+    },
+    {
+      "bytes": 3600,
+      "path": "source/ostadix-voice/npu_tools.py",
+      "sha256": "c5b0c2866b8403589996fd100d9f650696d3d3291a26653fe5fb4bdb81320f1b"
+    },
+    {
+      "bytes": 33937,
+      "path": "source/ostadix-voice/optimizer.py",
+      "sha256": "a4e91a27ed1366de8d846394fa1bd4f00629608a11c37dc48d9b008a44555753"
+    },
+    {
+      "bytes": 13541,
+      "path": "source/ostadix-voice/optimizer_guard.py",
+      "sha256": "2569ff8a17fbe4de6428f8b1ae1f24f9491116791974a8c9b0971d7e1742ab78"
+    },
+    {
+      "bytes": 11989,
+      "path": "source/ostadix-voice/optimizer_policy.py",
+      "sha256": "5e377fd13c6c9c06ecf2a2d41d235a9ce070b6abd5aaa35139a06d7dfbe2c2ad"
+    },
+    {
+      "bytes": 4330,
+      "path": "source/ostadix-voice/optimizer_probe.py",
+      "sha256": "2de397fe05d9895172cdd31721d3e586164275aec9f46f69ef147fc92d751044"
+    },
+    {
+      "bytes": 1126,
+      "path": "source/ostadix-voice/optimizer_reuse.py",
+      "sha256": "02e325a056a68a74a9a4cc8cc13e5aef959859594c7b4dba8cf1e1395b9a092b"
+    },
+    {
+      "bytes": 17388,
+      "path": "source/ostadix-voice/optimizer_tuning.py",
+      "sha256": "33c7479cf63332d8ccce81fbda8bfbf8cf5fa4b3f2e53f83437819ccec585390"
+    },
+    {
+      "bytes": 18789,
+      "path": "source/ostadix-voice/ostadix_pair.py",
+      "sha256": "e4044c46681d3678d287ed09e410b2f09f0f46db07a8c2d1e5b93609e2f27430"
+    },
+    {
+      "bytes": 15078,
+      "path": "source/ostadix-voice/ostadix_tools.py",
+      "sha256": "c9d58f4974ab09ad8fd75ad506ee21ad5ffdf482166c13781f2eef9bc3aa1dbc"
+    },
+    {
+      "bytes": 32574,
+      "path": "source/ostadix-voice/phone_tools.py",
+      "sha256": "b2d502f20e81e90ff64f18f375b312fb342d56e96e46e63fce52bc17fa12d780"
+    },
+    {
+      "bytes": 22535,
+      "path": "source/ostadix-voice/pixelforge_chat.py",
+      "sha256": "42f4a543b9588cb1641f1cf551d41a60c80c89e312ef3990ef43694599469028"
+    },
+    {
+      "bytes": 15563,
+      "path": "source/ostadix-voice/pixelforge_runner.py",
+      "sha256": "dbc1dc6db5350136e9549b6c25a7bd6054364d460087d41e356cc2978db5d2df"
+    },
+    {
+      "bytes": 244,
+      "path": "source/ostadix-voice/runtime/npu/build_probe.sh",
+      "sha256": "5054130d60d40f7b8e6459ae5d5c912176614f89dbcb50c2ea6c01c91778bf29"
+    },
+    {
+      "bytes": 250,
+      "path": "source/ostadix-voice/runtime/npu/build_resident.sh",
+      "sha256": "1249371bbbd7748f1d8c3c4ab51cbaeebcb5e0ae2aeb70dcf5999c1209209cb8"
+    },
+    {
+      "bytes": 11357,
+      "path": "source/ostadix-voice/runtime/npu/c_api-0.1.0/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "bytes": 19267,
+      "path": "source/ostadix-voice/runtime/npu/c_api-0.1.0/include/conversation.h",
+      "sha256": "928f2efd2f89684a11317d7ceb76435707b38c9cd20d8e8c759335e82afaf11f"
+    },
+    {
+      "bytes": 49871,
+      "path": "source/ostadix-voice/runtime/npu/c_api-0.1.0/include/engine.h",
+      "sha256": "e653fb924e5c2e76d7ff629654d4f200f944cf5a0e192d12b75ef048b1997f48"
+    },
+    {
+      "bytes": 9471,
+      "path": "source/ostadix-voice/runtime/npu/npu_telemetry.py",
+      "sha256": "6d9a63a2cb76057d45c15b592381a839a539ea6e88b0d81e30cf702d993f0a48"
+    },
+    {
+      "bytes": 4043,
+      "path": "source/ostadix-voice/runtime/npu/probe.c",
+      "sha256": "927f80057ac8e699b4116db234bcdc106a3425194ee4c6beb909ef06f32087e8"
+    },
+    {
+      "bytes": 12148,
+      "path": "source/ostadix-voice/runtime/npu/resident.c",
+      "sha256": "7450f032b275e2ce07bda26ec919a3674c61439664de1a5034d979172da69fe3"
+    },
+    {
+      "bytes": 11757,
+      "path": "source/ostadix-voice/runtime/npu/test_resident_protocol.py",
+      "sha256": "be522af2c211eac01ecdf3e76f6dbfdfac4187ef9200994b4b8c10d30d3f0689"
+    },
+    {
+      "bytes": 641,
+      "path": "source/ostadix-voice/runtime/npu/vendor_probe.c",
+      "sha256": "12a688e8691be5466759385db4f717181cfc2b0d24e96d93be4734dab6909b29"
+    },
+    {
+      "bytes": 3287,
+      "path": "source/ostadix-voice/runtime/pixelforge.O",
+      "sha256": "d4a1abc6098b93b928e487ae8f86620689e2bbda211c421a870674e2dc58289d"
+    },
+    {
+      "bytes": 3925,
+      "path": "source/ostadix-voice/saved_results.py",
+      "sha256": "6a86afd9b19689d60d692a9c74ca647dc0bb1ec659caa2cfb8bbcbbfa5062956"
+    },
+    {
+      "bytes": 13366,
+      "path": "source/ostadix-voice/server.py",
+      "sha256": "bffb43dce80922bcb2bb7649e9125bdd70a90cdcf44d2c3ec390fa5572281a8b"
+    },
+    {
+      "bytes": 15238,
+      "path": "source/ostadix-voice/setup_local_model.py",
+      "sha256": "2dc6e8eb51d9bc782cbca4c06580822feaf1498ceea0df9316344d3bc4c55fe9"
+    },
+    {
+      "bytes": 1091,
+      "path": "source/ostadix-voice/speech_text.py",
+      "sha256": "e760d27ef3b8bab176ed38a6038d2551d9639df84b03488b22409ae7286fe8d4"
+    },
+    {
+      "bytes": 12082,
+      "path": "source/ostadix-voice/static/app.js",
+      "sha256": "e83e076c7ecbaea3b2d52ec28f74ed53c4cb28d7c527a984df68fac42485f913"
+    },
+    {
+      "bytes": 3782,
+      "path": "source/ostadix-voice/static/index.html",
+      "sha256": "98c28f0ff0b493f6945349773eea4b59eea540b44e1add59b88d7609e77ab2bc"
+    },
+    {
+      "bytes": 4008,
+      "path": "source/ostadix-voice/static/style.css",
+      "sha256": "744e09f0134f11e1e7312718a05c19554751b8113dd6a78527baf072e344d9c8"
+    },
+    {
+      "bytes": 147168,
+      "path": "source/ostadix-voice/terminal.py",
+      "sha256": "9f1cd538599cd830ec3ebc1abf311a47bef5d26b6c3a24086879b9f2ba630dc8"
+    },
+    {
+      "bytes": 15195,
+      "path": "source/ostadix-voice/tests/evaluate_local_agent.py",
+      "sha256": "3da823ca82b94ebc0a37e7c423b047128eeb545c4e8c868c624ced6ab18084dc"
+    },
+    {
+      "bytes": 17841,
+      "path": "source/ostadix-voice/tests/integration_codex.py",
+      "sha256": "8119061df7f18e7e067dc25bb4889e95373fa294fdad36f29c58e24f4c6793f9"
+    },
+    {
+      "bytes": 15970,
+      "path": "source/ostadix-voice/tests/integration_device_investigation.py",
+      "sha256": "1e077687fcc838c90b76200b5747873a77c3c10f1561794ce46491c48b022f5e"
+    },
+    {
+      "bytes": 4750,
+      "path": "source/ostadix-voice/tests/integration_launcher.py",
+      "sha256": "cb567286591847ec9f31c4e2571a2a251e60dda0b42bc94ffd8dc9192bae1c50"
+    },
+    {
+      "bytes": 5144,
+      "path": "source/ostadix-voice/tests/integration_local_recovery.py",
+      "sha256": "88f6da151aa175a6bcba32ee127251eb391332239078cf44fcbc393352e04288"
+    },
+    {
+      "bytes": 9415,
+      "path": "source/ostadix-voice/tests/integration_mcp_jobs.py",
+      "sha256": "660cc12a9bc8a7651579a10f7dca3577c7e1a7eed46ed112623a1a6ca14982fa"
+    },
+    {
+      "bytes": 4757,
+      "path": "source/ostadix-voice/tests/integration_model_compare.py",
+      "sha256": "4935e117da04785696df503becb2ec6953102cc38251d3e3d9b2ab5a4c369c90"
+    },
+    {
+      "bytes": 9483,
+      "path": "source/ostadix-voice/tests/integration_model_profiles.py",
+      "sha256": "de02ee28b1d464a25041b96e48ce411df173e23ef7f900bdb0f7b6d71ef58d29"
+    },
+    {
+      "bytes": 6141,
+      "path": "source/ostadix-voice/tests/integration_npu_service.py",
+      "sha256": "acc5f36c2675ae46e470f9caac7e815dc338a98f94ab7c17029a0311b18e4682"
+    },
+    {
+      "bytes": 6064,
+      "path": "source/ostadix-voice/tests/integration_persistent.py",
+      "sha256": "08689891309f4600439a002563f102392d7389de35b9dec69ccb66ff5e693615"
+    },
+    {
+      "bytes": 4553,
+      "path": "source/ostadix-voice/tests/integration_phone_assistant.py",
+      "sha256": "044b5dc358a704c7280f5d527ceabbd401e4562f5ed2f9558f719c83b7388f1c"
+    },
+    {
+      "bytes": 4040,
+      "path": "source/ostadix-voice/tests/integration_pixelforge.py",
+      "sha256": "bf3ab78bff0fb5d69aa5658bc5af41174a6ac10b3b980f3e6b6c4997fa5f66ef"
+    },
+    {
+      "bytes": 6719,
+      "path": "source/ostadix-voice/tests/integration_takeover.py",
+      "sha256": "a2c6270ceb452473b49cecef6ccf14ae9dc936e6ae174a98642c6ba74cb17905"
+    },
+    {
+      "bytes": 5016,
+      "path": "source/ostadix-voice/tests/probe_codex.py",
+      "sha256": "413ed6d1da3cd44ad4fd48d448afc9f11a736f21c716f71969057a29a0f7dd74"
+    },
+    {
+      "bytes": 13148,
+      "path": "source/ostadix-voice/tests/test_action_policy.py",
+      "sha256": "910d551946fca1822a19f980f1fead2f852afb0a8645d909eb4789d4010ba431"
+    },
+    {
+      "bytes": 8192,
+      "path": "source/ostadix-voice/tests/test_action_policy_ui.py",
+      "sha256": "ccd02435100215e33b401b50a0c64b24580e8efd7e3b9a1e286f6a803f288420"
+    },
+    {
+      "bytes": 3160,
+      "path": "source/ostadix-voice/tests/test_agent_eval.py",
+      "sha256": "cd6747a849e7c984b22ac6e76f9e9e9e1dc3841dcf33d7af5ff498a0502f213c"
+    },
+    {
+      "bytes": 20808,
+      "path": "source/ostadix-voice/tests/test_app.py",
+      "sha256": "afbaa938b0f0288493898de7417612f3867686cd762973ee18f7d464dc3ead6f"
+    },
+    {
+      "bytes": 15288,
+      "path": "source/ostadix-voice/tests/test_codex_launcher.py",
+      "sha256": "fcf3dad1af2f635cd76cee9741f77e81ffb4bbba942b842d0c4cb11621f441f4"
+    },
+    {
+      "bytes": 20781,
+      "path": "source/ostadix-voice/tests/test_companion.py",
+      "sha256": "9ced4e671dd4c7cc7384bb775db9b1e86eb2e9d429ae00846c06cbccf3fa2018"
+    },
+    {
+      "bytes": 10789,
+      "path": "source/ostadix-voice/tests/test_companion_notify.py",
+      "sha256": "e77675024ab84e896ccba852e81999d2794afeb912d3b9bd4712eca4f3487d13"
+    },
+    {
+      "bytes": 7035,
+      "path": "source/ostadix-voice/tests/test_companion_probe.py",
+      "sha256": "9e9fb5f32bf936ff54e6b9b9e63d8494923ca18bd41279513597eee65f25d805"
+    },
+    {
+      "bytes": 5961,
+      "path": "source/ostadix-voice/tests/test_compile_affinity.py",
+      "sha256": "6ff3521c50ebf99cf250994be62cfa3756dd81817f271aeaf31a5cf1e298d387"
+    },
+    {
+      "bytes": 8403,
+      "path": "source/ostadix-voice/tests/test_conversation_flow.py",
+      "sha256": "2fdf4320724e7bbfcb437be2f73c6288d750baa3cbc0c485826b983cfea12429"
+    },
+    {
+      "bytes": 11587,
+      "path": "source/ostadix-voice/tests/test_conversation_protocol.py",
+      "sha256": "247ac03d447694f4922292b6be7fa560461fc1a77b46aadeeb11cf2f1ea8243a"
+    },
+    {
+      "bytes": 30460,
+      "path": "source/ostadix-voice/tests/test_duplex_speech.py",
+      "sha256": "36a3749b1aeaf6759a4aa3cdac188ae92d9ceae0cc00ae553b4bf004d81d4dbe"
+    },
+    {
+      "bytes": 949,
+      "path": "source/ostadix-voice/tests/test_exact_compute.py",
+      "sha256": "98265d6ebc30c3f8712a86c18051e23b7af89fbcfb4ec9b9661af52f093ee423"
+    },
+    {
+      "bytes": 32692,
+      "path": "source/ostadix-voice/tests/test_gemini_client.py",
+      "sha256": "d6a4a94f795e6013d08d4c3730c117576fdaed01f2fc6a2e55965594e94e95a5"
+    },
+    {
+      "bytes": 15744,
+      "path": "source/ostadix-voice/tests/test_handsfree.py",
+      "sha256": "0a9a6fbf1bf2dc91f450ab7dc1babc1a307f3245b410f2cc4e3d1c34d55cca37"
+    },
+    {
+      "bytes": 12071,
+      "path": "source/ostadix-voice/tests/test_hardware_queries.py",
+      "sha256": "a3706c3d1b37f38ea79ca020fe92238a6f1970a0d1e6f789fafaaebd78082b49"
+    },
+    {
+      "bytes": 3101,
+      "path": "source/ostadix-voice/tests/test_install_shortcut.py",
+      "sha256": "cc54220354da1e954c3cb251253a9514547e4f9930757d08d86842274a403544"
+    },
+    {
+      "bytes": 9213,
+      "path": "source/ostadix-voice/tests/test_interface_tools.py",
+      "sha256": "aa8cdc0e8440171333acb1114e0d5a362f2fec410300e290e1456d3083d7fa14"
+    },
+    {
+      "bytes": 42434,
+      "path": "source/ostadix-voice/tests/test_launch.py",
+      "sha256": "349dbfedeae99cdcdf6fcc2fbc5fd41e10953a91691e5a80efb5383d251d79e5"
+    },
+    {
+      "bytes": 6865,
+      "path": "source/ostadix-voice/tests/test_local_actions.py",
+      "sha256": "10b877c89ace57871396da222f93c2e7f7e50beda23ef1d08423f7124760aeb1"
+    },
+    {
+      "bytes": 9101,
+      "path": "source/ostadix-voice/tests/test_local_agent.py",
+      "sha256": "ba5c28ced734d23b9baba7f79f9032c1c8f1e5ce76b48937cf656ec0343a904a"
+    },
+    {
+      "bytes": 14091,
+      "path": "source/ostadix-voice/tests/test_local_assistants.py",
+      "sha256": "fff94799a0fb88ac91a7e8cfa7afd4d886f955bffd2ac118c03ba71ab976a5d1"
+    },
+    {
+      "bytes": 49952,
+      "path": "source/ostadix-voice/tests/test_local_chat.py",
+      "sha256": "2d1ace5f4f5fc4ea079c762bd3438f363f4540e7655ad1cb9683d014c96d4da3"
+    },
+    {
+      "bytes": 61385,
+      "path": "source/ostadix-voice/tests/test_local_runtime.py",
+      "sha256": "73e7e3cdd8363ee1fe6c2b54eb925bbd642a4b589c26d6be4c9fdf4b609af50e"
+    },
+    {
+      "bytes": 21003,
+      "path": "source/ostadix-voice/tests/test_local_service.py",
+      "sha256": "b11c5f25e3cffc0bf2df2a30f93f908accba818422a988c1ef871bb46e62b888"
+    },
+    {
+      "bytes": 18276,
+      "path": "source/ostadix-voice/tests/test_local_workers.py",
+      "sha256": "78ba451b64700ac03c71d2402eaa010841c469496065f364d78f32dbb303e13e"
+    },
+    {
+      "bytes": 12620,
+      "path": "source/ostadix-voice/tests/test_mcp_transport.py",
+      "sha256": "c598d44e3233d4ba56a78b0e089c10ee733387845e0e478f378f98f7a044d997"
+    },
+    {
+      "bytes": 12749,
+      "path": "source/ostadix-voice/tests/test_model_setup.py",
+      "sha256": "c8b624787cb119fdb99ead43e0f63f0b6d3d5597aac932ec1daedcecbbdb6a4f"
+    },
+    {
+      "bytes": 12421,
+      "path": "source/ostadix-voice/tests/test_native_speech.py",
+      "sha256": "df765d188fa438ba3c5875c2d8da5c9fe2ebace80aef7f134550536d2f8ea9f5"
+    },
+    {
+      "bytes": 26611,
+      "path": "source/ostadix-voice/tests/test_npu_chat.py",
+      "sha256": "ac3749ceafd91cc630329e00e17695a62eaffbac0fc62b050a950d920f78a097"
+    },
+    {
+      "bytes": 20644,
+      "path": "source/ostadix-voice/tests/test_npu_runtime.py",
+      "sha256": "3bfcd79df82bdaea7ff40ac789ac5197afeaafaf67b0cb1d5aaabdadda3a47b2"
+    },
+    {
+      "bytes": 7255,
+      "path": "source/ostadix-voice/tests/test_npu_telemetry.py",
+      "sha256": "feaf7507ced194a5c9789ada0726c7a45f9c706cdd40793eb17bf3907a057a17"
+    },
+    {
+      "bytes": 4198,
+      "path": "source/ostadix-voice/tests/test_npu_tools.py",
+      "sha256": "30c5a529b1e4d915d9fa8777255f8844bf6a9529d2a291028b872a7c0bc843a0"
+    },
+    {
+      "bytes": 21767,
+      "path": "source/ostadix-voice/tests/test_optimizer.py",
+      "sha256": "b996edc96b67022128c438bc614e277081b9c38755ce80edf2b274de4630a9f9"
+    },
+    {
+      "bytes": 14215,
+      "path": "source/ostadix-voice/tests/test_optimizer_guard.py",
+      "sha256": "49a1a7f694c4127c73f5849f609448ee35070dad015a7a765054c4dcec8284ad"
+    },
+    {
+      "bytes": 9735,
+      "path": "source/ostadix-voice/tests/test_optimizer_ipc.py",
+      "sha256": "727547ab8eb0cb1b697b007cc336df52a557630fc35687b5caf56dd86415d17c"
+    },
+    {
+      "bytes": 7790,
+      "path": "source/ostadix-voice/tests/test_optimizer_policy.py",
+      "sha256": "943d790ba809f490770db588a60f9e378b128b7ffb91a17c7aaee9a127b652e0"
+    },
+    {
+      "bytes": 2528,
+      "path": "source/ostadix-voice/tests/test_optimizer_reuse.py",
+      "sha256": "e65c9aba513536bbb298492a4f3868859e96ec763041945f549553e22f1c94be"
+    },
+    {
+      "bytes": 10616,
+      "path": "source/ostadix-voice/tests/test_optimizer_tuning.py",
+      "sha256": "a8c33580de5686dcbbafa551007b843f3b11383174164f295c320cd2f0b6ba1a"
+    },
+    {
+      "bytes": 17510,
+      "path": "source/ostadix-voice/tests/test_ostadix_pair.py",
+      "sha256": "0d36695e0f6553dff1a2f55b8b203e7fcf3e3aaea8a75de66a12a5c9ab10d759"
+    },
+    {
+      "bytes": 15803,
+      "path": "source/ostadix-voice/tests/test_ostadix_tools.py",
+      "sha256": "b5fd9614001466eb39208cd72e28d8cd998003894f8b294490c6a2369c906a0f"
+    },
+    {
+      "bytes": 35666,
+      "path": "source/ostadix-voice/tests/test_phone_tools.py",
+      "sha256": "9a6f20ffcdcfc76c803927f958f79929bedbbbe9552d3c463abbfc31fd86731d"
+    },
+    {
+      "bytes": 16722,
+      "path": "source/ostadix-voice/tests/test_pixelforge_chat.py",
+      "sha256": "d2d650b7e65b0af976d5e28208450233d13665dc619703298f7bc22e89ef095f"
+    },
+    {
+      "bytes": 3494,
+      "path": "source/ostadix-voice/tests/test_pixelforge_o.py",
+      "sha256": "fcc256a4566bbe09b3c1ce2777878cc01e2e0b783f409f267d555ad84066e500"
+    },
+    {
+      "bytes": 5280,
+      "path": "source/ostadix-voice/tests/test_pixelforge_runner.py",
+      "sha256": "b82e0a565982861e8bcc8d051ed9cd6ee9b27bce645c7d1175e22e78e371b6d4"
+    },
+    {
+      "bytes": 6529,
+      "path": "source/ostadix-voice/tests/test_saved_results.py",
+      "sha256": "89e5c8218584902199b8726b6f59dfa5a634df58d8628eceec62a4cce4fa3b7c"
+    },
+    {
+      "bytes": 6190,
+      "path": "source/ostadix-voice/tests/test_speech_completion.py",
+      "sha256": "67498757cc74cb3f817b1f38668f46def69ad05c2e513d14d28a86d93b61bd4d"
+    },
+    {
+      "bytes": 9400,
+      "path": "source/ostadix-voice/tests/test_steering.py",
+      "sha256": "468d153102384eff06eb0e6c71bb9e772546940d2d3ffeb106115065a6662a9d"
+    },
+    {
+      "bytes": 29793,
+      "path": "source/ostadix-voice/tests/test_terminal.py",
+      "sha256": "a237de0623d12079cec03e6b530d08e095b2c0684b96aaebcd28d095fb9012c0"
+    },
+    {
+      "bytes": 31293,
+      "path": "source/ostadix-voice/tests/test_terminal_duplex.py",
+      "sha256": "aa6213aa051dc169e4fb8d1145308a77842c7782bcde4af4a4af3f11bab96ad2"
+    },
+    {
+      "bytes": 7972,
+      "path": "source/ostadix-voice/tests/test_terminal_shutdown.py",
+      "sha256": "764f1fa66c8674b95ce08433704ef7db20ab885e7317d0edcaff5dc8b26ed442"
+    },
+    {
+      "bytes": 71009,
+      "path": "source/ostadix-voice/tests/test_terminal_ui.py",
+      "sha256": "6c80158d8e77d6726335d109511918d4cc278c328a2190b0bd241a09c30e7289"
+    },
+    {
+      "bytes": 6424,
+      "path": "source/ostadix-voice/tests/test_ui.cjs",
+      "sha256": "aad80320457f28dabd4bc0801a0598149eaeb2e40fb407b95f59cb2b7b761853"
+    },
+    {
+      "bytes": 23074,
+      "path": "source/ostadix-voice/tests/test_voice_inbox.py",
+      "sha256": "2d07e81ffd4cb4d374ee4dcba0d77b19aa2d71807e7de1cbef3c8f0e9ed5b5af"
+    },
+    {
+      "bytes": 8658,
+      "path": "source/ostadix-voice/tests/test_volume_hotkey.py",
+      "sha256": "95099e83bd68137b348ebfd52b654c0a630ec837b233b20e979427c339011cfd"
+    },
+    {
+      "bytes": 17027,
+      "path": "source/ostadix-voice/voice_inbox.py",
+      "sha256": "bc38a8935b46bd1f30e61d899cac92599263701b38f7e608aefd5746d8550d53"
+    },
+    {
+      "bytes": 12019,
+      "path": "source/ostadix-voice/volume_hotkey.py",
+      "sha256": "8b7660df80517a3f97a711ee7a7518d311d5bfad7879836e893a415a9401606c"
+    },
+    {
+      "bytes": 12853,
+      "path": "test_benchmark.py",
+      "sha256": "5f4e259267c877ab8e67bcf9c02d950f535bf075ad22c1515b0ce46ab01c12bc"
+    },
+    {
+      "bytes": 15747,
+      "path": "tests/test_public_release.py",
+      "sha256": "61a2519cf023ac8af8b22f3d8352a003b2f38bfe2fb8bb645e1eb655f79ef2a8"
+    },
+    {
+      "bytes": 17,
+      "path": "tools/arm_npu/.gitignore",
+      "sha256": "9e54722ec4404655cbc15449461df100fdaa8db778ad1c9f4257675e1f9a60b6"
+    },
+    {
+      "bytes": 10412,
+      "path": "tools/arm_npu/GGUF_COMPILER.md",
+      "sha256": "a7ed539030a3663c3369d7420502f3f73706a5846fe551fcb5db8009eef0b890"
+    },
+    {
+      "bytes": 2851,
+      "path": "tools/arm_npu/GGUF_QUANTIZATION_PROVENANCE.json",
+      "sha256": "9cbef9f9666e1475e2c2ee740a36e441811504b88e8c216cc512100cc735b69b"
+    },
+    {
+      "bytes": 2706,
+      "path": "tools/arm_npu/GGUF_READER.md",
+      "sha256": "2c0a94c632a48e871404c27526b195d72fae64224617abfe9b0daeb5412d5ab3"
+    },
+    {
+      "bytes": 1271,
+      "path": "tools/arm_npu/GGUF_RUNTIME_ASSETS.json",
+      "sha256": "dd07bf079b8509533b47e260f9a7229a1a7d0a1826ba90a7a0bf5d26ad911963"
+    },
+    {
+      "bytes": 2718,
+      "path": "tools/arm_npu/HUIHUI_ASSETS.json",
+      "sha256": "0529fcc402054a1b192163ea2edc8f690d5511a4b3a2b9012d372bc21c0a088e"
+    },
+    {
+      "bytes": 1078,
+      "path": "tools/arm_npu/LICENSE.ggml",
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    {
+      "bytes": 11357,
+      "path": "tools/arm_npu/LICENSE.litert",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "bytes": 2899,
+      "path": "tools/arm_npu/LLAMA_ENGINE.json",
+      "sha256": "2a1d6aa1058eeb90c89d25647ef75aef907c1e960c5cde05a342c468b90b842b"
+    },
+    {
+      "bytes": 5018,
+      "path": "tools/arm_npu/NATIVE_COMPILER.md",
+      "sha256": "4b67c0678105fbb6413379dfcbe83ccebbd12f55f8b39ff677d01ce1c257b26e"
+    },
+    {
+      "bytes": 4067,
+      "path": "tools/arm_npu/NATIVE_VALIDATION.json",
+      "sha256": "a988e3a6b513bb0a0b5c13a530681fc6671d1ccda95202a6d98d482e031f0a69"
+    },
+    {
+      "bytes": 4834,
+      "path": "tools/arm_npu/PYTHON_RUNTIME.md",
+      "sha256": "059c0af3554e28789a981f778543b2baaecaa570c2d8c5b7ee913adec7699168"
+    },
+    {
+      "bytes": 786,
+      "path": "tools/arm_npu/SCHEMA_PROVENANCE.json",
+      "sha256": "76b828430dbe666ba97383e2434809539c24fc307dd45efcf0d7ce066d7cf370"
+    },
+    {
+      "bytes": 985,
+      "path": "tools/arm_npu/UPSTREAM_APIS.json",
+      "sha256": "48a42817b80e2051796a81a82c739efbd20bf67f49c5136e491781f805c454b4"
+    },
+    {
+      "bytes": 5074,
+      "path": "tools/arm_npu/build_constant_fc.py",
+      "sha256": "0ba2f267686eab3eed75d91c1c6a9ae6e0ee2ea714075517d9a85d747a726dcc"
+    },
+    {
+      "bytes": 4133,
+      "path": "tools/arm_npu/build_llama_npu.sh",
+      "sha256": "a5175f4057cd35436611c05ef11f10ee6d642278fdd727c77f4cd64e99379de2"
+    },
+    {
+      "bytes": 1040,
+      "path": "tools/arm_npu/build_native.sh",
+      "sha256": "c470672e3ae65d5834b9c048dfdff9ed8e858c59093831fd5860e8ae82fa3dac"
+    },
+    {
+      "bytes": 8620,
+      "path": "tools/arm_npu/compile_gguf.py",
+      "sha256": "a19a0b114667594f4f345e7f7a16b3e1c978f9eaa92e95d37778215422766b84"
+    },
+    {
+      "bytes": 18436,
+      "path": "tools/arm_npu/compiled_model.py",
+      "sha256": "bc36b25f4a891b1d87b3347e70fa3228894d8e36943f5f4621c43a37e978f18a"
+    },
+    {
+      "bytes": 4349,
+      "path": "tools/arm_npu/create_tiny_gguf.py",
+      "sha256": "628fc635b41def14679d00e42dd9dc08940b057c6599d7be268f248115edb331"
+    },
+    {
+      "bytes": 2726,
+      "path": "tools/arm_npu/edgetpu_compiler_api.h",
+      "sha256": "5c5f312e296fd6cdf78a9049e6f7dcdc9e951e11e064cfc35d15f04ded03234c"
+    },
+    {
+      "bytes": 3405,
+      "path": "tools/arm_npu/fetch_tokenizer.py",
+      "sha256": "5daab3ce116fde260fa1d07e97e01b6396a11e5cafead2eef696fd74554cbcc5"
+    },
+    {
+      "bytes": 16417,
+      "path": "tools/arm_npu/ggml_npu_bridge.cc",
+      "sha256": "db7b441d095a3ef0528db187647342d56f821445ee6d977ec8100a2c5401713c"
+    },
+    {
+      "bytes": 477,
+      "path": "tools/arm_npu/ggml_npu_bridge.h",
+      "sha256": "b7394af15a818b8a8e6270e633ffa654a000ad27b6b5705705d06f02825b21e6"
+    },
+    {
+      "bytes": 944,
+      "path": "tools/arm_npu/gguf.sh",
+      "sha256": "85454763ee17e860be82dffa33628f521d47d799f3766c8b7d4996125d9e99d9"
+    },
+    {
+      "bytes": 7257,
+      "path": "tools/arm_npu/gguf_broker.py",
+      "sha256": "00d69901f46a5ba977f084935ce57c459b048f6d1d6c7820a0d6ae70efe81c7a"
+    },
+    {
+      "bytes": 6187,
+      "path": "tools/arm_npu/gguf_generate.cc",
+      "sha256": "e53216768b0f6dd0b77935714c35ea9ce0d0c986b6b843828ac1ff0019502362"
+    },
+    {
+      "bytes": 24211,
+      "path": "tools/arm_npu/gguf_hf_loader.py",
+      "sha256": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4"
+    },
+    {
+      "bytes": 3549,
+      "path": "tools/arm_npu/gguf_inspect.py",
+      "sha256": "c766590237368acd075a1f48020c8bd3ccb0ed1bf858d7b61393c25d94645c0b"
+    },
+    {
+      "bytes": 10400,
+      "path": "tools/arm_npu/gguf_quantizers.py",
+      "sha256": "49f61dad4b7557ae0b1e78c188135cb7ca379838b230e69dc39a795322e69e28"
+    },
+    {
+      "bytes": 249,
+      "path": "tools/arm_npu/gguf_vendor/__init__.py",
+      "sha256": "ffc4ffef5682162bfd0b37bd1b603ab4727a29aa691f8d45ed2afdfa6c97052b"
+    },
+    {
+      "bytes": 237584,
+      "path": "tools/arm_npu/gguf_vendor/constants.py",
+      "sha256": "8defce15ed199e68fe04e72cf05527babbf7ed74788b739eceef8038dfa30517"
+    },
+    {
+      "bytes": 12015,
+      "path": "tools/arm_npu/gguf_vendor/lazy.py",
+      "sha256": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85"
+    },
+    {
+      "bytes": 64946,
+      "path": "tools/arm_npu/gguf_vendor/quants.py",
+      "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b"
+    },
+    {
+      "bytes": 1389,
+      "path": "tools/arm_npu/llama_npu_bridge.patch",
+      "sha256": "23e3bd990b791cc9fb38b328b825bcb61855ea4f484abd28d15c33f941df1bc8"
+    },
+    {
+      "bytes": 4918,
+      "path": "tools/arm_npu/model_architecture.py",
+      "sha256": "e5f5d1ad9c6dd9f32b3d7d2c5d97b72c118893560e7e48f74539e8fab17ef4d2"
+    },
+    {
+      "bytes": 17090,
+      "path": "tools/arm_npu/model_host.py",
+      "sha256": "7471cd40bb412a116176eb1fa5110b5b61f844519ab639875ee53e79be779719"
+    },
+    {
+      "bytes": 23160,
+      "path": "tools/arm_npu/npu_linear.py",
+      "sha256": "87634fae2d32a361c075fac159651e8ccbd5a3ecbb064997878a04b88436796e"
+    },
+    {
+      "bytes": 12738,
+      "path": "tools/arm_npu/npu_pipe.cc",
+      "sha256": "067828e3b162bfa5d98baca575b080e0476ffbde7b6c674d19dfba080546c403"
+    },
+    {
+      "bytes": 14559,
+      "path": "tools/arm_npu/pack_gguf.py",
+      "sha256": "99e8a583abc17b1bce5498a4c404fe698b5189e6e0dfca426b8086e170d5a569"
+    },
+    {
+      "bytes": 3021,
+      "path": "tools/arm_npu/pipe_protocol.h",
+      "sha256": "6492c4889ae1e4fa1d1fe25db96e2c1214e8fc7cacf3c51e46cfc923f90928c4"
+    },
+    {
+      "bytes": 11564,
+      "path": "tools/arm_npu/run_gguf.py",
+      "sha256": "3dfe7c5baf365415b4146cad9ccc213e458487575493f57971c824e9e3e34415"
+    },
+    {
+      "bytes": 10252,
+      "path": "tools/arm_npu/runtime.py",
+      "sha256": "2aca56319ddf32be0d1d8b8f828023d88bcd89f57c46d596de734481d9a1c0ac"
+    },
+    {
+      "bytes": 40928,
+      "path": "tools/arm_npu/sb_api.h",
+      "sha256": "bed215440b3d8cb3fba4f6779807a9650d53459eba504cd610ab992667ee410f"
+    },
+    {
+      "bytes": 687424,
+      "path": "tools/arm_npu/schema_py_generated.py",
+      "sha256": "4e9b3b3017f8ad21244441cc375d9df58fa57ac7561d7010e5f9a635f42a4ac2"
+    },
+    {
+      "bytes": 7934,
+      "path": "tools/arm_npu/setup_gguf.py",
+      "sha256": "cf191c31dd30ad493543965c7daecb1710aed0561aaaefb9a72a6e39a76eb9ed"
+    },
+    {
+      "bytes": 19950,
+      "path": "tools/arm_npu/stress_artifacts.py",
+      "sha256": "ac145d36c371c294ca3443ff1a6a873cbeb1da7a9203b5f126596efeed3a38e1"
+    },
+    {
+      "bytes": 22207,
+      "path": "tools/arm_npu/stress_gguf.py",
+      "sha256": "71e8a9173e3e461f83c7a10858277bf0e9efb8106b768acac4cde64c19791ee4"
+    },
+    {
+      "bytes": 3261,
+      "path": "tools/arm_npu/stress_native_cleanup.cc",
+      "sha256": "fecab5c80f8ff8ae425a960c0593ca8331ce07c9742543d98da4413daaed57c5"
+    },
+    {
+      "bytes": 15366,
+      "path": "tools/arm_npu/stress_native_protocol.py",
+      "sha256": "dc5f35bf3665659e167f8ff16fe5b02c8205575e15faba7921a094d0be843526"
+    },
+    {
+      "bytes": 10856,
+      "path": "tools/arm_npu/stress_pipe_protocol.cc",
+      "sha256": "a65048734f67be131c1112c0bf8b30f881cdd42d8cb82b04ae6939e1aafc79fb"
+    },
+    {
+      "bytes": 14568,
+      "path": "tools/arm_npu/stress_runtime.py",
+      "sha256": "7c74bcde9b183f4eb5e2f55a0771fac1b58d9c38db36b07387bd5a93e6a1ce7c"
+    },
+    {
+      "bytes": 11468,
+      "path": "tools/arm_npu/test_compiled_model.py",
+      "sha256": "63e70f5c176472382a0b86eb527bc56b84407d4e710b947c6c24c1235d4b9e6c"
+    },
+    {
+      "bytes": 11941,
+      "path": "tools/arm_npu/test_gguf_loader.py",
+      "sha256": "f35c6823aa0e51dbd544d46f2f88ca4db740c0d0a84a22fcdba7250bfb89f9b3"
+    },
+    {
+      "bytes": 9804,
+      "path": "tools/arm_npu/test_gguf_run.py",
+      "sha256": "200df6269f50272516312187329276912d3213251e2b4307cb2ddfdb52d5d3e0"
+    },
+    {
+      "bytes": 3835,
+      "path": "tools/arm_npu/test_host_assets.py",
+      "sha256": "352e7efb3559555fbb4e30973e34f01331bf59356c194778b179e9850e1c8f94"
+    },
+    {
+      "bytes": 9494,
+      "path": "tools/arm_npu/test_npu_protocol.py",
+      "sha256": "b4dadf106d194bbfb5d5d3e5c1a2f5369b6864a0575d9e47b24f95425d44c9a0"
+    },
+    {
+      "bytes": 13262,
+      "path": "tools/arm_npu/test_pack_gguf.py",
+      "sha256": "6c3fc29ed26c4dcc1a25acd48477057f8c8ebe9629d0293d808700795ed3f6f1"
+    },
+    {
+      "bytes": 1988,
+      "path": "tools/arm_npu/test_pipe_protocol.cc",
+      "sha256": "20ad0c5f93db9ba714882f7aebf3e8c510bd4fd253b0873e2f473e2b02490f3e"
+    },
+    {
+      "bytes": 4762,
+      "path": "tools/arm_npu/test_runtime.py",
+      "sha256": "5421ccedaf8b81ce3df309fb9c8217229e9b90142a84838d737aa2b398fe51b3"
+    },
+    {
+      "bytes": 9036,
+      "path": "tools/arm_npu/test_setup_gguf.py",
+      "sha256": "32f28bdf9a617eb44690abdc9ec47ceaa00f7674e3f58f5a66014eb7dd103eab"
+    },
+    {
+      "bytes": 2702,
+      "path": "tools/arm_npu/test_stress_runtime.py",
+      "sha256": "2183e1e0ce420ac5958765d4ea1b8011156a2ce6d7b35a92ca0bd863f0dbbc81"
+    },
+    {
+      "bytes": 12713,
+      "path": "tools/arm_npu/validate_runtime.py",
+      "sha256": "b83d02b803beb3083ed39bda294910c72a6e12c96dc5158fd6de6e67c1de11d5"
+    },
+    {
+      "bytes": 14428,
+      "path": "tools/plan_huihui.py",
+      "sha256": "b35a1ec864c7470c86412c9728e6638cf8d0c3046bd1e9ec77aeb537274660a4"
+    },
+    {
+      "bytes": 7719,
+      "path": "tools/test_plan_huihui.py",
+      "sha256": "d1c6a4f79a8cead312203165903656f8ca0329e9852ee694c6eb411d3ff94d41"
+    }
+  ],
+  "schema": "pixelforge.public-source.v1"
+}

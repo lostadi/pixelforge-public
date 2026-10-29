@@ -1,0 +1,4 @@
+# Preserve the hash-pinned upstream generated schema byte for byte.
+tools/arm_npu/schema_py_generated.py whitespace=-blank-at-eof
+# Unified diffs use a space as the context marker on otherwise empty lines.
+tools/arm_npu/llama_npu_bridge.patch -whitespace

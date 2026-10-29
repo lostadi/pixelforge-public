@@ -1,0 +1,45 @@
+{
+  "scope": "Public fixed-prompt CPU validation and pinned source metadata; no weights, activation arrays, private configuration, or user history.",
+  "files": [
+    {
+      "path": "HUIHUI_ASSETS.json",
+      "bytes": 2718,
+      "sha256": "0529fcc402054a1b192163ea2edc8f690d5511a4b3a2b9012d372bc21c0a088e"
+    },
+    {
+      "path": "cpu-BOS0-first-eight-layer-stats.json",
+      "bytes": 14414,
+      "sha256": "595161b6e393704d239c088695c77c2dd1302e723b6ae1c69994451e7357b6eb"
+    },
+    {
+      "path": "cpu-chat-Hi-golden.json",
+      "bytes": 2960,
+      "sha256": "1c24870303e171ad6ba290cb01bf46ab6a2534c87f894e1801bc2dd3a79ee7d4"
+    },
+    {
+      "path": "cpu-raw-Hello-golden.json",
+      "bytes": 7825,
+      "sha256": "3b51c0ca9b359cd541ffafcbbd43571bda7d51e3f4c6e7225e0e8ca6c7464e38"
+    },
+    {
+      "path": "gguf-dequant-validation.json",
+      "bytes": 849,
+      "sha256": "bfeef2fd1cb642366cd926e9ddaa85b071290729a08c414b212f63838f1bfafd"
+    },
+    {
+      "path": "host-hf-two-layer-validation.json",
+      "bytes": 557,
+      "sha256": "ea79f2c91308e8b9f8f5eaf528dc8f522677fcdbb1b4c9cd0c5627731bb41cae"
+    },
+    {
+      "path": "minicpm5-config.json",
+      "bytes": 704,
+      "sha256": "59613157e5357d62bcb121e04cb90f2170b43d789b142380c12c3d4277d95180"
+    },
+    {
+      "path": "tokenizer-validation.json",
+      "bytes": 2230,
+      "sha256": "c38374218d32a934b2f880a51509379d6d5321256a4954e0a213ef2c2456a366"
+    }
+  ]
+}
