@@ -1,4 +1,4 @@
-# PixelForge public source release candidate, 2026-10-29
+# PixelForge v0.1.0: public source release, 2026-10-29
 
 I have brought the working model compiler and the phone conversation path into
 one reviewable source release.

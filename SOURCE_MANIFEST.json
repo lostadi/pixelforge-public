@@ -47,9 +47,9 @@
       "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
     },
     {
-      "bytes": 948,
+      "bytes": 955,
       "path": "NOTICE",
-      "sha256": "b5ea774f4b9f93ed64b69a8ac89e7a64ff310e5129c96078cd0fcc16c967ff16"
+      "sha256": "141e31f0f6ce05912801c015f983c4381013a88ae3eab961c73a609baed1f8b7"
     },
     {
       "bytes": 5677,
@@ -57,9 +57,9 @@
       "sha256": "ea4ddb38de84b2f55127034e90eb4bee638b71ca53318b84c2cccf66b1d0747e"
     },
     {
-      "bytes": 1735,
+      "bytes": 1733,
       "path": "RELEASE_NOTES.md",
-      "sha256": "af1ddb71a666f87b793d20b74c28c69a23a35aba7e2e38a0db7fea115be65a37"
+      "sha256": "b66f1bd023dfbc237d6c4d7e7c9abbe32a650e85d39f7deeccb36b546dc792a7"
     },
     {
       "bytes": 1647,
@@ -412,9 +412,9 @@
       "sha256": "be492175ef799f4627212fc09570c1b366d350f5ea7165e4f989ed1da255e944"
     },
     {
-      "bytes": 1009,
+      "bytes": 988,
       "path": "docs/PUBLICATION.md",
-      "sha256": "2e0a6b4f01fc2dd72eb5ba724e64b11b9145b635baf4235b8575ed07bec3e0d4"
+      "sha256": "d9a389b786b4022f60b1712fcbb4ed881ff9b316a3e55f8e5116bc2250fce73d"
     },
     {
       "bytes": 4551,

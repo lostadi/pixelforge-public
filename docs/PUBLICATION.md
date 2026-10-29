@@ -1,14 +1,14 @@
 # Source publication
 
-The publication candidate starts from a reviewed source snapshot with no
+This public repository starts from a reviewed source snapshot with no
 historical parent commit. The source archive has its own explicit boundary,
 file inventory and checksum receipt. Earlier device restoration history and
 embedded runtime archives are outside this distribution.
 
-Publish the clean candidate into an empty repository. Keep the original
-device-bundle repository private: changing its visibility would also expose
-its older branches, tags, references and release assets. A clean branch alone
-does not remove that history.
+The original device-bundle repository remains private. This repository has
+no ancestry from that private history. Public releases are built from the
+reviewed commits here, with model weights and device runtime inputs supplied
+separately.
 
 Before distributing a generated source archive, verify it with:
 
