@@ -4,18 +4,22 @@ I built PixelForge to compile my own model weights for the Tensor NPU on my
 phone. The point is a complete path I can inspect: the source weights, the
 matrix plan, the compiled code, the runtime calls and the result.
 
-PixelForge uses llama.cpp for the model architecture and tokenizer. It lowers
-declared weight projections into device-specific DarwiNN code and invokes that
-code through the Android Tensor runtime. Attention, normalization, sampling
-and projections assigned to the CPU retain their native model operations.
-For a projection `Y = XWᵀ`, placement identifies where the operation runs;
-the artifact records which weights and precision produced it.
+PixelForge uses llama.cpp for the model architecture and tokenizer. A declared
+tensor plan selects projections for device-specific DarwiNN programs. In the
+original-group routes, compiled code describes the geometry and the original
+GGUF integer levels and coefficients become weight inputs. The Tensor NPU
+reconstructs those weights and computes `Y = XWᵀ`. The source plan, graph
+recipe and device fingerprint identify each program. Attention, recurrent GDN,
+normalization, sampling and projections assigned to the CPU retain their native
+model operations. The diagram shows that original-group path.
 
 ```mermaid
 flowchart LR
     G[User-supplied GGUF] --> P[Validated tensor plan]
-    P --> A[Compiled and hashed NPU banks]
-    A --> N[Tensor NPU projections]
+    P --> A[Compiled and hashed projection programs]
+    G --> W[Original groups in shared weight buffers]
+    A --> N[Tensor NPU reconstruction and products]
+    W --> N
     G --> C[llama.cpp architecture and tokenizer]
     C --> N
     N --> C
@@ -25,13 +29,37 @@ flowchart LR
 
 ## What works
 
-The current phone configuration runs **Huihui NeoHorse 1 4B** through the
-`c` voice/chat interface with explicit CPU/NPU placement. Three feed-forward
-projections in its first block execute on the NPU. The remaining projections,
-prompt processing, attention, normalization and sampling execute on CPU.
-This is a hybrid model execution path.
+The **Huihui NeoHorse 1 4B** path has run its 249 main Q5_K/Q6_K projections
+on NPU during both prompt processing and decoding. The `original_groups`
+route retains the original integer levels and coefficients, reconstructs
+weights on NPU and shares DMA weight buffers between B16 prompt programs
+and B1 decode programs. The GGUF stays unchanged and no extra quantization
+is introduced. Attention, recurrent GDN, normalization, sampling and ordinary
+FFN elementwise operations remain on CPU. Read the
+[original-group execution guide](tools/arm_npu/ORIGINAL_GROUPS.md).
 
-A live test asked the model to read a file. It emitted a complete tool request,
+The opt-in `original_columns` family takes successive logical ranges of 3072
+columns and zero-pads only a shorter split tail to that physical program width.
+An unsplit matrix of at most 3072 columns keeps its original width. NPU programs
+produce the partial products; the host adds them in order using F32 arithmetic.
+It keeps the same original GGUF and quantized groups. B64 is usable only after
+every required row, column and batch geometry passes device validation.
+Individual primitive checks establish their tested geometries. The later
+ordinary-app tool test below establishes the specific full B64 conversation
+path; broader performance and quality remain separate measurements.
+
+The v0.2.0 path completed a real file-tool task through ordinary Termux
+in its normal SELinux application domain. The model chose a workspace read,
+received the actual result and returned the requested value on its second
+turn. Both turns selected all 249 main projections for NPU prompt processing
+and decoding, with zero CPU-placed weight operations. The second turn reused
+512 prefix tokens. The test took **1007.335 seconds, about 17 minutes**, with
+a resident-program limit of two. It is slow and does not establish a CPU
+speedup. Preserving original weight groups also does not make vendor float
+arithmetic bit-identical to CPU execution. Read
+[the measured limits and tested profile](docs/VALIDATION.md).
+
+A prior three-projection hybrid test asked the model to read a file. It emitted a complete tool request,
 received the actual host result and returned the exact file contents. The two
 model turns made **72 NPU weight operations and 168 native NPU invocations**,
 loaded seven saved banks and compiled nothing during inference. Cleanup passed.
@@ -41,7 +69,7 @@ hardware path; broader quality and performance need separate measurement.
 Huihui Gemma 4 E2B also passed an arithmetic check with all planned dense
 decoding projections assigned to the NPU and CPU prompt processing. One NPU
 decoding step ran during a **62.3-second generation call**, including CPU prompt
-processing. The NeoHorse hybrid is the selected profile.
+processing. These historical checks used separate bank recipes and placements.
 
 Selected NPU operations fail closed. Their errors end generation rather than
 replaying it through another model. Main turns have no elapsed deadline;
@@ -79,6 +107,19 @@ its plan by default. Follow [the chat guide](chat/README.md) to provide the loca
 model, compiled banks, native helper, Ubuntu environment and Termux paths.
 Weights and banks are referenced in place.
 
+The optional prefix cache retains exact prompt-token checkpoints, including
+attention and recurrent GDN state, in bounded RAM. It is off by default;
+`--prefix-cache-mib 256` is an explicit phone-profile option. A failed restore
+clears the cache and starts fresh prompt processing. Ready and completion
+receipts report the configured budget and actual reused tokens. The cache
+does not add an elapsed turn deadline or replay host actions.
+
+`--cpu-affinity` optionally limits this inference service and its children to
+an allowed CPU mask. Shared weight caching retains admitted buffers and streams
+the overflow tail; memory pressure can evict this process's retained entries.
+These settings change neither the GGUF nor Android's global clock, thermal or
+scheduling policy. See [the chat settings](chat/README.md).
+
 Install the source shortcut from ordinary Termux:
 
 ```sh
@@ -96,8 +137,10 @@ microphone capture. See [the voice source guide](source/README.md).
 The compiler plans supported rank-two weight matrices. Architecture recognition
 and matrix compilation are separate from successful model generation. Indexed
 expert operations, split GGUF assembly and unsupported quantizations are
-reported explicitly. Requantizing selected projections to int8 can change
-outputs; each model and placement needs a reference check.
+reported explicitly. The original-group route supports exact Q5_K/Q6_K
+layouts; other formats need a separate validated route. Legacy static INT8
+constants requantize decoded weights and can change outputs. Each model and
+placement needs a reference check, including vendor arithmetic precision.
 
 The optional [Ostadix adapter](integrations/ostadix/README.md) exposes compiler
 operations through an O program. Its source and build recipe are included.

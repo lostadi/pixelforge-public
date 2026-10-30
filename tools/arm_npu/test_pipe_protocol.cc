@@ -31,6 +31,31 @@ int main() {
   std::istringstream ended("  \n"), trailing(" model\n");
   assert(pixelforge::HeaderEnded(ended));
   assert(!pixelforge::HeaderEnded(trailing));
+  for (const auto& item : std::vector<std::pair<std::string, bool>>{
+           {"0", true}, {"134217728", true}, {"2147483648", true},
+           {"2147483649", false}, {"-1", false}, {"+1", false},
+           {"18446744073709551616", false}, {"", false}, {"1x", false}}) {
+    std::istringstream source(item.first);
+    size_t value = 73;
+    assert(pixelforge::ReadUnsignedDecimal(source, pixelforge::kMaxRuntimeCacheBytes,
+                                         value) == item.second);
+  }
+  assert(pixelforge::RoundedBufferBytes(1) == 4096);
+  assert(pixelforge::RoundedBufferBytes(4096) == 4096);
+  assert(pixelforge::RoundedBufferBytes(4097) == 8192);
+  for (const auto& item : std::vector<std::pair<std::string, bool>>{
+           {"1", true}, {"511", true}, {"0", false}, {"512", false},
+           {"-1", false}, {"+1", false}, {"1 extra", false}, {"", false}}) {
+    std::istringstream source(item.first);size_t index=0;
+    assert(pixelforge::ReadStickyUploadHeader(source,index)==item.second);
+  }
+  for (const auto& item : std::vector<std::pair<std::string, bool>>{
+           {"1", true}, {"18446744073709551615", true}, {"0", false},
+           {"18446744073709551616", false}, {"-1", false}, {"+1", false},
+           {"1 extra", false}, {"", false}}) {
+    std::istringstream source(item.first);uint64_t generation=0;
+    assert(pixelforge::ReadStickyInvokeHeader(source,generation)==item.second);
+  }
 
   std::vector<char> code(12, 0);
   code[0] = 8;

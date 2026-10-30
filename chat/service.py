@@ -23,7 +23,7 @@ read_profile_counter = None
 
 # -I keeps the launch isolated; only this installed source directory is added.
 sys.path.insert(0, str(ROOT))
-from config import sha256, root_json
+from config import sha256, root_json, runtime_options, preflight_artifacts, validate_phase_evidence, validate_flash_evidence, validate_prefix_evidence, tensor_selection, cpu_affinity_selection
 import lifecycle
 
 
@@ -36,15 +36,25 @@ def read_profile():
     if model.is_symlink() or not model.is_file() or sha256(model) != profile['model']['model_sha256']:
         raise ValueError('PixelForge source model SHA-256 mismatch')
     artifacts = Path(profile['artifacts'])
-    manifest = artifacts / 'MODEL.json'
-    if manifest.is_symlink() or sha256(manifest) != profile['artifacts_manifest_sha256']:
-        raise ValueError('PixelForge compiled artifact manifest SHA-256 mismatch')
+    pins = profile.get('artifact_manifests_sha256')
+    if pins is None:
+        pins = {'MODEL.json': profile['artifacts_manifest_sha256']}
+    if not isinstance(pins, dict) or not pins:
+        raise ValueError('PixelForge artifact manifest pins are missing')
+    for relative, expected in pins.items():
+        if not isinstance(relative, str) or Path(relative).is_absolute() or '..' in Path(relative).parts:
+            raise ValueError('Invalid PixelForge artifact manifest pin path')
+        manifest = artifacts / relative
+        if (manifest.is_symlink() or not manifest.resolve().is_relative_to(artifacts.resolve())
+                or sha256(manifest) != expected):
+            raise ValueError('PixelForge compiled artifact manifest SHA-256 mismatch')
     if sha256(profile['native_helper_path']) != profile['native_helper_sha256']:
         raise ValueError('PixelForge native helper SHA-256 mismatch')
     for relative, expected in profile['runtime_sha256'].items():
         path = ROOT / relative
         if not path.resolve().is_relative_to(ROOT) or path.is_symlink() or sha256(path) != expected:
             raise ValueError('PixelForge runtime pin mismatch: ' + relative)
+    runtime_options(profile)
     return profile
 
 
@@ -62,7 +72,7 @@ def renderer(template):
     return render
 
 
-def validate_request(request):
+def validate_request(request, profile=None):
     if not isinstance(request, dict) or request.keys() - {'id', 'prompt', 'max_tokens', 'context_size', 'prefill_cpu'}:
         raise ValueError('Unexpected PixelForge request fields')
     ident = request.get('id')
@@ -75,9 +85,53 @@ def validate_request(request):
     context = request.get('context_size', 8192)
     if type(count) is not int or not 2 <= count <= 512:
         raise ValueError('PixelForge requires 2 to 512 output tokens')
-    if type(context) is not int or not 256 <= context <= 8192 or request.get('prefill_cpu', True) is not True:
-        raise ValueError('Invalid PixelForge context or explicit CPU-prefill setting')
-    return dict(id=ident, prompt=prompt, max_tokens=count, context_size=context, prefill_cpu=True)
+    cpu_prefill = runtime_options(profile or {})['cpu_prefill']
+    if (type(context) is not int or not 256 <= context <= 8192
+            or request.get('prefill_cpu', cpu_prefill) is not cpu_prefill):
+        raise ValueError('Invalid PixelForge context or configured prefill setting')
+    return dict(id=ident, prompt=prompt, max_tokens=count, context_size=context, prefill_cpu=cpu_prefill)
+
+
+def validate_ready(frame, profile):
+    options = runtime_options(profile)
+    validate_prefix_evidence(frame, profile, ready=True)
+    validate_flash_evidence(frame, options, ready=True)
+    if profile.get('phase_evidence_version') == 1:
+        if frame.get('dense_npu_requested') is not True or frame.get('prefill_batch_size') != options['prefill_batch_size']:
+            raise ValueError('Native readiness does not match the configured NPU runtime')
+        for key in ('selected_npu_weight_tensors', 'selected_prefill_npu_weight_tensors'):
+            if key not in frame or tensor_selection(frame[key]) != options[key]:
+                raise ValueError('Native readiness changed the configured phase placement')
+        if options['full_ffn'] or 'full_ffn_tensors' in frame:
+            if frame.get('full_ffn_tensors') != options['full_ffn_tensors'] or frame.get('full_ffn_phases') != options['full_ffn_phases']:
+                raise ValueError('Native readiness changed the configured feed-forward placement')
+
+
+def broker_runtime_options(options):
+    """Forward trusted runtime settings; retained DMA weights enable the model cap."""
+    keys = ('batch_vectors', 'decode_batch_vectors', 'native_runtime_cache_mib', 'fused_gate_up',
+            'fused_bank_rows', 'fused_gate_up_tensors', 'fused_prefill_only', 'fused_result_cache_mib',
+            'full_ffn', 'full_ffn_tensors', 'full_ffn_phases', 'full_ffn_hidden_chunk', 'dynamic_weight_mode',
+            'weight_buffer_cache_mib', 'npu_performance_mode')
+    result = {key: options[key] for key in keys}
+    if options['weight_buffer_cache_mib']:
+        result['native_max_resident_models'] = options['native_max_resident_models']
+    return result
+
+
+def apply_cpu_affinity(requested):
+    """Constrain this process before spawning children; default keeps its mask."""
+    requested = cpu_affinity_selection(requested)
+    if requested is None:
+        return None
+    allowed = os.sched_getaffinity(0)
+    if not set(requested).issubset(allowed):
+        raise ValueError('Configured cpu_affinity includes a CPU outside the allowed process mask')
+    os.sched_setaffinity(0, requested)
+    actual = sorted(os.sched_getaffinity(0))
+    if actual != requested:
+        raise ValueError('Configured cpu_affinity did not match the applied process mask')
+    return actual
 
 
 def hardware_counter():
@@ -129,6 +183,8 @@ def main():
         raise ValueError('Use the fixed installed PixelForge chat launcher')
     os.umask(0o077)
     profile = read_profile()
+    options = runtime_options(profile)
+    actual_cpu_affinity = apply_cpu_affinity(options['cpu_affinity'])
     read_profile_counter = profile.get('hardware_counter_path')
     state = Path(profile['state_dir'])
     lock = (state / 'chat.lock').open('a')
@@ -139,30 +195,15 @@ def main():
     sys.path.insert(0, str(KIT))
     from gguf_hf_loader import GGUFWeights
     from model_architecture import build_plan, write_bridge_plan
-    from compiled_model import ArtifactCache
     weights = GGUFWeights(profile['model_path'])
     plan = build_plan(weights, model_sha256=profile['model']['model_sha256'], bank_rows=profile['bank_rows'])
     if not plan['generation_adapter_supported'] or plan['architecture'] != profile['architecture']:
         raise ValueError('This model has unsupported PixelForge generation operations')
-    artifacts = Path(profile['artifacts'])
-    cache = ArtifactCache(artifacts, profile['model_path'], source_sha256=profile['model']['model_sha256'],
-                          source_identity=weights.source_identity, verify_source=False, read_only=True, plan=plan)
-    selection = profile.get('selected_npu_weight_tensors')
-    if selection is None:
-        if not cache._manifest().get('complete'):
-            raise ValueError('PixelForge full offload requires a complete compiled artifact set')
-    else:
-        planned = {item['name']: item for item in plan['dense_tensors']}
-        if (not isinstance(selection, list) or not selection or len(set(selection)) != len(selection)
-                or any(name not in planned for name in selection)):
-            raise ValueError('PixelForge selected NPU placements are invalid')
-        # A partial package is sufficient only when every selected NPU bank is
-        # present and verified. All other planned weights are explicitly CPU.
-        for name in selection:
-            item = planned[name]
-            for begin in range(0, item['rows'], item['bank_rows']):
-                cache.get(name, begin, min(begin + item['bank_rows'], item['rows']),
-                          'int8', item['columns'], load_code=False)
+    manifest_pins = preflight_artifacts(profile, weights, plan)
+    expected_pins = profile.get('artifact_manifests_sha256', {'MODEL.json': profile.get('artifacts_manifest_sha256')})
+    if manifest_pins != expected_pins:
+        raise ValueError('PixelForge phase bank manifests do not match the pinned profile')
+    selection = options['selected_npu_weight_tensors']
     render = renderer(weights.fields['tokenizer.chat_template'])
     jobs = state / 'chat-jobs'
     jobs.mkdir(mode=0o700, exist_ok=True)
@@ -170,12 +211,14 @@ def main():
     job.mkdir(mode=0o700)
     write_bridge_plan(plan, job / 'weights.plan')
     config = {'model': profile['model_path'], 'model_sha256': profile['model']['model_sha256'],
-              'bank_rows': profile['bank_rows'], 'weight_dtype': 'int8',
+              'bank_rows': profile['bank_rows'], 'weight_dtype': options['weight_dtype'],
               'cache_mib': profile.get('cache_mib', 512), 'artifacts': profile['artifacts'], 'read_only': True,
               'ownership': str(job / 'BROKER_OWNER.json'), 'report': str(job / 'broker.json'),
               'native_command': ['/usr/sbin/chroot', '/proc/1/root', '/system/bin/env',
                   'LD_LIBRARY_PATH=/system/lib64:/vendor/lib64:' + profile['termux_prefix'] + '/lib',
                   'LD_PRELOAD=/system/lib64/libbinder_ndk.so', profile['native_helper_path']]}
+    config.update(broker_runtime_options(options))
+    config['required_artifact_manifests'] = sorted(manifest_pins)
     (job / 'broker-config.json').write_text(json.dumps(config))
     import shlex
     command = [sys.executable, '-I', '-c',
@@ -188,8 +231,16 @@ def main():
            'PIXELFORGE_GGML_PLAN': str(job / 'weights.plan'), 'PIXELFORGE_GGML_BROKER': str(launcher),
            'PIXELFORGE_NPU_STDERR': str(job / 'native.stderr'),
            'PIXELFORGE_NPU_FAILURE_DIR': str(job / 'failures')}
+    env['PIXELFORGE_CHAT_PREFILL_BATCH'] = str(options['prefill_batch_size'])
+    env['PIXELFORGE_CHAT_FLASH_ATTN'] = options['flash_attention']
+    env['PIXELFORGE_CHAT_PREFIX_CACHE_MIB'] = str(options['prefix_cache_mib'])
     if selection is not None:
         env['PIXELFORGE_GGML_NPU_TENSORS'] = ','.join(selection)
+    if options['selected_prefill_npu_weight_tensors'] is not None:
+        env['PIXELFORGE_GGML_PREFILL_NPU_TENSORS'] = ','.join(options['selected_prefill_npu_weight_tensors'])
+    if options['full_ffn']:
+        env['PIXELFORGE_GGML_FULL_FFN_TENSORS'] = ','.join(options['full_ffn_tensors'])
+        env['PIXELFORGE_GGML_FULL_FFN_PHASES'] = options['full_ffn_phases']
     # This is an individual matrix transport fault timer, never a turn deadline.
     cleanup = lifecycle
     stopped = threading.Event()
@@ -222,16 +273,24 @@ def main():
                         frame = json.loads(line)
                         kind = frame.get('type')
                         if kind == 'ready':
-                            emit(dict(type='ready', backend=BACKEND, model=profile['model'], report=str(job)))
+                            validate_ready(frame, profile)
+                            emit(dict(type='ready', backend=BACKEND, model=profile['model'], report=str(job),
+                                      flash_attention=options['flash_attention'], attention_backend='CPU',
+                                      cpu_flash_attention_enabled=None, cpu_affinity=actual_cpu_affinity,
+                                      prefix_cache_mib=options['prefix_cache_mib']))
                             continue
                         with request_lock:
                             if frame.get('id') != current.get('id') or not current:
                                 raise ValueError('Native response does not match the active request')
                             if kind == 'done':
                                 frame.update(backend=BACKEND, model=profile['model'], report=str(job),
-                                             hardware_before=current['hardware_before'], hardware_after=hardware_counter())
-                                if type(frame.get('npu_weight_matmul_operations')) is not int or frame['npu_weight_matmul_operations'] <= 0:
-                                    frame = dict(type='error', id=frame['id'], error='No NPU weight operations were verified; response rejected')
+                                             hardware_before=current['hardware_before'], hardware_after=hardware_counter(),
+                                             dynamic_weight_mode=options['dynamic_weight_mode'],
+                                             cpu_affinity=actual_cpu_affinity)
+                                try:
+                                    validate_phase_evidence(frame, profile)
+                                except ValueError as error:
+                                    frame = dict(type='error', id=frame['id'], error=str(error))
                                 current.clear()
                             elif kind == 'error':
                                 current.clear()
@@ -255,7 +314,7 @@ def main():
             for line in iter(lambda: sys.stdin.buffer.readline(FRAME_LIMIT + 1), b''):
                 if len(line) > FRAME_LIMIT or not line.endswith(b'\n'):
                     raise ValueError('PixelForge input frame exceeds its limit')
-                request = validate_request(json.loads(line))
+                request = validate_request(json.loads(line), profile)
                 with request_lock:
                     if current:
                         raise ValueError('PixelForge engine already has an active request')

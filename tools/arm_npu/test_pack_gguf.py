@@ -109,6 +109,30 @@ class CompilerExportTests(unittest.TestCase):
             pack_gguf.pack(self.repo / 'compiler.run', repo=self.repo)
         self.assertFalse((self.repo / 'compiler.run').exists())
 
+    def test_exported_grouped_runtime_and_fixtures_have_no_research_or_checkout_dependencies(self):
+        self.pack()
+        extracted = self.extract()
+        self.assertEqual(extracted.returncode, 0, extracted.stderr)
+        kit = self.destination / 'tools/arm_npu'
+        self.assertTrue((kit / 'ORIGINAL_GROUPS.md').is_file())
+        for name in ('author_packed_quant.py', 'author_packed_quant_float.py',
+                     'author_dynamic_fc_runtime.py', 'author_grouped_full_ffn.py', 'test_packed_quant.py'):
+            self.assertFalse((kit / name).exists())
+        # Isolated Python cannot find this checkout through cwd/PYTHONPATH.
+        # The synthetic helper workers must also come from the extracted kit.
+        code = '''import sys,unittest
+sys.path.insert(0,sys.argv[1])
+import gguf_broker,compile_grouped_fc,grouped_fc,compile_grouped_columns,grouped_columns,dynamic_fc,full_ffn,dma_buffers
+names=['test_batched_fc','test_dynamic_fc','test_grouped_fc','test_grouped_columns','test_dma_buffers','test_full_ffn']
+suite=unittest.defaultTestLoader.loadTestsFromNames(names)
+result=unittest.TextTestRunner(verbosity=1).run(suite)
+raise SystemExit(not result.wasSuccessful())
+'''
+        process = subprocess.run([sys.executable, '-I', '-c', code, str(kit)],
+                                 cwd=self.destination, capture_output=True, text=True, timeout=45)
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+        self.assertIn('OK', process.stderr)
+
     def test_existing_extraction_destination_is_preserved(self):
         self.pack()
         self.destination.mkdir()

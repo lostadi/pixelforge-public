@@ -7,6 +7,14 @@ this Tensor device produce and execute device-specific DarwiNN bytecode.
 Ubuntu supplies the Python tools and architecture engine; the native helper
 runs inside the Android filesystem.
 
+For unchanged original Q5_K/Q6_K weights, use the separate
+[original-group route](ORIGINAL_GROUPS.md). Its geometry-only programs accept
+losslessly unpacked original levels and coefficients, reconstruct weights on
+NPU and share immutable DMA weight buffers across device-program eviction.
+It supports separate B16 prompt and B1 decode programs. The static constant
+compiler documented below remains available with its own precision and
+artifact format.
+
 The pinned llama.cpp architecture engine owns the model's forward graph and
 embedded GGUF tokenizer. Eligible rank-two weight matrix multiplications go
 through the NPU helper. Attention, normalization, sampling and other graph
@@ -16,10 +24,28 @@ the run; eligible weight multiplications do not silently fall back to CPU.
 
 ## Prepare the tools
 
+The public source checkout can build the conversational path without the
+private offline addon. From the repository root:
+
+```sh
+python3 -m venv chat/venv
+chat/venv/bin/python -m pip install -r chat/requirements-chat.txt
+bash tools/arm_npu/build_native.sh /data/local/tmp/pixelforge-npu/npu_pipe_gguf
+bash chat/build_native.sh --fetch
+```
+
+The helper build requires the Termux ARM64 C++ compiler on the supported
+rooted phone. `--fetch` downloads the pinned architecture-engine source,
+not model weights. The direct Python compiler commands in the
+[original-group guide](ORIGINAL_GROUPS.md) use this virtual environment.
+The [chat installer](../../chat/README.md) provides the conversational host.
+
+The older `gguf.sh` commands below use a separately supplied, verified offline
+addon. That addon is not part of this public source release.
+
 Run these commands from your existing Ubuntu root shell, in the repository:
 
 ```sh
-cd /data/data/com.termux/files/home/ostadix-device-bundle
 /usr/bin/python3 tools/arm_npu/setup_gguf.py
 ```
 

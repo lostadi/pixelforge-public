@@ -24,6 +24,12 @@ PRISTINE_CPU = '''#include "ggml-backend.h"
         return;
     }
 
+        // TODO: move fused-op detection into ggml_graph_plan so fusion decisions are made once at planning time
+        // Try fused ops, fall back to normal compute
+        const int n_fused = ggml_cpu_try_fuse_ops(cgraph, node_n, &params, cplan);
+        if (n_fused > 0) {
+            node_n += n_fused;
+        } else {
 '''
 PRISTINE_CMAKE = '''
     list (APPEND GGML_CPU_SOURCES

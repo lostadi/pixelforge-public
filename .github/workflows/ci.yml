@@ -15,6 +15,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   SOURCE_DATE_EPOCH: '0'
+  OPENBLAS_NUM_THREADS: '1'
 
 jobs:
   source:
@@ -43,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_gguf_loader.py test_compiled_model.py test_gguf_run.py test_setup_gguf.py test_npu_protocol.py test_runtime.py test_pack_gguf.py; do
+          for suite in test_gguf_loader.py test_compiled_model.py test_gguf_run.py test_setup_gguf.py test_npu_protocol.py test_batched_fc.py test_dynamic_fc.py test_grouped_fc.py test_grouped_columns.py test_dma_buffers.py test_full_ffn.py test_runtime.py test_pack_gguf.py; do
             python -m unittest discover -s tools/arm_npu -p "$suite" -q
           done
       - name: Test voice conversation, tool and terminal fixtures
@@ -92,6 +93,13 @@ jobs:
         run: bash chat/build_native.sh --fetch
       - name: Test actual tiny-model CPU decoding and the simulated NPU protocol
         run: python -m unittest discover -s chat/tests -p test_native.py -v
+      - name: Test native resource ownership, sticky inputs and DMA with mock vendor APIs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in test_npu_pipe_cache.py test_npu_pipe_dma.py test_npu_performance.py; do
+            python -m unittest discover -s tools/arm_npu -p "$suite" -v
+          done
       - name: Test root ownership and cleanup with isolated synthetic fixtures
         run: sudo "$(command -v python)" -m unittest discover -s chat/tests -p 'test_*.py' -v
       - name: Check that build outputs cannot enter a source release

@@ -13,7 +13,25 @@ import time
 
 FORMAT = "pixelforge.darwinn.fc.v1"
 RECIPE = "fc-v1-f32-ports-zero-bias-per-row-int8-or-f32-constants"
+BATCH_RECIPE = "fc-batch-v1-f32-ports-f32-constants"
+FUSED_RECIPE = "fc-fused-gate-up-v1-f32-ports-f32-constants"
+FULL_FFN_FORMAT = "pixelforge.darwinn.full-ffn.v1"
+FULL_FFN_RECIPE = "swiglu-ffn-v1-raw-f32-ports-f32-constants"
+DYNAMIC_FC_FORMAT = "pixelforge.darwinn.dynamic-fc.v1"
+DYNAMIC_FC_RECIPE = "dynamic-bmm-v1-f32-weight-input"
+GROUPED_FC_FORMAT = "pixelforge.darwinn.grouped-fc.v1"
+GROUPED_FC_RECIPE = "original-groups-bmm-v1-unpack-no-requant"
+GROUPED_COLUMNS_FORMAT = "pixelforge.darwinn.grouped-columns.v1"
+GROUPED_COLUMNS_RECIPE = "original-groups-columns-v1-greedy3072-zero-padded-split-tail-f32-partial-sum"
 MAX_CODE_BYTES = 2 * 1024 ** 3
+
+
+def batch_directory(directory, batch_vectors):
+    """Keep new batch recipes separate from an existing single-vector package."""
+    if type(batch_vectors) is not int or not 1 <= batch_vectors <= 512:
+        raise ValueError("batch_vectors must be an integer from 1 to 512")
+    directory = Path(directory)
+    return directory if batch_vectors == 1 else directory / "batch-fc-v1" / f"b{batch_vectors}"
 
 
 def file_sha256(path):
@@ -104,7 +122,7 @@ def _atomic(path, data):
 
 
 @contextlib.contextmanager
-def _package_root(directory, read_only):
+def _package_root(directory, read_only, recipe=RECIPE, artifact_format=FORMAT):
     if read_only:
         yield
         return
@@ -121,7 +139,7 @@ def _package_root(directory, read_only):
                 value = json.loads(manifest.read_text())
             except (ValueError, OSError) as error:
                 raise ValueError("Output directory has no valid compiled-model manifest") from error
-            if value.get("format") != FORMAT or value.get("recipe") != RECIPE:
+            if value.get("format") != artifact_format or value.get("recipe") != recipe:
                 raise ValueError("Output directory is not a recognized compiled-model package")
         directory.chmod(0o700)
         yield
@@ -133,7 +151,23 @@ class ArtifactCache:
     """Store one device/weight identity; read-only mode never compiles misses."""
     def __init__(self, directory, source_gguf=None, *, source_sha256=None,
                  fingerprint=None, read_only=False, plan=None, verify_source=True,
-                 source_identity=None):
+                 source_identity=None, batch_vectors=1, fused_gate_up=False, _program_kind=None):
+        if type(batch_vectors) is not int or not 1 <= batch_vectors <= 512:
+            raise ValueError("batch_vectors must be an integer from 1 to 512")
+        self.batch_vectors = batch_vectors
+        self.fused_gate_up = fused_gate_up
+        programs = {'full-ffn-v1': (FULL_FFN_FORMAT,FULL_FFN_RECIPE),
+                    'dynamic-fc-v1': (DYNAMIC_FC_FORMAT,DYNAMIC_FC_RECIPE),
+                    'grouped-fc-v1': (GROUPED_FC_FORMAT,GROUPED_FC_RECIPE),
+                    'grouped-columns-v1': (GROUPED_COLUMNS_FORMAT,GROUPED_COLUMNS_RECIPE)}
+        if _program_kind not in (None,*programs) or (_program_kind and fused_gate_up):
+            raise ValueError("Unsupported artifact program kind")
+        self.program_kind = _program_kind
+        if _program_kind:
+            self.format,self.recipe=programs[_program_kind]
+        else:
+            self.format=FORMAT
+            self.recipe=FUSED_RECIPE if fused_gate_up else (RECIPE if batch_vectors==1 else BATCH_RECIPE)
         self.directory = Path(directory)
         if self.directory.is_symlink():
             raise ValueError("Artifact directory must not be a symlink")
@@ -141,9 +175,27 @@ class ArtifactCache:
         self.read_only = read_only
         self.expected_plan = plan
         self.fingerprint = fingerprint if fingerprint is not None else device_fingerprint()
+        if batch_vectors > 1 and not _program_kind:
+            self.fingerprint = dict(self.fingerprint, batch_graph_author_sha256=
+                file_sha256(Path(__file__).with_name("author_batched_fc.py")))
+        if fused_gate_up:
+            self.fingerprint = dict(self.fingerprint, fused_gate_up_author_sha256=
+                file_sha256(Path(__file__).with_name("fused_ffn.py")))
+        if _program_kind == 'full-ffn-v1':
+            self.fingerprint = dict(self.fingerprint, full_ffn_author_sha256=
+                file_sha256(Path(__file__).with_name("author_full_ffn.py")))
+        if _program_kind == 'dynamic-fc-v1':
+            self.fingerprint = dict(self.fingerprint, dynamic_fc_author_sha256=
+                file_sha256(Path(__file__).with_name('author_dynamic_fc.py')))
+        if _program_kind in ('grouped-fc-v1','grouped-columns-v1'):
+            self.fingerprint=dict(self.fingerprint,grouped_fc_author_sha256=
+                file_sha256(Path(__file__).with_name('author_grouped_quant.py')))
+        if _program_kind == 'grouped-columns-v1':
+            self.fingerprint=dict(self.fingerprint,grouped_columns_author_sha256=
+                file_sha256(Path(__file__).with_name('grouped_columns.py')))
         self.manifest_path = self.directory / "MODEL.json"
         self.graphs = self.directory / "graphs"
-        with _package_root(self.directory, read_only):
+        with _package_root(self.directory, read_only, self.recipe, self.format):
             self._initialize(source_gguf, source_sha256, plan, verify_source, source_identity)
 
     def _initialize(self, source_gguf, source_sha256, plan, verify_source, source_identity):
@@ -177,11 +229,13 @@ class ArtifactCache:
         elif self.read_only:
             raise FileNotFoundError("Persistent compiled-model manifest is missing")
         else:
-            value = {"format": FORMAT, "recipe": RECIPE, "created_unix_seconds": time.time(),
+            value = {"format": self.format, "recipe": self.recipe, "created_unix_seconds": time.time(),
                      "source_gguf": {"path": str(self.source_gguf), "embedded": False,
                                      "bytes": self.source_bytes, "sha256": actual},
                      "device_fingerprint": self.fingerprint, "plan": plan,
                      "complete": False, "completed_weight_dtypes": [], "artifacts": {}}
+            if self.batch_vectors > 1:
+                value["batch_vectors"] = self.batch_vectors
             # The enclosing directory flock serializes all initializers.
             # Commit identity before auxiliaries so a failed first rename
             # leaves an empty, retryable output rather than an unrecognized
@@ -200,7 +254,8 @@ class ArtifactCache:
         stat = self.source_gguf.stat()
         if (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns) != self.source_identity:
             raise ValueError("Source GGUF changed during this artifact session")
-        if value.get("format") != FORMAT or value.get("recipe") != RECIPE:
+        if (value.get("format") != self.format or value.get("recipe") != self.recipe
+                or value.get("batch_vectors", 1) != self.batch_vectors):
             raise ValueError("Unsupported compiled artifact format/FC recipe")
         source = value.get("source_gguf", {})
         if source.get("sha256") != self.source_sha256 or source.get("bytes") != self.source_bytes:
@@ -230,13 +285,21 @@ class ArtifactCache:
             raise ValueError("Invalid FC artifact dimensions")
         fields = {"tensor": name, "row_start": start, "row_stop": stop,
                   "rows": stop - start, "columns": columns, "weight_dtype": dtype,
-                  "source_gguf_sha256": self.source_sha256, "recipe": RECIPE,
+                  "source_gguf_sha256": self.source_sha256, "recipe": self.recipe,
                   "device_fingerprint_sha256": hashlib.sha256(canonical(self.fingerprint)).hexdigest()}
+        if self.batch_vectors > 1 or self.fused_gate_up:
+            if dtype != "float32":
+                raise ValueError("Batched/fused artifacts require float32 constants")
+        if self.batch_vectors > 1:
+            fields["batch_vectors"] = self.batch_vectors
         return hashlib.sha256(canonical(fields)).hexdigest(), fields
 
     def bank_rows(self, name):
         plan = self._manifest().get("plan") or {}
         return next((item["bank_rows"] for item in plan.get("dense_tensors", []) if item["name"] == name), None)
+
+    def _output_bytes(self, name, start, stop, columns):
+        return self.batch_vectors * (stop-start) * 4
 
     def get(self, name, start, stop, dtype, columns, *, reserve=None, load_code=True):
         key, expected = self.identity(name, start, stop, dtype, columns)
@@ -260,7 +323,7 @@ class ArtifactCache:
         digest = record.get("bytecode_sha256")
         if not _digest(digest) or record.get("bytecode_path") != f"graphs/{digest}.dgc":
             raise ValueError("Invalid compiled bytecode path/hash")
-        if not _digest(record.get("graph_sha256")) or record.get("input_bytes") != columns * 4 or record.get("output_bytes") != (stop - start) * 4:
+        if not _digest(record.get("graph_sha256")) or record.get("input_bytes") != self.batch_vectors * columns * 4 or record.get("output_bytes") != self._output_bytes(name, start, stop, columns):
             raise ValueError("Invalid compiled graph hash/ports")
         code_path = self.directory / record["bytecode_path"]
         if code_path.is_symlink() or not 8 <= record.get("compiled_bytes", 0) <= MAX_CODE_BYTES:
@@ -290,7 +353,8 @@ class ArtifactCache:
             raise ValueError("Native export metadata does not match its bytecode")
         digest = hashlib.sha256(code).hexdigest()
         fields.update(graph_sha256=record["graph_sha256"], graph_bytes=record["graph_bytes"],
-                      input_bytes=columns * 4, output_bytes=(stop - start) * 4,
+                      input_bytes=self.batch_vectors * columns * 4,
+                      output_bytes=self._output_bytes(name, start, stop, columns),
                       compiled_bytes=len(code), bytecode_sha256=digest,
                       bytecode_path=f"graphs/{digest}.dgc", device_fingerprint=self.fingerprint)
         code_path = self.directory / fields["bytecode_path"]

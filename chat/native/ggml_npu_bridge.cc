@@ -3,11 +3,13 @@
 #include "ggml_npu_bridge.h"
 #include "ggml-cpu-impl.h"
 #include "ggml-backend.h"
+#include "ggml-impl.h"
 #include <algorithm>
 #include <atomic>
 #include <cerrno>
 #include <chrono>
 #include <cmath>
+#include <condition_variable>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -15,6 +17,7 @@
 #include <fstream>
 #include <limits>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <poll.h>
 #include <signal.h>
@@ -33,7 +36,10 @@ namespace {
 using Clock = std::chrono::steady_clock;
 constexpr size_t kMaxTransfer = size_t{2} << 30;
 std::atomic<uint64_t> handled_requests{0}, cpu_matmuls{0}, cpu_prefill_matmuls{0}, cpu_placed_matmuls{0};
+std::atomic<uint64_t> handled_vectors{0}, bridge_nanoseconds{0};
+std::atomic<uint64_t> fused_ffns{0};
 std::atomic<bool> cpu_prefill{false};
+std::atomic<bool> prefill_phase{false};
 
 size_t Decimal(const std::string & token, size_t maximum) {
     if (token.empty()) throw std::runtime_error("missing decimal field");
@@ -55,6 +61,50 @@ size_t Product(size_t left, size_t right, size_t maximum = kMaxTransfer) {
 bool WeightName(const char * name) {
     const std::string text(name);
     return text.size() >= 7 && text.compare(text.size() - 7, 7, ".weight") == 0;
+}
+
+bool FFNPattern(const ggml_cgraph * graph, int node) {
+    if (!graph || node < 0 || node > graph->n_nodes - 4) return false;
+    const auto * gate = graph->nodes[node];
+    const auto * up = graph->nodes[node + 1];
+    const auto * glu = graph->nodes[node + 2];
+    const auto * down = graph->nodes[node + 3];
+    // The final layer can contain zero-row FFN nodes when a prefill chunk
+    // requests no logits. Preserve ggml's empty-op skip instead of invoking F.
+    if (ggml_is_empty(gate) || ggml_is_empty(up) || ggml_is_empty(glu) || ggml_is_empty(down)) return false;
+    for (const auto * tensor : {gate, up, glu, down}) {
+        if (tensor->view_src) return false;
+        for (int source = 2; source < GGML_MAX_SRC; ++source)
+            if (tensor->src[source]) return false;
+    }
+    // MUL_MAT may carry a Hadamard/FWHT hint, whose CPU dispatch differs from FC.
+    if (gate->op_params[1] || up->op_params[1] || down->op_params[1]) return false;
+    const ggml_op operations[] = {GGML_OP_MUL_MAT, GGML_OP_MUL_MAT, GGML_OP_GLU, GGML_OP_MUL_MAT};
+    const int outputs[] = {node + 3};
+    if (!ggml_can_fuse_subgraph(graph, node, 4, operations, outputs, 1) ||
+        ggml_get_glu_op(glu) != GGML_GLU_OP_SWIGLU || glu->op_params[1] != 0 ||
+        glu->src[0] != gate || glu->src[1] != up || down->src[1] != glu ||
+        !gate->src[0] || !up->src[0] || !down->src[0] || !gate->src[1] ||
+        gate->src[1] != up->src[1] || gate->type != GGML_TYPE_F32 ||
+        up->type != GGML_TYPE_F32 || glu->type != GGML_TYPE_F32 || down->type != GGML_TYPE_F32 ||
+        gate->src[1]->type != GGML_TYPE_F32 || !ggml_are_same_shape(gate, up) ||
+        !ggml_are_same_shape(gate, glu)) return false;
+    const std::string name(gate->src[0]->name), suffix(".ffn_gate.weight");
+    if (name.size() <= suffix.size() || name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0)
+        return false;
+    const auto prefix = name.substr(0, name.size() - suffix.size());
+    if (prefix.size() <= 4 || prefix.compare(0, 4, "blk.") != 0 ||
+        prefix.find_first_not_of("0123456789", 4) != std::string::npos ||
+        std::string(up->src[0]->name) != prefix + ".ffn_up.weight" ||
+        std::string(down->src[0]->name) != prefix + ".ffn_down.weight") return false;
+    if (gate->src[0]->ne[0] != gate->src[1]->ne[0] || up->src[0]->ne[0] != gate->src[1]->ne[0] ||
+        gate->src[0]->ne[1] != gate->ne[0] || up->src[0]->ne[1] != up->ne[0] ||
+        down->src[0]->ne[0] != glu->ne[0] || down->src[0]->ne[1] != down->ne[0] ||
+        down->ne[0] != gate->src[1]->ne[0]) return false;
+    for (int dimension = 1; dimension < 4; ++dimension)
+        if (down->ne[dimension] != gate->src[1]->ne[dimension] ||
+            gate->ne[dimension] != gate->src[1]->ne[dimension]) return false;
+    return true;
 }
 
 class Broker {
@@ -82,19 +132,37 @@ public:
                 throw std::runtime_error("duplicate planned GGML weight name");
         }
         if (input.bad() || matrices.empty()) throw std::runtime_error("empty or unreadable GGML plan");
-        if (const char * choice = std::getenv("PIXELFORGE_GGML_NPU_TENSORS")) {
-            selection_csv = choice;
-            if (selection_csv.empty() || selection_csv.size() > 131072)
+        const auto parse_selection = [&](const char * variable, std::string & csv, std::set<std::string> & names) {
+            const char * choice = std::getenv(variable);
+            if (!choice) return;
+            csv = choice;
+            if (csv.empty() || csv.size() > 131072)
                 throw std::runtime_error("NPU tensor selection must not be empty or oversized");
             size_t offset = 0;
             for (;;) {
-                const size_t end = selection_csv.find(',', offset);
-                const std::string name = selection_csv.substr(offset, end == std::string::npos ? end : end - offset);
-                if (name.empty() || matrices.find(name) == matrices.end() || !selected.insert(name).second)
+                const size_t end = csv.find(',', offset);
+                const std::string name = csv.substr(offset, end == std::string::npos ? end : end - offset);
+                if (name.empty() || matrices.find(name) == matrices.end() || !names.insert(name).second)
                     throw std::runtime_error("NPU tensor selection contains an empty, unknown, or duplicate weight");
                 if (end == std::string::npos) break;
                 offset = end + 1;
             }
+        };
+        parse_selection("PIXELFORGE_GGML_NPU_TENSORS", selection_csv, selected);
+        parse_selection("PIXELFORGE_GGML_PREFILL_NPU_TENSORS", prefill_selection_csv, prefill_selected);
+        parse_selection("PIXELFORGE_GGML_FULL_FFN_TENSORS", full_ffn_csv, full_ffn);
+        for (const auto & name : full_ffn) {
+            const std::string suffix(".ffn_gate.weight");
+            if (name.size() <= suffix.size() || name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0)
+                throw std::runtime_error("Full FFN selection must name canonical gate weights");
+            const auto prefix = name.substr(0, name.size() - suffix.size());
+            if (!matrices.count(prefix + ".ffn_up.weight") || !matrices.count(prefix + ".ffn_down.weight"))
+                throw std::runtime_error("Full FFN selection requires planned up and down weights");
+        }
+        if (const char * phases = std::getenv("PIXELFORGE_GGML_FULL_FFN_PHASES")) {
+            full_ffn_phases = phases;
+            if (full_ffn.empty() || (full_ffn_phases != "P" && full_ffn_phases != "D" && full_ffn_phases != "PD"))
+                throw std::runtime_error("Full FFN phases require configured tensors and P, D, or PD");
         }
         if (const char * seconds = std::getenv("PIXELFORGE_GGML_TIMEOUT_SECONDS"))
             timeout = Decimal(seconds, 86400);
@@ -127,10 +195,21 @@ public:
     }
 
     bool Selected(const ggml_tensor * weight) const {
-        return selection_csv.empty() || selected.count(weight->name) != 0;
+        const bool prefill = prefill_phase.load(std::memory_order_acquire) && !prefill_selection_csv.empty();
+        const auto & csv = prefill ? prefill_selection_csv : selection_csv;
+        const auto & names = prefill ? prefill_selected : selected;
+        return csv.empty() || names.count(weight->name) != 0;
     }
 
-    const std::string & SelectionCSV() const { return selection_csv; }
+    const std::string & SelectionCSV(bool prefill = false) const {
+        return prefill && !prefill_selection_csv.empty() ? prefill_selection_csv : selection_csv;
+    }
+    const std::string & FullFFNCSV() const { return full_ffn_csv; }
+    const std::string & FullFFNPhases() const { return full_ffn_phases; }
+    bool FullFFNSelected(const ggml_tensor * gate) const {
+        const char phase = prefill_phase.load(std::memory_order_acquire) ? 'P' : 'D';
+        return full_ffn.count(gate->name) && full_ffn_phases.find(phase) != std::string::npos;
+    }
 
     void Validate(const ggml_tensor * dst) const {
         const auto * weight = dst->src[0];
@@ -162,42 +241,104 @@ public:
     }
 
     void Compute(ggml_tensor * dst) {
+        Exchange(dst, dst->src[1], dst->src[0]->name, 'M', 1);
+    }
+
+    void ComputeFFN(ggml_tensor * dst, const ggml_tensor * input, const char * gate) {
+        // Full nonlinear FFN graphs consume original F32 X. Activation-max
+        // normalization cannot be moved through SiLU and must not be applied.
+        Exchange(dst, input, gate, 'F', 3);
+        fused_ffns.fetch_add(1, std::memory_order_relaxed);
+    }
+
+    template<class Compute>
+    void Together(const ggml_compute_params * params, Compute compute) {
+        if (params->nth < 1 || params->ith < 0 || params->ith >= params->nth ||
+            (params->nth > 1 && !params->threadpool))
+            throw std::runtime_error("invalid NPU threadpool rendezvous");
+        if (params->nth == 1) {
+            compute();
+            return;
+        }
+        Rendezvous * state;
+        {
+            std::lock_guard<std::mutex> lock(rendezvous_mutex);
+            auto & owned = rendezvous[params->threadpool];
+            if (!owned) owned = std::make_unique<Rendezvous>();
+            state = owned.get();
+        }
+        std::unique_lock<std::mutex> lock(state->mutex);
+        const auto generation = state->generation;
+        if (!state->arrived) state->members = params->nth;
+        if (state->members != params->nth || ++state->arrived > params->nth)
+            throw std::runtime_error("inconsistent NPU threadpool rendezvous");
+        if (params->ith != 0) {
+            state->changed.notify_all();
+            state->changed.wait(lock, [&] { return state->generation != generation; });
+            return;
+        }
+        state->changed.wait(lock, [&] { return state->arrived == params->nth; });
+        lock.unlock();
+        compute(); // Only the leader performs the blocking RPC; peers sleep.
+        lock.lock();
+        state->arrived = 0;
+        ++state->generation;
+        // Publish all output writes through this mutex before any peer leaves.
+        state->changed.notify_all();
+    }
+
+    void Exchange(ggml_tensor * dst, const ggml_tensor * input, const std::string & name,
+                  char operation, uint64_t weight_operations) {
         std::lock_guard<std::mutex> lock(mutex);
+        const auto began = Clock::now();
         Start();
         deadline = Clock::now() + std::chrono::seconds(timeout);
-        const auto * input = dst->src[1];
         const size_t columns = size_t(input->ne[0]), rows = size_t(dst->ne[0]);
         const size_t vectors = size_t(input->ne[1]) * size_t(input->ne[2]) * size_t(input->ne[3]);
-        const std::string name(dst->src[0]->name);
-        const std::string header = "M " + std::to_string(name.size()) + " " +
+        const std::string header = std::string(1, operation) + " " + std::to_string(name.size()) + " " +
                                   std::to_string(columns) + " " + std::to_string(rows) + " " +
-                                  std::to_string(vectors) + "\n";
-        Write(header.data(), header.size());
-        Write(name.data(), name.size());
-        std::vector<float> vector(columns);
-        for (size_t v = 0; v < vectors; ++v) {
-            const size_t offset = Offset(input, v);
-            for (size_t c = 0; c < columns; ++c) {
-                std::memcpy(&vector[c], static_cast<const char *>(input->data) + offset + c * input->nb[0], 4);
-                if (!std::isfinite(vector[c])) throw std::runtime_error("nonfinite dense input");
+                                  std::to_string(vectors) + (prefill_phase.load(std::memory_order_acquire) ? " P\n" : " D\n");
+        std::vector<float> activation(Product(vectors, columns, kMaxTransfer / sizeof(float)));
+        if (ggml_is_contiguous(input)) {
+            std::memcpy(activation.data(), input->data, activation.size() * sizeof(float));
+        } else {
+            for (size_t v = 0; v < vectors; ++v) {
+                const size_t offset = Offset(input, v);
+                for (size_t c = 0; c < columns; ++c) {
+                    std::memcpy(&activation[v * columns + c],
+                                static_cast<const char *>(input->data) + offset + c * input->nb[0], sizeof(float));
+                }
             }
-            Write(vector.data(), columns * 4);
         }
+        for (float value : activation)
+            if (!std::isfinite(value)) throw std::runtime_error("nonfinite dense input");
+        const std::string metadata = header + name;
+        Write(metadata.data(), metadata.size());
+        Write(activation.data(), activation.size() * sizeof(float));
         std::istringstream response(Line());
         std::string status, count, extra;
         if (!(response >> status >> count) || status != "OK" || response >> extra ||
             Decimal(count, kMaxTransfer / 4) != rows * vectors)
             throw std::runtime_error("broker rejected projection or returned invalid output header");
-        vector.resize(rows);
-        for (size_t v = 0; v < vectors; ++v) {
-            Read(vector.data(), rows * 4);
-            const size_t offset = Offset(dst, v);
-            for (size_t r = 0; r < rows; ++r) {
-                if (!std::isfinite(vector[r])) throw std::runtime_error("nonfinite dense result");
-                std::memcpy(static_cast<char *>(dst->data) + offset + r * dst->nb[0], &vector[r], 4);
+        std::vector<float> output(Product(vectors, rows, kMaxTransfer / sizeof(float)));
+        Read(output.data(), output.size() * sizeof(float));
+        for (float value : output)
+            if (!std::isfinite(value)) throw std::runtime_error("nonfinite dense result");
+        if (ggml_is_contiguous(dst)) {
+            std::memcpy(dst->data, output.data(), output.size() * sizeof(float));
+        } else {
+            for (size_t v = 0; v < vectors; ++v) {
+                const size_t offset = Offset(dst, v);
+                for (size_t r = 0; r < rows; ++r) {
+                    std::memcpy(static_cast<char *>(dst->data) + offset + r * dst->nb[0],
+                                &output[v * rows + r], sizeof(float));
+                }
             }
         }
-        handled_requests.fetch_add(1, std::memory_order_relaxed);
+        handled_requests.fetch_add(weight_operations, std::memory_order_relaxed);
+        handled_vectors.fetch_add(vectors * weight_operations, std::memory_order_relaxed);
+        bridge_nanoseconds.fetch_add(std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - began).count(),
+                                     std::memory_order_relaxed);
     }
 
     void Finish() {
@@ -243,12 +384,24 @@ public:
         }
     }
 private:
+    struct Rendezvous {
+        std::mutex mutex;
+        std::condition_variable changed;
+        uint64_t generation = 0;
+        int arrived = 0, members = 0;
+    };
     struct Planned { size_t columns, rows, type; };
     std::map<std::string, Planned> matrices;
     std::set<std::string> selected;
+    std::set<std::string> prefill_selected;
     std::string selection_csv;
+    std::string prefill_selection_csv;
+    std::set<std::string> full_ffn;
+    std::string full_ffn_csv, full_ffn_phases = "P";
     std::string executable;
     std::mutex mutex;
+    std::mutex rendezvous_mutex;
+    std::map<ggml_threadpool *, std::unique_ptr<Rendezvous>> rendezvous;
     pid_t pid = -1;
     int write_fd = -1, read_fd = -1;
     size_t timeout = 180;
@@ -362,15 +515,40 @@ extern "C" bool pixelforge_ggml_npu_compute(const ggml_compute_params * params, 
             if (params->ith == 0) cpu_placed_matmuls.fetch_add(1, std::memory_order_relaxed);
             return false; // Explicit placement only; chosen NPU errors still abort.
         }
-        ggml_barrier(params->threadpool);
-        if (params->ith == 0) broker.Compute(dst);
-        ggml_barrier(params->threadpool);
+        broker.Together(params, [&] { broker.Compute(dst); });
         return true;
     } catch (const std::exception & error) {
         std::fprintf(stderr, "PixelForge NPU bridge failed: %s\n", error.what());
         // Exit with no eligible-matmul CPU fallback. Broker stdin closes on exit;
         // its owner must also handle EOF and close its native NPU helper.
         std::abort();
+    }
+}
+
+extern "C" bool pixelforge_ggml_npu_ffn_pattern(const ggml_cgraph * graph, int node) {
+    return FFNPattern(graph, node);
+}
+
+extern "C" int pixelforge_ggml_npu_fuse(const ggml_compute_params * params, const ggml_cgraph * graph, int node) {
+    static const bool configured = std::getenv("PIXELFORGE_GGML_FULL_FFN_TENSORS") != nullptr;
+    if (!pixelforge_ggml_npu_enabled() || !configured ||
+        params->use_ref || cpu_prefill.load(std::memory_order_acquire) || !FFNPattern(graph, node)) return 0;
+    try {
+        Broker & broker = Instance();
+        const auto * gate = graph->nodes[node];
+        const auto * up = graph->nodes[node + 1];
+        auto * down = graph->nodes[node + 3];
+        if (!broker.FullFFNSelected(gate->src[0]) || !broker.Selected(gate->src[0]) ||
+            !broker.Selected(up->src[0]) || !broker.Selected(down->src[0])) return 0;
+        for (const auto * tensor : {gate, up, static_cast<const ggml_tensor *>(down)}) {
+            if (!broker.Eligible(tensor->src[0])) throw std::runtime_error("Full FFN weight is not planned");
+            broker.Validate(tensor);
+        }
+        broker.Together(params, [&] { broker.ComputeFFN(down, gate->src[1], gate->src[0]->name); });
+        return 3;
+    } catch (const std::exception & error) {
+        std::fprintf(stderr, "PixelForge full FFN bridge failed: %s\n", error.what());
+        std::abort(); // Includes an F failure before the first successful NPU operation.
     }
 }
 
@@ -388,9 +566,16 @@ extern "C" bool pixelforge_ggml_npu_finish(void) {
 
 extern "C" uint64_t pixelforge_ggml_npu_requests(void) { return handled_requests.load(std::memory_order_relaxed); }
 extern "C" uint64_t pixelforge_ggml_npu_cpu_matmuls(void) { return cpu_matmuls.load(std::memory_order_relaxed); }
+extern "C" uint64_t pixelforge_ggml_npu_vectors(void) { return handled_vectors.load(std::memory_order_relaxed); }
+extern "C" uint64_t pixelforge_ggml_npu_nanoseconds(void) { return bridge_nanoseconds.load(std::memory_order_relaxed); }
+extern "C" uint64_t pixelforge_ggml_npu_fused_ffns(void) { return fused_ffns.load(std::memory_order_relaxed); }
+extern "C" const char * pixelforge_ggml_npu_full_ffn_tensors_csv(void) { return pixelforge_ggml_npu_enabled() ? Instance().FullFFNCSV().c_str() : ""; }
+extern "C" const char * pixelforge_ggml_npu_full_ffn_phases(void) { return pixelforge_ggml_npu_enabled() ? Instance().FullFFNPhases().c_str() : ""; }
 
 extern "C" void pixelforge_ggml_npu_set_cpu_prefill(bool enabled) { cpu_prefill.store(enabled, std::memory_order_release); }
+extern "C" void pixelforge_ggml_npu_set_prefill_phase(bool enabled) { prefill_phase.store(enabled, std::memory_order_release); }
 extern "C" uint64_t pixelforge_ggml_npu_cpu_prefill_matmuls(void) { return cpu_prefill_matmuls.load(std::memory_order_relaxed); }
 
 extern "C" uint64_t pixelforge_ggml_npu_cpu_placed_matmuls(void) { return cpu_placed_matmuls.load(std::memory_order_relaxed); }
 extern "C" const char * pixelforge_ggml_npu_selected_tensors_csv(void) { return pixelforge_ggml_npu_enabled() ? Instance().SelectionCSV().c_str() : ""; }
+extern "C" const char * pixelforge_ggml_npu_prefill_selected_tensors_csv(void) { return pixelforge_ggml_npu_enabled() ? Instance().SelectionCSV(true).c_str() : ""; }

@@ -8,12 +8,20 @@
 #include <istream>
 #include <limits>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 namespace pixelforge {
 constexpr size_t kMaxPorts = 512;
 constexpr size_t kMaxTensorBytes = size_t{1} << 30;
 constexpr size_t kMaxPayloadBytes = size_t{2} << 30;
+constexpr size_t kDefaultRuntimeCacheBytes = size_t{128} << 20;
+constexpr size_t kMaxRuntimeCacheBytes = size_t{2} << 30;
+constexpr size_t kBufferAlignment = 4096;
+
+inline size_t RoundedBufferBytes(size_t bytes) {
+  return (bytes + kBufferAlignment - 1) & ~(kBufferAlignment - 1);
+}
 
 struct ModelHeader {
   size_t payload_bytes = 0;
@@ -23,22 +31,42 @@ struct ModelHeader {
 
 enum class HeaderStatus { kOk, kModel, kBuffer };
 
-inline bool ReadPositiveDecimal(std::istream& source, size_t maximum, size_t& value) {
+template<typename Unsigned>
+inline bool ReadUnsignedDecimal(std::istream& source, Unsigned maximum, Unsigned& value) {
+  static_assert(std::is_unsigned<Unsigned>::value, "Unsigned protocol field required");
   std::string token;
   if (!(source >> token) || token.empty()) return false;
   value = 0;
   for (unsigned char digit : token) {
     if (digit < '0' || digit > '9') return false;
-    const size_t part = digit - '0';
+    const Unsigned part = digit - '0';
     if (part > maximum || value > (maximum - part) / 10) return false;
     value = value * 10 + part;
   }
-  return value != 0;
+  return true;
+}
+
+inline bool ReadPositiveDecimal(std::istream& source, size_t maximum, size_t& value) {
+  return ReadUnsignedDecimal(source, maximum, value) && value != 0;
 }
 
 inline bool HeaderEnded(std::istream& source) {
   source >> std::ws;
   return source.peek() == std::char_traits<char>::eof();
+}
+
+inline bool ReadStickyUploadHeader(std::istream& source, size_t& index) {
+  return ReadPositiveDecimal(source, kMaxPorts - 1, index) && HeaderEnded(source);
+}
+
+inline bool ReadStickyInvokeHeader(std::istream& source, uint64_t& generation) {
+  return ReadUnsignedDecimal(source, std::numeric_limits<uint64_t>::max(), generation) &&
+         generation != 0 && HeaderEnded(source);
+}
+
+inline bool ReadDmaImportHeader(std::istream& source, size_t& index, size_t& bytes) {
+  return ReadPositiveDecimal(source, kMaxPorts - 1, index) &&
+         ReadPositiveDecimal(source, kMaxTensorBytes, bytes) && HeaderEnded(source);
 }
 
 // The command and model name have already been consumed by the caller.

@@ -17,7 +17,13 @@ import numpy as np
 
 
 def worker(mode):
+    import os
     import schema_py_generated as schema
+    if mode == 'clean-env':
+        for variable in ('PIXELFORGE_NPU_PERFORMANCE_MODE', 'PIXELFORGE_NPU_DEFER_WEIGHT_ALLOCATION',
+                         'PIXELFORGE_NPU_FD_SOCKET', 'PIXELFORGE_NPU_MAX_RESIDENT_MODELS'):
+            if variable in os.environ:
+                raise RuntimeError('Unrequested native policy inherited: ' + variable)
 
     source = sys.stdin.buffer
     sink = sys.stdout.buffer
@@ -38,8 +44,12 @@ def worker(mode):
         return
     models = {}
     codes = {}
+    input_sizes = {}
+    cache_budget = 128 * 1024**2
     def decoded_graph(data):
         graph = schema.Model.GetRootAsModel(data, 0)
+        if graph.Subgraphs(0).OperatorsLength() > 1:
+            return bytes(data)
         tensor = graph.Subgraphs(0).Tensors(1)
         shape = tuple(tensor.ShapeAsNumpy())
         raw = graph.Buffers(tensor.Buffer()).DataAsNumpy()
@@ -54,12 +64,19 @@ def worker(mode):
         if fields[0] == "Q":
             break
         if fields[0] == "I":
-            sink.write(b"OK CAPABILITIES C R F I D L Q\n" if mode != "old-helper" else b"ERR UNKNOWN_MODEL\n")
+            if fields[1] == "CACHE":
+                sink.write(f"OK CACHE {cache_budget} 0 0 0 0 0\n".encode())
+            else:
+                sink.write(b"OK CAPABILITIES C R F I D L Q B PERSISTENT_RUNTIME\n" if mode != "old-helper" else b"ERR UNKNOWN_MODEL\n")
+        elif fields[0] == "B":
+            cache_budget = int(fields[1])
+            sink.write(f"OK CACHE {fields[1]}\n".encode())
         elif fields[0] == "C":
             data = exact(int(fields[4]))
             models[fields[1]] = decoded_graph(data)
+            input_sizes[fields[1]] = int(fields[5])
             codes[fields[1]] = (b"\x08\0\0\0DGC0" + struct.pack("<I", len(data)) + data).ljust(750000, b"\0")
-            sink.write(f"OK COMPILED {fields[1]} 750000\n".encode())
+            sink.write(f"OK COMPILED {fields[1]} {len(codes[fields[1]])}\n".encode())
         elif fields[0] == "D":
             code = codes[fields[1]]
             sink.write(f"OK BYTECODE {len(code)}\n".encode())
@@ -68,12 +85,19 @@ def worker(mode):
             code = exact(int(fields[4]))
             length = struct.unpack("<I", code[8:12])[0]
             models[fields[1]] = decoded_graph(code[12:12+length])
+            input_sizes[fields[1]] = int(fields[5])
             codes[fields[1]] = code
             sink.write(f"OK LOADED {fields[1]} {len(code)}\n".encode())
         elif fields[0] == "R":
             weights = models[fields[1]]
-            activation = np.frombuffer(exact(weights.shape[1] * 4), dtype="<f4")[None, :]
-            output = activation @ weights.T
+            if isinstance(weights, bytes):
+                from test_full_ffn import evaluate
+                columns = schema.Model.GetRootAsModel(weights, 0).Subgraphs(0).Tensors(0).Shape(1)
+                activation = np.frombuffer(exact(input_sizes[fields[1]]), dtype='<f4').reshape(-1, columns)
+                output = evaluate(weights, activation)
+            else:
+                activation = np.frombuffer(exact(input_sizes[fields[1]]), dtype="<f4").reshape(-1, weights.shape[1])
+                output = activation @ weights.T
             if mode == "bad-output":
                 output[:] = np.nan
             sink.write(f"OK OUTPUT 1 {output.nbytes}\n".encode())
@@ -150,6 +174,15 @@ class ProtocolTests(unittest.TestCase):
         self.assertTrue(hook.closed)
         self.assertIsNotNone(hook.process.poll())
 
+    def test_default_policy_does_not_inherit_stale_device_options(self):
+        from unittest.mock import patch
+        stale = dict(PIXELFORGE_NPU_PERFORMANCE_MODE='high', PIXELFORGE_NPU_DEFER_WEIGHT_ALLOCATION='1',
+                     PIXELFORGE_NPU_FD_SOCKET='999', PIXELFORGE_NPU_MAX_RESIDENT_MODELS='64')
+        with patch.dict('os.environ', stale):
+            hook = self.backend('clean-env')
+            self.assertTrue(np.isfinite(hook('a.weight', np.ones((1, 2), dtype=np.float32))).all())
+        self.assertEqual(hook.stats()['npu_performance_mode'], 'default')
+
     def test_nonblocking_write_has_deadline(self):
         hook = self.backend("stall", timeout=10)
         hook.timeout = 0.15
@@ -211,7 +244,9 @@ class ProtocolTests(unittest.TestCase):
         hook("b.weight", activation)
         protected = next(key for key in hook.models if key[0] == "a.weight")
         hook.min_free = 128 * MIB
-        with patch("npu_linear._memory_available", side_effect=[128 * MIB + MIB // 2, 256 * MIB]):
+        # Batch-output reservation succeeds first; driver headroom then needs
+        # an eviction, after which kernel availability recovers.
+        with patch("npu_linear._memory_available", side_effect=[256 * MIB, 128 * MIB + MIB // 2, 256 * MIB]):
             hook("a.weight", activation)
         self.assertEqual(list(hook.models), [protected])
         self.assertEqual(hook.evictions[-1]["name"], "b.weight")

@@ -21,3 +21,11 @@ source release includes neither those binaries nor a private phone backup.
 The generated graph schema and imported GGUF decoder files retain their
 upstream notices. Build scripts fetch or consume pinned upstream source;
 their revisions and hashes are part of the recorded build inputs.
+
+The original Q5_K/Q6_K bit layouts and group unpacking in
+`tools/arm_npu/author_grouped_quant.py` follow the pinned llama.cpp/ggml
+decoder, including its scale/minimum and signed-level layout. This adaptation
+retains **Copyright (c) 2023-2026 The ggml authors**, under the MIT terms in
+[LICENSE.ggml](tools/arm_npu/LICENSE.ggml). The source revision and reference
+file hashes remain in
+[GGUF_QUANTIZATION_PROVENANCE.json](tools/arm_npu/GGUF_QUANTIZATION_PROVENANCE.json).

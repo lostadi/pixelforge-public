@@ -15,7 +15,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from config import sha256
+from config import sha256, runtime_options, preflight_artifacts, execution_description, cpu_affinity_selection
 
 BACKEND = 'pixelforge-npu-dense+ggml-cpu'
 
@@ -27,6 +27,13 @@ def absolute(value):
     return path
 
 
+def affinity_csv(value):
+    try:
+        return cpu_affinity_selection([int(cpu) for cpu in value.split(',')])
+    except ValueError as error:
+        raise argparse.ArgumentTypeError('Use distinct CPU indices from 0 to 255 separated by commas') from error
+
+
 def parser():
     result = argparse.ArgumentParser(description=__doc__)
     for name in ('ubuntu-root', 'python', 'model', 'artifacts', 'helper', 'termux-home', 'app-runtime'):
@@ -35,6 +42,36 @@ def parser():
     result.add_argument('--provenance-repo', required=True)
     result.add_argument('--architecture', choices=('gemma4', 'qwen35'), required=True)
     result.add_argument('--select-tensors', help='Comma-separated explicit NPU placements; omit only for complete all-dense banks')
+    result.add_argument('--select-prefill-tensors', help='Comma-separated NPU prompt placements; defaults to decode placements')
+    result.add_argument('--npu-prefill', action='store_true', help='Use verified NPU banks during prompt processing')
+    result.add_argument('--weight-dtype', choices=('int8', 'float32'), default='int8')
+    result.add_argument('--batch-vectors', type=int, default=1)
+    result.add_argument('--decode-batch-vectors', type=int, default=1, help='1 or the same batch-vectors to reuse the batched graph')
+    result.add_argument('--prefill-batch-size', type=int, default=512, help='Native prompt chunk size, independent of bank batch-vectors')
+    result.add_argument('--native-runtime-cache-mib', type=int, default=128, help='Bounded device-resource cache, 0 to 2048 MiB; 0 disables retention')
+    result.add_argument('--fused-gate-up', action='store_true')
+    result.add_argument('--fused-bank-rows', type=int)
+    result.add_argument('--fused-gate-up-tensors', help='Comma-separated virtual gate_up weights; omit for all supported pairs')
+    result.add_argument('--fused-prefill-only', action='store_true')
+    result.add_argument('--fused-result-cache-mib', type=int, default=64)
+    result.add_argument('--full-ffn', action='store_true', help='Use verified complete feed-forward NPU programs in the selected phases')
+    result.add_argument('--full-ffn-tensors', help='Comma-separated canonical gate weights; all corresponding gate/up/down projections must be explicitly selected')
+    result.add_argument('--full-ffn-phases', choices=('P', 'D', 'PD'), default='P')
+    result.add_argument('--full-ffn-hidden-chunk', type=int, default=2048)
+    result.add_argument('--dynamic-weight-mode', choices=('off','float32','original_groups','original_columns'), default='off',
+                        help='Use precompiled float32 input or losslessly unpacked original-group NPU graphs')
+    result.add_argument('--weight-buffer-cache-mib',type=int,default=0,
+                        help='Separate immutable shared weight buffer cache, 0 to 6144 MiB; default off')
+    result.add_argument('--native-max-resident-models',type=int,default=2,
+                        help='Device program retention limit, 1 to 64; used only with a positive weight-buffer-cache-mib')
+    result.add_argument('--npu-performance-mode',choices=('default','balanced','high','sustained'),default='default',
+                        help='Vendor SDK performance preference; default preserves the existing graph setting')
+    result.add_argument('--cpu-affinity',type=affinity_csv,
+                        help='Optional comma-separated CPU indices; startup requires them to be allowed and confines only this service and its children')
+    result.add_argument('--prefix-cache-mib',type=int,default=0,
+                        help='Exact native prompt-prefix state cache, 0 to 512 MiB; default off, memory only')
+    result.add_argument('--flash-attention', choices=('off','auto','on'), default='off',
+                        help='CPU attention algorithm: off by default; auto permits upstream support fallback')
     result.add_argument('--bank-rows', type=int, default=4096)
     result.add_argument('--cache-mib', type=int, default=256)
     result.add_argument('--service-dir', type=absolute, default=Path('/opt/pixelforge-chat'))
@@ -70,23 +107,31 @@ def prepare(args):
             raise ValueError('Model does not match a supported architecture/complete dense plan')
         if not isinstance(weights.fields.get('tokenizer.chat_template'), str):
             raise ValueError('Model must contain its own chat template')
-    manifest_path = args.artifacts / 'MODEL.json'
-    manifest = json.loads(manifest_path.read_text())
-    if manifest.get('source_gguf', {}).get('sha256') != model_hash:
-        raise ValueError('Compiled bank manifest belongs to different model bytes')
     selection = args.select_tensors.split(',') if args.select_tensors is not None else None
-    planned = {item['name'] for item in plan['dense_tensors']}
-    if selection is not None and (not selection or len(set(selection)) != len(selection) or any(name not in planned for name in selection)):
-        raise ValueError('Explicit NPU tensor selection contains empty, unknown, or duplicate names')
-    if selection is None and not manifest.get('complete'):
-        raise ValueError('All-dense placement requires a complete bank package')
-    execution = ('CPU prompt processing; selected projections on NPU; remaining model operations on CPU'
-                 if selection is not None else 'CPU prompt processing; all planned dense decode weights on NPU; other operations on CPU')
+    settings = dict(phase_evidence_version=1, weight_dtype=args.weight_dtype, cpu_prefill=not args.npu_prefill,
+                    batch_vectors=args.batch_vectors, decode_batch_vectors=args.decode_batch_vectors,
+                    prefill_batch_size=args.prefill_batch_size, native_runtime_cache_mib=args.native_runtime_cache_mib,
+                    selected_npu_weight_tensors=selection,
+                    selected_prefill_npu_weight_tensors=(args.select_prefill_tensors.split(',')
+                        if args.select_prefill_tensors is not None else None),
+                    fused_gate_up=args.fused_gate_up, fused_bank_rows=(args.bank_rows if args.fused_bank_rows is None else args.fused_bank_rows),
+                    fused_gate_up_tensors=(args.fused_gate_up_tensors.split(',') if args.fused_gate_up_tensors is not None else None),
+                    fused_prefill_only=args.fused_prefill_only, fused_result_cache_mib=args.fused_result_cache_mib,
+                    full_ffn=args.full_ffn, full_ffn_phases=args.full_ffn_phases,
+                    full_ffn_tensors=(args.full_ffn_tensors.split(',') if args.full_ffn_tensors is not None else None),
+                    full_ffn_hidden_chunk=args.full_ffn_hidden_chunk, dynamic_weight_mode=args.dynamic_weight_mode,
+                    flash_attention=args.flash_attention,weight_buffer_cache_mib=args.weight_buffer_cache_mib,
+                    native_max_resident_models=args.native_max_resident_models,npu_performance_mode=args.npu_performance_mode,
+                    cpu_affinity=args.cpu_affinity,prefix_cache_mib=args.prefix_cache_mib)
+    options = runtime_options(settings)
+    manifest_pins = preflight_artifacts(dict(options, phase_evidence_version=1, artifacts=str(args.artifacts), model_path=str(args.model),
+        model={'model_sha256': model_hash}), weights, plan)
+    execution = execution_description(options)
     metadata = {'model_name': args.model_name, 'provenance_repo': args.provenance_repo,
                 'model_sha256': model_hash, 'backend': BACKEND, 'context_per_worker': 8192,
-                'max_output_tokens': 512, 'cpu_prefill': True, 'npu_dense_decode': True,
+                'max_output_tokens': 512, 'npu_dense_decode': True, 'phase_evidence_version': 1,
                 'streaming_preview': False, 'execution': execution,
-                'selected_npu_weight_tensors': selection}
+                **options}
     sources = {path.name: path for path in ROOT.glob('*.py')}
     sources.update({'requirements-chat.txt': ROOT / 'requirements-chat.txt', 'bin/pixelforge-chat': args.native_binary})
     for path in kit.rglob('*'):
@@ -97,8 +142,10 @@ def prepare(args):
                'artifacts': str(args.artifacts), 'bank_rows': args.bank_rows, 'cache_mib': args.cache_mib,
                'state_dir': str(args.state_dir), 'termux_prefix': str(prefix),
                'native_helper_path': str(args.helper), 'native_helper_sha256': sha256(args.helper),
-               'artifacts_manifest_sha256': sha256(manifest_path), 'runtime_sha256': pins,
-               'selected_npu_weight_tensors': selection, 'model': metadata}
+               'artifact_manifests_sha256': manifest_pins, 'runtime_sha256': pins,
+               'phase_evidence_version': 1, **options, 'model': metadata}
+    if 'MODEL.json' in manifest_pins:
+        profile['artifacts_manifest_sha256'] = manifest_pins['MODEL.json']
     if args.hardware_counter_path:
         profile['hardware_counter_path'] = str(args.hardware_counter_path)
     profile_bytes = (json.dumps(profile, ensure_ascii=False, indent=2) + '\n').encode()
@@ -164,7 +211,7 @@ def apply(args, manifest, sources, profile_bytes):
         atomic(args.state_dir / 'chat.py', (ROOT / 'android_launcher.py').read_bytes(), mode=0o700)
         atomic(args.state_dir / 'bootstrap.json', (json.dumps(manifest['bootstrap'], indent=2) + '\n').encode())
         atomic(args.app_runtime / 'pixelforge-chat.json', (json.dumps(manifest['client_metadata'], ensure_ascii=False, indent=2) + '\n').encode(),
-               uid=manifest['termux_uid'], label_source=args.app_runtime)
+               uid=manifest['termux_uid'], label_source=args.termux_home)
         atomic(args.service_dir / 'INSTALL_MANIFEST.json', (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode())
 
 

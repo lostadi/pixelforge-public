@@ -2,7 +2,16 @@
 # Rebuild the pinned architecture engine and chat bridge from source.
 set -euo pipefail
 PIXELFORGE_CHAT_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-PIXELFORGE_CHAT_BUILD="$PIXELFORGE_CHAT_ROOT/build"
+PIXELFORGE_CHAT_BUILD=${PIXELFORGE_CHAT_BUILD_DIR:-"$PIXELFORGE_CHAT_ROOT/build"}
+PIXELFORGE_CHAT_NATIVE=${PIXELFORGE_CHAT_NATIVE:-OFF}
+case "$PIXELFORGE_CHAT_BUILD" in
+  /*) ;;
+  *) printf '%s\n' 'PIXELFORGE_CHAT_BUILD_DIR must be an absolute path' >&2; exit 2 ;;
+esac
+case "$PIXELFORGE_CHAT_NATIVE" in
+  ON|OFF) ;;
+  *) printf '%s\n' 'PIXELFORGE_CHAT_NATIVE must be ON or OFF' >&2; exit 2 ;;
+esac
 PIXELFORGE_CHAT_SOURCE_KIND=${1:-}
 PIXELFORGE_CHAT_INPUT=${2:-}
 case "$PIXELFORGE_CHAT_SOURCE_KIND" in
@@ -65,7 +74,7 @@ PY
 cp -- "$PIXELFORGE_CHAT_ROOT/native/ggml_npu_bridge.cc" "$PIXELFORGE_CHAT_ROOT/native/ggml_npu_bridge.h" "$PIXELFORGE_CHAT_TREE/ggml/src/ggml-cpu/"
 cat > "$PIXELFORGE_CHAT_TREE/pixelforge-chat.cmake" <<'CMAKE'
 add_executable(pixelforge-chat "${PIXELFORGE_CHAT_SOURCE}/chat_runner.cc")
-target_include_directories(pixelforge-chat PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor" "${PIXELFORGE_CHAT_SOURCE}")
+target_include_directories(pixelforge-chat PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor" "${CMAKE_CURRENT_SOURCE_DIR}/src" "${PIXELFORGE_CHAT_SOURCE}")
 target_compile_features(pixelforge-chat PRIVATE cxx_std_17)
 target_link_libraries(pixelforge-chat PRIVATE llama)
 CMAKE
@@ -74,15 +83,17 @@ if ! rg -q 'pixelforge-chat.cmake' "$PIXELFORGE_CHAT_TREE/CMakeLists.txt"; then
 fi
 cmake -S "$PIXELFORGE_CHAT_TREE" -B "$PIXELFORGE_CHAT_BUILD" \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DPIXELFORGE_CHAT_SOURCE="$PIXELFORGE_CHAT_ROOT/native" \
-  -DGGML_CPU_REPACK=OFF -DGGML_CPU_KLEIDIAI=OFF -DGGML_OPENMP=OFF -DGGML_NATIVE=OFF -DGGML_BLAS=OFF -DGGML_LLAMAFILE=OFF \
+  -DGGML_CPU_REPACK=OFF -DGGML_CPU_KLEIDIAI=OFF -DGGML_OPENMP=OFF -DGGML_NATIVE="$PIXELFORGE_CHAT_NATIVE" -DGGML_BLAS=OFF -DGGML_LLAMAFILE=OFF \
   -DLLAMA_BUILD_COMMON=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_TOOLS=OFF -DLLAMA_BUILD_EXAMPLES=OFF \
   -DLLAMA_BUILD_SERVER=OFF -DLLAMA_BUILD_APP=OFF -DLLAMA_BUILD_MTMD=OFF -DLLAMA_BUILD_HTML=OFF -DLLAMA_BUILD_IS_DEV=OFF
 cmake --build "$PIXELFORGE_CHAT_BUILD" --target pixelforge-chat -j "${PIXELFORGE_CHAT_JOBS:-2}"
-python3 - "$PIXELFORGE_CHAT_ROOT" <<'PY'
+python3 - "$PIXELFORGE_CHAT_ROOT" "$PIXELFORGE_CHAT_BUILD" "$PIXELFORGE_CHAT_NATIVE" <<'PY'
 from pathlib import Path
 import hashlib,json,sys
-root=Path(sys.argv[1]);files=[*sorted((root/'native').glob('*')),root/'build_native.sh',root/'build/bin/pixelforge-chat']
-manifest={'upstream_commit':'254b177307b14d055bbe4c050c9c441a1e06d8a4','files':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}}
-(root/'build/NATIVE_BUILD.json').write_text(json.dumps(manifest,indent=2)+'\n')
+root=Path(sys.argv[1]);build=Path(sys.argv[2]);files=[*sorted((root/'native').glob('*')),root/'build_native.sh']
+pins={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+pins['bin/pixelforge-chat']=hashlib.sha256((build/'bin/pixelforge-chat').read_bytes()).hexdigest()
+manifest={'upstream_commit':'254b177307b14d055bbe4c050c9c441a1e06d8a4','native_cpu':sys.argv[3]=='ON','files':pins}
+(build/'NATIVE_BUILD.json').write_text(json.dumps(manifest,indent=2)+'\n')
 PY
 printf '%s\n' "$PIXELFORGE_CHAT_BUILD/bin/pixelforge-chat"

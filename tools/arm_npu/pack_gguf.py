@@ -20,7 +20,7 @@ REPO = Path(__file__).resolve().parents[2]
 # swept into an export merely because they appear beside source files.
 SOURCE_NAMES = frozenset('''
 GGUF_RUNTIME_ASSETS.json test_gguf_run.py test_setup_gguf.py setup_gguf.py
-GGUF_COMPILER.md GGUF_READER.md gguf.sh run_gguf.py test_gguf_loader.py
+GGUF_COMPILER.md GGUF_READER.md ORIGINAL_GROUPS.md gguf.sh run_gguf.py test_gguf_loader.py
 create_tiny_gguf.py llama_npu_bridge.patch build_llama_npu.sh ggml_npu_bridge.cc
 ggml_npu_bridge.h test_compiled_model.py gguf_generate.cc gguf_inspect.py
 gguf_broker.py model_architecture.py LLAMA_ENGINE.json gguf_vendor/__init__.py
@@ -28,7 +28,14 @@ gguf_vendor/quants.py gguf_vendor/lazy.py gguf_vendor/constants.py compile_gguf.
 GGUF_QUANTIZATION_PROVENANCE.json gguf_quantizers.py compiled_model.py
 test_pipe_protocol.cc pipe_protocol.h test_runtime.py runtime.py PYTHON_RUNTIME.md
 validate_runtime.py test_npu_protocol.py SCHEMA_PROVENANCE.json npu_linear.py
-build_constant_fc.py schema_py_generated.py NATIVE_COMPILER.md build_native.sh
+build_constant_fc.py author_batched_fc.py fused_ffn.py test_batched_fc.py
+author_full_ffn.py test_full_ffn.py full_ffn.py compile_full_ffn.py
+author_dynamic_fc.py dynamic_fc.py compile_dynamic_fc.py test_dynamic_fc.py
+author_dynamic_full_ffn.py
+author_grouped_quant.py grouped_fc.py compile_grouped_fc.py test_grouped_fc.py
+grouped_columns.py compile_grouped_columns.py test_grouped_columns.py
+dma_buffers.py test_dma_buffers.py
+schema_py_generated.py NATIVE_COMPILER.md build_native.sh
 UPSTREAM_APIS.json NATIVE_VALIDATION.json LICENSE.litert sb_api.h
 edgetpu_compiler_api.h npu_pipe.cc test_host_assets.py fetch_tokenizer.py
 HUIHUI_ASSETS.json LICENSE.ggml model_host.py gguf_hf_loader.py
