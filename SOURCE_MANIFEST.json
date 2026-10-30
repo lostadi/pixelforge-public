@@ -432,9 +432,9 @@
       "sha256": "95f5eabe975b19ee69d9e675a5e5590b341d715227a94913fdf5b21eabe75197"
     },
     {
-      "bytes": 23917,
+      "bytes": 24537,
       "path": "chat/tests/test_install.py",
-      "sha256": "28c975b66ee7f8764a4637f2515f3f76ab12eb2d82b23bd770f00d88d236356c"
+      "sha256": "1ce1b334798c4917eb1645c5877a2e29893fdae5444bdd0ad2fffaa58a50e4d9"
     },
     {
       "bytes": 20089,
@@ -2467,9 +2467,9 @@
       "sha256": "200df6269f50272516312187329276912d3213251e2b4307cb2ddfdb52d5d3e0"
     },
     {
-      "bytes": 15714,
+      "bytes": 16022,
       "path": "tools/arm_npu/test_grouped_columns.py",
-      "sha256": "89d2878bebfeb7d5632c7512f8e8753941d16cfe8e2d2c9715f8c01fc566e79c"
+      "sha256": "c7b99e4891f5488d99fcab1caa32ebcc6d879721110beb19f8839694ad3f16be"
     },
     {
       "bytes": 10228,

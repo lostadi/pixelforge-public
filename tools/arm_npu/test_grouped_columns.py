@@ -246,10 +246,12 @@ class ColumnTests(unittest.TestCase):
               '--native-command-json',json.dumps([sys.executable,test_dynamic_fc.__file__,'--worker'])]
         sha=GGUFWeights.sha256
         with patch.object(GGUFWeights,'sha256',autospec=True,side_effect=sha) as hashed, \
+             patch('compiled_model.device_fingerprint',return_value={'device':'fixture'}) as fingerprint, \
              patch.dict(os.environ,{'PIXELFORGE_NPU_STDERR':str(self.root/'compile.stderr')}), \
              contextlib.redirect_stdout(io.StringIO()) as log:
             self.assertEqual(compile_grouped_columns.main(argv),0)
         self.assertEqual(hashed.call_count,1)
+        fingerprint.assert_called_once_with()
         events=[json.loads(line) for line in log.getvalue().splitlines()]
         self.assertEqual(events[0]['column_partial_banks'],6)
         self.assertEqual(events[0]['geometry_programs'],3)
@@ -258,10 +260,12 @@ class ColumnTests(unittest.TestCase):
         manifest=json.loads((output/'grouped-columns-v1/b4/MODEL.json').read_text())
         self.assertTrue(manifest['complete'])
         self.assertEqual(manifest['plan'],self.plan)
-        with patch('compile_grouped_columns.NPULinear',side_effect=AssertionError('Readonly resume must not start native')), \
+        with patch('compiled_model.device_fingerprint',return_value={'device':'fixture'}) as fingerprint, \
+             patch('compile_grouped_columns.NPULinear',side_effect=AssertionError('Readonly resume must not start native')), \
              contextlib.redirect_stdout(io.StringIO()) as log:
             self.assertEqual(compile_grouped_columns.main(argv+['--resume','--plan-only']),0)
         self.assertEqual(json.loads(log.getvalue())['missing_geometries'],0)
+        fingerprint.assert_called_once_with()
 
 
 if __name__=='__main__':unittest.main()

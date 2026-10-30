@@ -17,6 +17,11 @@ import android_launcher
 import config
 import install
 import lifecycle
+# Load the real cache inheritance chain before any fixture patches its base.
+# Importing full_ffn lazily under the ArtifactCache patch leaks a fake MRO to
+# later service tests even after the patched module attributes are restored.
+import compiled_model
+import full_ffn
 
 
 class InstallerTests(unittest.TestCase):
@@ -88,14 +93,20 @@ class InstallerTests(unittest.TestCase):
                 item=inner.layer(name)
                 return [(start,min(start+item['bank_rows'],item['rows'])) for start in range(0,item['rows'],item['bank_rows'])]
         with patch('gguf_hf_loader.GGUFWeights', Weights), patch('model_architecture.build_plan', return_value=plan), \
-                patch('compiled_model.ArtifactCache', Cache), patch('full_ffn.FullFFNProgramCache', Program), \
+                patch('compiled_model.ArtifactCache', Cache), patch.object(full_ffn,'FullFFNProgramCache',Program), \
                 patch.dict(sys.modules,{'dynamic_fc':SimpleNamespace(DynamicProgramCache=Cache),
                                         'grouped_fc':SimpleNamespace(GroupedProgramCache=Grouped),
                                         'grouped_columns':SimpleNamespace(ColumnProgramCache=Columns)}):
             return install.prepare(self.args)
     def test_dry_run_lists_exact_writes_and_keeps_assets_in_place(self):
         before = sorted(str(path.relative_to(self.root)) for path in self.root.rglob('*'))
+        real_cache=compiled_model.ArtifactCache
+        real_program=full_ffn.FullFFNProgramCache
         manifest, sources, profile_bytes = self.prepare()
+        self.assertIs(compiled_model.ArtifactCache,real_cache)
+        self.assertIs(full_ffn.FullFFNProgramCache,real_program)
+        self.assertIs(full_ffn.ArtifactCache,real_cache)
+        self.assertTrue(issubclass(real_program,real_cache))
         self.assertFalse(manifest['apply'])
         self.assertFalse(manifest['model_copied'])
         self.assertFalse(manifest['compiled_banks_copied'])
