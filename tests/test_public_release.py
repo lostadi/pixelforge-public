@@ -60,6 +60,30 @@ class PublicSourceTests(unittest.TestCase):
         self.assertIn('source/ostadix-voice/runtime/npu/resident.c', names)
         self.assertIn('tools/arm_npu/example.O', names)
 
+    def test_only_reviewed_lisp_benchmark_sources_enter_archive(self):
+        sources = {
+            'benchmarks/full-arsenal-redo/coverage.lisp': '(format t "coverage~%")\n',
+            'benchmarks/full-arsenal-redo/dense-plan.sexp': '((3 4096 2 13))\n',
+        }
+        for name, text in sources.items():
+            self.put(name, text)
+        unreviewed = 'benchmarks/full-arsenal-redo/unreviewed.lisp'
+        self.put(unreviewed, '(format t "outside reviewed source boundary~%")\n')
+        self.inventory()
+        destination = self.base / 'lisp-oracle-source.tar.gz'
+        release.build(self.root, destination, check_git=False)
+        release.verify_archive(destination)
+        with tarfile.open(destination) as archive:
+            names = {str(Path(member.name).relative_to('pixelforge-source'))
+                     for member in archive}
+            self.assertFalse(unreviewed in names)
+            for name, text in sources.items():
+                with self.subTest(name=name):
+                    self.assertIn(name, names)
+                    self.assertEqual(archive.extractfile('pixelforge-source/' + name).read().decode(), text)
+        self.assertFalse(check.allowed('benchmarks/other/coverage.lisp'))
+        self.assertFalse(check.allowed('benchmarks/full-arsenal-redo/weights.sexp'))
+
     def test_source_manifest_detects_changed_added_and_removed_files(self):
         self.inventory()
         check.verify_manifest(self.root)

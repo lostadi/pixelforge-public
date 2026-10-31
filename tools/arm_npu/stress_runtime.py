@@ -252,7 +252,7 @@ def main():
                    "requested_tokens": tokens, "generated_tokens": len(result["engine"]["generated_tokens"]),
                    "threads": threads, "cache_mib": cache, "owned_npu_invocations": stats["npu_invocations"],
                    "graph_loads": stats["loaded_models"], "graph_compiles": stats["compiled_models"],
-                   "evictions": len(stats["evictions"]), "resident_code_bytes_before_cleanup": stats["compiled_bytes"],
+                   "evictions": stats["npu_cache_evictions"], "resident_code_bytes_before_cleanup": stats["compiled_bytes"],
                    "native_cleanup_ok": result["broker"]["native_cleanup_ok"],
                    "cpu_reference": numerical, "repeat_comparison": repeat, **observed}
             report["runs"].append(row)

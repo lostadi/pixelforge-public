@@ -26,6 +26,7 @@ import numpy as np
 
 from build_constant_fc import author_constant_fc
 from author_batched_fc import author_batched_fc
+from runtime_telemetry import TraceTail
 
 MIB = 1024 * 1024
 
@@ -120,8 +121,8 @@ class NPULinear:
             raise ValueError("timeout must be positive and finite")
         self.models = OrderedDict()
         self.compile_records = []
-        self.records = []
-        self.evictions = []
+        self.records = TraceTail()
+        self.evictions = TraceTail()
         self.invocations = 0
         self.compile_seconds = 0.0
         self.load_seconds = 0.0
@@ -606,7 +607,9 @@ class NPULinear:
             "compile_seconds": self.compile_seconds, "npu_invocations": self.invocations,
             "load_seconds": self.load_seconds,
             "invoke_seconds": self.invoke_seconds, "matrices": self.compile_records,
-            "invocations": self.records, "evictions": self.evictions,
+            "invocations": self.records.snapshot(), "invocation_trace": self.records.evidence(),
+            "evictions": self.evictions.snapshot(), "eviction_trace": self.evictions.evidence(),
+            "npu_cache_evictions": self.evictions.total,
             "cache_budget_bytes": self.cache_budget, "min_free_bytes": self.min_free,
             "native_identity": "SHA256(canonical matrix key + full serialized graph SHA256)",
             "native_capabilities": self.capabilities,

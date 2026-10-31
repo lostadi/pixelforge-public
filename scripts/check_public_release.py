@@ -29,7 +29,9 @@ ROOT_FILES = frozenset(('README.md', 'LICENSE', 'COPYING', 'NOTICE', 'AUTHORS',
     '.github/workflows/ci.yml', 'integrations/ostadix/README.md',
     'integrations/ostadix/COPYING', 'tools/README.md',
     'tools/plan_huihui.py', 'tools/test_plan_huihui.py',
-    'examples/huihui-gemma4-g5-plan-not-built.json'))
+    'examples/huihui-gemma4-g5-plan-not-built.json',
+    'benchmarks/full-arsenal-redo/coverage.lisp',
+    'benchmarks/full-arsenal-redo/dense-plan.sexp'))
 SOURCE_SUFFIXES = frozenset(('.py', '.c', '.cc', '.cpp', '.h', '.hpp', '.sh',
     '.cmake', '.patch', '.md', '.rst', '.txt', '.json', '.toml', '.yaml', '.yml',
     '.xml', '.java', '.properties', '.gradle', '.kts', '.js', '.cjs', '.mjs', '.css',

@@ -34,8 +34,8 @@ author_dynamic_fc.py dynamic_fc.py compile_dynamic_fc.py test_dynamic_fc.py
 author_dynamic_full_ffn.py
 author_grouped_quant.py grouped_fc.py compile_grouped_fc.py test_grouped_fc.py
 grouped_columns.py compile_grouped_columns.py test_grouped_columns.py
-voice_handoff.py test_voice_handoff.py test_compiler_resume.py
-dma_buffers.py test_dma_buffers.py
+voice_handoff.py test_voice_handoff.py test_compiler_resume.py test_column_completion.py
+dma_buffers.py test_dma_buffers.py runtime_telemetry.py test_runtime_telemetry.py
 schema_py_generated.py NATIVE_COMPILER.md build_native.sh
 UPSTREAM_APIS.json NATIVE_VALIDATION.json LICENSE.litert sb_api.h
 edgetpu_compiler_api.h npu_pipe.cc test_host_assets.py fetch_tokenizer.py

@@ -1,0 +1,700 @@
+{
+  "schema": "pixelforge.full-arsenal-redo.v1",
+  "recorded_at_utc": "2026-10-31T21:06:35.903Z",
+  "baseline_commit": "40885a778042c14cfebed7bd753b3e88980b7bb9",
+  "task": "Revisit compiler and generic Voice integration with deliberate language/tool selection",
+  "compiler_completion": {
+    "measurement_provider": "Ostadix native optimize; five fresh paired executions with alternating route order",
+    "scope": "Synthetic completion fixture with real dimension and code-size workload; whole process includes Python imports and deterministic fixture construction; no native compilation, device invocation, model inference or full compiler measurement.",
+    "repetitions_per_route": 3,
+    "timing_metric": "terminal process elapsed seconds, including imports/setup and three completion passes",
+    "medians_seconds": {
+      "baseline": 2.887412033,
+      "candidate": 0.614241563
+    },
+    "ratio": 4.700776057708748,
+    "optimizer_branch_medians_seconds": {
+      "baseline": 2.89297133,
+      "candidate": 0.620783282
+    },
+    "all_declared_outputs_equal": true,
+    "all_selected_candidate": true,
+    "paired_runs": [
+      {
+        "index": 1,
+        "run_id": "313860188c8fb7e311b537b99d83aeca65f9edf74f11e65d0fbc4b26198b4461",
+        "input_digest_sha256": "60fc7fa99421d205894fea01cbebd3ea5c09579fde402efac2b5858049d2d7c4",
+        "reference": "baseline",
+        "selected": "candidate",
+        "receipt_sha256": "ea6e3544430c0cdba0f003418a39913ec5faec88c2b572b56cdb461192ddb3a1",
+        "times": {
+          "baseline": {
+            "terminal_seconds": 2.900625263,
+            "branch_seconds": 2.910364612,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          },
+          "candidate": {
+            "terminal_seconds": 0.614241563,
+            "branch_seconds": 0.620783282,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          }
+        }
+      },
+      {
+        "index": 2,
+        "run_id": "2c43082bc1525b8d7562bb37ceb9934db911ba35320a7196e68a9cc79f67d135",
+        "input_digest_sha256": "60fc7fa99421d205894fea01cbebd3ea5c09579fde402efac2b5858049d2d7c4",
+        "reference": "candidate",
+        "selected": "candidate",
+        "receipt_sha256": "317aee3351300b499a0f7f9975a2dbf6b76f779fad0f4898327cc24bbf21f42f",
+        "times": {
+          "candidate": {
+            "terminal_seconds": 0.67755073,
+            "branch_seconds": 0.684711172,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          },
+          "baseline": {
+            "terminal_seconds": 2.887412033,
+            "branch_seconds": 2.89297133,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          }
+        }
+      },
+      {
+        "index": 3,
+        "run_id": "ef8c077552d26caa570183e630ea99553f0b9d7c7c47813149dd960157bbf416",
+        "input_digest_sha256": "60fc7fa99421d205894fea01cbebd3ea5c09579fde402efac2b5858049d2d7c4",
+        "reference": "baseline",
+        "selected": "candidate",
+        "receipt_sha256": "4c532c54c4842b836b7c6505112037edae93284b100befaaf92edad18ec6ab1d",
+        "times": {
+          "baseline": {
+            "terminal_seconds": 2.861433283,
+            "branch_seconds": 2.867264169,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          },
+          "candidate": {
+            "terminal_seconds": 0.503842761,
+            "branch_seconds": 0.507276562,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          }
+        }
+      },
+      {
+        "index": 4,
+        "run_id": "04ee241eaec1b4c1e7ac822e08dfcbbab71917b0748b59ce37e92f98fb355d91",
+        "input_digest_sha256": "60fc7fa99421d205894fea01cbebd3ea5c09579fde402efac2b5858049d2d7c4",
+        "reference": "candidate",
+        "selected": "candidate",
+        "receipt_sha256": "e4d0eaa96137c130eed4057b7a33b191db5d93c5ef04db603d2cb97bed5628ab",
+        "times": {
+          "candidate": {
+            "terminal_seconds": 0.613268907,
+            "branch_seconds": 0.620086641,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          },
+          "baseline": {
+            "terminal_seconds": 2.919946956,
+            "branch_seconds": 2.923718544,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          }
+        }
+      },
+      {
+        "index": 5,
+        "run_id": "1d0224dadcc229903cd6717ac2bab0f92d502298fe703228d5a9cdb730b50057",
+        "input_digest_sha256": "60fc7fa99421d205894fea01cbebd3ea5c09579fde402efac2b5858049d2d7c4",
+        "reference": "baseline",
+        "selected": "candidate",
+        "receipt_sha256": "e4fecc401ac0cec6fedae73d47743e4fac4be425ff7125faf3cfdf555cfaeaec",
+        "times": {
+          "baseline": {
+            "terminal_seconds": 2.830710133,
+            "branch_seconds": 2.836917137,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          },
+          "candidate": {
+            "terminal_seconds": 0.680564636,
+            "branch_seconds": 0.684455573,
+            "output_sha256": "b0f6d2a0e508ba5b8edf9049f764bac877b54144b97f919cdfd373228f5e65e9",
+            "executed": "executed"
+          }
+        }
+      }
+    ],
+    "source_pins": {
+      "run_completion.py": "95801f59d4e54548238e1c251fddeb086733238b194b7743d1109671e7dc35db",
+      "candidate_impl.py": "0c4e73ec0deb2836fbd6cc8b57d7d2ed7e2a799fe7ceec3af0776e5bf3df0e9f",
+      "dimensions.json": "6ab1288ba1e60744261adf4ef95ddcc32322fd523022470bc3ff4c47ffd70f99",
+      "olang.project.toml": "4c805b2f461813bd72bd67d24aba0abd5e7110d3756dabbdfde185deebd71980"
+    },
+    "three_pass_work_counters": {
+      "baseline": {
+        "get_calls": 1395,
+        "identity_calls": 1395,
+        "file_hash_calls": 2790,
+        "file_hashed_bytes": 2099528307,
+        "code_hash_calls": 1395,
+        "code_hashed_bytes": 2098187328
+      },
+      "candidate": {
+        "identity_calls": 1410,
+        "get_calls": 15,
+        "file_hash_calls": 30,
+        "file_hashed_bytes": 20721036,
+        "code_hash_calls": 15,
+        "code_hashed_bytes": 20706624
+      }
+    },
+    "actual_granite_package_check": {
+      "logical_tiles": 465,
+      "unique_geometries": 5,
+      "baseline_code_hash_checks": 465,
+      "candidate_code_hash_checks": 5,
+      "baseline_code_bytes_hashed": 699395776,
+      "candidate_code_bytes_hashed": 6902208,
+      "baseline_manifest_reads": 465,
+      "candidate_manifest_reads": 5,
+      "original_manifest_unchanged": true,
+      "completion_publication_intercepted": true
+    },
+    "independent_common_lisp_coverage": {
+      "source_dense_dimensions": 281,
+      "logical_tiles": 465,
+      "unique_geometries": 5
+    },
+    "graph_author_source_unchanged": true,
+    "reproduction_note": "Published materializer stages the same eight imported cache/graph files with fourteen declared inputs. Original measured project declared seventy-two files, including unused fixtures; staging is not bit-identical. Executed workload/helper/dimension hashes match."
+  },
+  "host_telemetry": {
+    "schema": "pixelforge.bounded-host-telemetry-replay.v1",
+    "scope": "Fresh diagnostic dictionaries replaying a real hardware trace; no model/helper execution or latency benchmark.",
+    "memory_boundary": "tracemalloc includes new containers and per-event dictionaries; preloaded shared event field objects are excluded in both cases.",
+    "source_native_invocations": 24598,
+    "source_rows": 24598,
+    "limit": 1024,
+    "cases": {
+      "24598": {
+        "baseline_list": {
+          "rows_processed": 24598,
+          "rows_retained": 24598,
+          "rows_dropped": 0,
+          "retained_traced_bytes": 6910456,
+          "append_peak_traced_bytes": 6910528,
+          "serialization_peak_traced_bytes": 15058418,
+          "serialized_detail_bytes": 4073768,
+          "invoke_seconds_sum": 547.7492537879152,
+          "phase_calls": {
+            "P": 7858,
+            "D": 16740
+          }
+        },
+        "candidate_tail": {
+          "rows_processed": 24598,
+          "rows_retained": 1024,
+          "rows_dropped": 23574,
+          "retained_traced_bytes": 293744,
+          "append_peak_traced_bytes": 294056,
+          "serialization_peak_traced_bytes": 641306,
+          "serialized_detail_bytes": 169444,
+          "invoke_seconds_sum": 547.7492537879152,
+          "phase_calls": {
+            "P": 7858,
+            "D": 16740
+          },
+          "retention_evidence": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 24598,
+            "retained": 1024,
+            "dropped": 23574
+          }
+        }
+      },
+      "200000": {
+        "baseline_list": {
+          "rows_processed": 200000,
+          "rows_retained": 200000,
+          "rows_dropped": 0,
+          "retained_traced_bytes": 56024792,
+          "append_peak_traced_bytes": 56024864,
+          "serialization_peak_traced_bytes": 122275968,
+          "serialized_detail_bytes": 33125375,
+          "invoke_seconds_sum": 4444.5651729272795,
+          "phase_calls": {
+            "P": 66080,
+            "D": 133920
+          }
+        },
+        "candidate_tail": {
+          "rows_processed": 200000,
+          "rows_retained": 1024,
+          "rows_dropped": 198976,
+          "retained_traced_bytes": 293736,
+          "append_peak_traced_bytes": 294048,
+          "serialization_peak_traced_bytes": 643754,
+          "serialized_detail_bytes": 170672,
+          "invoke_seconds_sum": 4444.5651729272795,
+          "phase_calls": {
+            "P": 66080,
+            "D": 133920
+          },
+          "retention_evidence": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 200000,
+            "retained": 1024,
+            "dropped": 198976
+          }
+        }
+      }
+    },
+    "all_exact_aggregate_invariants_passed": true,
+    "residual_limit": "Compile/load graph records remain a complete history for existing validation consumers; no claim that all telemetry is bounded."
+  },
+  "software_validation": {
+    "compiler_runtime_passed": 216,
+    "chat_main_passed": 216,
+    "native_fixture_passed": 19,
+    "source_release_passed": 21,
+    "voice_focused_passed": 234,
+    "total_distinct_cases_passed": 706,
+    "unresolved_skips": 0,
+    "native_fixture_note": "Four groups initially lacked static libraries in the isolated worktree. All nineteen cases then passed using verified unchanged pinned libraries and fixtures compiled against candidate owning sources.",
+    "polyglot_reproduction_smoke": "passed: JavaScript materialization, baseline/candidate functional output equality, independent Common Lisp geometry",
+    "workflow_yaml_structure": "passed through Ostadix Ruby backend"
+  },
+  "voice_redo": {
+    "status": "passed",
+    "client_scope": "Ordinary application text conversation through normal Voice factory/client; no microphone/playback check",
+    "granite": {
+      "schema": "pixelforge.voice-redo-sanitized-case.v1",
+      "case": "Granite genuine file-tool acceptance",
+      "success": true,
+      "requested_model_id": "redo-granite41-3b",
+      "architecture": "granite",
+      "model_sha256": "e80eec4cf0c8cc0b894117535707139f8e86ebc01d9ac7b11a11dad33508e7f9",
+      "native_engine_sha256": "43da28a3e88949bb08a74782862e94dabfc9faffa7a12833332b09010f86974c",
+      "native_helper_sha256": "90c3a13edd8c94f620d513d16dc73746b51fcbe0e524ca3434138789f81c35a1",
+      "installed_source_pin_count": 85,
+      "source_pins": {
+        "service.py": "260e682db26b622b384479d73886cdbbce4d4cefe6a9ae1ef0871f0486f48a14",
+        "kit/npu_linear.py": "31e8c479e227fbdef7d2191765cfbc251fd54a2c88e1efae3d93ace368b32d90",
+        "kit/runtime_telemetry.py": "87968457a61811c15959af86f1054e4097f5e4a890a5c8c4c399b24f92655497",
+        "kit/gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4"
+      },
+      "harness_sha256": "32643b786aec0925515c2e10e23c7a900121c7b8c6c8680e7f1cf454c009f3d4",
+      "original_harness_sha256": "77954bfa4622e8fb6ce93bfdfd47a47077641da7fbd5369532c455ccf390e5f6",
+      "identity_wrapper_sha256": "bbcdb7bbe13c9a7ec1b5392b8eda5d22dc5db5688e0c5f5bfc42ac401699733e",
+      "guide_sha256": "e1f68f726b25ccce72a4c50949b408964b452b3656b88daf921a8031936b3665",
+      "client_sha256": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a",
+      "harness_request_change": {
+        "inserted_word": "only",
+        "occurrences": 1,
+        "all_other_bytes_preserved": true
+      },
+      "elapsed_seconds": 362.68764441797975,
+      "model_turns": 2,
+      "turns": [
+        {
+          "turn": 1,
+          "state": "completed",
+          "prompt_tokens": 813,
+          "completion_tokens": 17,
+          "generation_seconds": 282.521204095,
+          "prefill_seconds": 138.908685965,
+          "decode_seconds": 143.61251813,
+          "npu_weight_matmul_operations": 5054,
+          "npu_prefill_weight_matmul_operations": 558,
+          "npu_decode_weight_matmul_operations": 4496,
+          "cpu_placed_weight_matmul_operations": 0,
+          "cpu_prefill_weight_matmul_operations": 0,
+          "prefix_cache_hit": false,
+          "prefix_tokens_reused": 0,
+          "prefill_tokens_processed": 813,
+          "token_limit_reached": false
+        },
+        {
+          "turn": 2,
+          "state": "completed",
+          "prompt_tokens": 968,
+          "completion_tokens": 3,
+          "generation_seconds": 73.520259457,
+          "prefill_seconds": 52.786865144,
+          "decode_seconds": 20.733394313,
+          "npu_weight_matmul_operations": 843,
+          "npu_prefill_weight_matmul_operations": 281,
+          "npu_decode_weight_matmul_operations": 562,
+          "cpu_placed_weight_matmul_operations": 0,
+          "cpu_prefill_weight_matmul_operations": 0,
+          "prefix_cache_hit": true,
+          "prefix_tokens_reused": 512,
+          "prefill_tokens_processed": 456,
+          "token_limit_reached": false
+        }
+      ],
+      "logical_npu_weight_operations": 5897,
+      "physical_native_invocations": 17527,
+      "native_trace": [
+        {
+          "schema": "pixelforge.native-trace-acceptance.v1",
+          "success": true,
+          "checks": {
+            "physical_native_invocation_counter": true,
+            "invocation_tail_policy_and_arithmetic": true,
+            "real_case_exceeds_tail_limit": true,
+            "exact_native_eviction_counter": true,
+            "eviction_tail_policy_and_arithmetic": true
+          },
+          "native_invocations": 17527,
+          "invocation_trace": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 17527,
+            "retained": 1024,
+            "dropped": 16503,
+            "array_length": 1024
+          },
+          "native_cache_evictions": 9,
+          "eviction_trace": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 9,
+            "retained": 9,
+            "dropped": 0,
+            "array_length": 9
+          },
+          "counter_scope": "Physical native invocations and native program-cache evictions; logical model weight operations are separate."
+        }
+      ],
+      "compilation_during_inference": 0,
+      "exact_final_answer": true,
+      "successful_real_file_read": true,
+      "ordinary_application_identity_verified": true,
+      "zero_capabilities_before_and_after": true,
+      "cleanup_checkpoint": {
+        "success": true,
+        "checked_utc": "2026-10-31T21:17:31.393Z",
+        "original_default_restored": true,
+        "owned_processes_gone": true,
+        "global_lock_free": true,
+        "metadata_uid_gid_mode_and_labels_preserved": true
+      },
+      "source_files_sha256": {
+        "agent.py": "44b6393836d54820e4fb27de7f6b50ffc125afb28a9283fb8c0c296ea0fd0f46",
+        "local_chat.py": "05785c06f54cc659d681dab610bb148ceb4c105846a2103969be920e393b91c2",
+        "pixelforge_chat.py": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a",
+        "conversation_protocol.py": "98494e0592275a407cdb04f8d1767a0db1399c35e9079405a3f2fce0b922fb85"
+      },
+      "comparison_limits": [
+        "The earlier failed Granite case used the pre-clarification guide; the current guide includes an explicit file-read path example.",
+        "The current generic request adds the word only to align its formatting requirement with the stricter exact-answer oracle.",
+        "The two runs differ in generated outputs, prompt length, memory and thermal conditions; their elapsed times do not isolate performance of telemetry or language selection.",
+        "Physical native calls and logical model weight operations have distinct scopes. No intent routing, argument translation or answer synthesis was used."
+      ],
+      "private_values_omitted": [
+        "marker",
+        "file content",
+        "prompts",
+        "answers",
+        "session IDs",
+        "receipt IDs",
+        "process IDs",
+        "SELinux categories",
+        "deployment paths"
+      ],
+      "low_entropy_answer_hashes_omitted": true
+    },
+    "neohorse": {
+      "schema": "pixelforge.voice-redo-sanitized-case.v1",
+      "case": "NeoHorse ordinary Voice client short completion",
+      "success": true,
+      "requested_model_id": "redo-neohorse4b",
+      "architecture": "qwen35",
+      "model_sha256": "cc4a3cc480fe0e0142333244aaa3f2c0d4feda6c78d296976e8513d02aabbbcd",
+      "native_engine_sha256": "43da28a3e88949bb08a74782862e94dabfc9faffa7a12833332b09010f86974c",
+      "native_helper_sha256": "90c3a13edd8c94f620d513d16dc73746b51fcbe0e524ca3434138789f81c35a1",
+      "installed_source_pin_count": 85,
+      "source_pins": {
+        "service.py": "260e682db26b622b384479d73886cdbbce4d4cefe6a9ae1ef0871f0486f48a14",
+        "kit/npu_linear.py": "31e8c479e227fbdef7d2191765cfbc251fd54a2c88e1efae3d93ace368b32d90",
+        "kit/runtime_telemetry.py": "87968457a61811c15959af86f1054e4097f5e4a890a5c8c4c399b24f92655497",
+        "kit/gguf_hf_loader.py": "33a18a4ba90f2adbdf8c5db2d78dadeafbc2c3de1dd7d4930f8ea82ca11158a4"
+      },
+      "harness_sha256": "77954bfa4622e8fb6ce93bfdfd47a47077641da7fbd5369532c455ccf390e5f6",
+      "identity_wrapper_sha256": "bbcdb7bbe13c9a7ec1b5392b8eda5d22dc5db5688e0c5f5bfc42ac401699733e",
+      "guide_sha256": "e1f68f726b25ccce72a4c50949b408964b452b3656b88daf921a8031936b3665",
+      "client_sha256": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a",
+      "original_harness_used_without_changes": true,
+      "requested_output_token_limit": 2,
+      "elapsed_seconds": 150.8289593079826,
+      "model_turns": 1,
+      "turns": [
+        {
+          "turn": 1,
+          "state": "completed",
+          "prompt_tokens": 784,
+          "completion_tokens": 2,
+          "generation_seconds": 141.434286176,
+          "prefill_seconds": 130.499569084,
+          "decode_seconds": 10.934717092,
+          "npu_weight_matmul_operations": 746,
+          "npu_prefill_weight_matmul_operations": 497,
+          "npu_decode_weight_matmul_operations": 249,
+          "cpu_placed_weight_matmul_operations": 0,
+          "cpu_prefill_weight_matmul_operations": 0,
+          "prefix_cache_hit": false,
+          "prefix_tokens_reused": 0,
+          "prefill_tokens_processed": 784,
+          "token_limit_reached": false
+        }
+      ],
+      "logical_npu_weight_operations": 746,
+      "physical_native_invocations": 7178,
+      "native_trace": [
+        {
+          "schema": "pixelforge.native-trace-acceptance.v1",
+          "success": true,
+          "checks": {
+            "physical_native_invocation_counter": true,
+            "invocation_tail_policy_and_arithmetic": true,
+            "real_case_exceeds_tail_limit": true,
+            "exact_native_eviction_counter": true,
+            "eviction_tail_policy_and_arithmetic": true
+          },
+          "native_invocations": 7178,
+          "invocation_trace": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 7178,
+            "retained": 1024,
+            "dropped": 6154,
+            "array_length": 1024
+          },
+          "native_cache_evictions": 7,
+          "eviction_trace": {
+            "policy": "bounded-most-recent",
+            "limit": 1024,
+            "total": 7,
+            "retained": 7,
+            "dropped": 0,
+            "array_length": 7
+          },
+          "counter_scope": "Physical native invocations and native program-cache evictions; logical model weight operations are separate."
+        }
+      ],
+      "compilation_during_inference": 0,
+      "exact_answer_check_passed": true,
+      "ordinary_application_identity_verified": true,
+      "zero_capabilities_before_and_after": true,
+      "cleanup_checkpoint": {
+        "success": true,
+        "checked_utc": "2026-10-31T21:23:16.796Z",
+        "original_default_restored": true,
+        "owned_processes_gone": true,
+        "global_lock_free": true,
+        "metadata_uid_gid_mode_and_labels_preserved": true
+      },
+      "source_files_sha256": {
+        "agent.py": "44b6393836d54820e4fb27de7f6b50ffc125afb28a9283fb8c0c296ea0fd0f46",
+        "local_chat.py": "05785c06f54cc659d681dab610bb148ceb4c105846a2103969be920e393b91c2",
+        "pixelforge_chat.py": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a",
+        "conversation_protocol.py": "98494e0592275a407cdb04f8d1767a0db1399c35e9079405a3f2fce0b922fb85"
+      },
+      "comparison_limits": [
+        "The prior NeoHorse client check used the earlier guide, so prompt length and physical native call count differ.",
+        "Elapsed times are functional observations with changing memory and thermal conditions; no language-selection or whole-model speedup is established.",
+        "The selected249 main projections match the declared placement; other operations, including attention, normalization, sampling and partial column sums, remain onCPU."
+      ],
+      "private_values_omitted": [
+        "raw prompts",
+        "raw replies",
+        "session IDs",
+        "receipt IDs",
+        "process IDs",
+        "SELinux categories",
+        "deployment paths"
+      ],
+      "low_entropy_answer_hashes_omitted": true
+    },
+    "performance_conclusion": "Functional acceptance only. No whole-model speedup or language-choice causality is established."
+  },
+  "language_choices": [
+    {
+      "language": "O",
+      "work": "Native optimizer execution, output validation, retained comparison receipts"
+    },
+    {
+      "language": "Common Lisp",
+      "work": "Independent canonical geometry/coverage derivation"
+    },
+    {
+      "language": "SQL",
+      "work": "Read-only queries over the original inference telemetry"
+    },
+    {
+      "language": "JavaScript",
+      "work": "Structured evidence, reproducible project materialization, strict independent acceptance checks"
+    },
+    {
+      "language": "shell",
+      "work": "Git isolation, native commands, builds and test dispatch"
+    },
+    {
+      "language": "Python",
+      "work": "Existing compiler/runtime implementation, regression fixtures and real object-allocation accounting"
+    },
+    {
+      "language": "C++",
+      "work": "Pinned native decoder/helper and native ownership/fusion/prefix regression fixtures"
+    },
+    {
+      "language": "Ruby",
+      "work": "Standard-library YAML parsing to validate the changed CI workflow without adding a parser dependency"
+    }
+  ],
+  "limits": [
+    "The completion fixture is not a whole-compiler or inference-latency measurement.",
+    "Telemetry allocation accounting excludes already-preloaded shared event field objects and is not process RSS.",
+    "Invocation/eviction detail tails are bounded; compile/load history remains complete and can still grow.",
+    "No new weight quantization, graph-recipe change or native-engine change is part of these two optimizations.",
+    "These results do not establish that language variety itself improves model performance or model quality."
+  ],
+  "actual_compiler_handoff": {
+    "case": "Real cached grouped-column compiler with private copies of both saved batch packages",
+    "success": true,
+    "missing_geometries": 0,
+    "compiled_geometries": 0,
+    "npu_invocations": 0,
+    "registration_succeeded": true,
+    "selected": false,
+    "native_start_guard_triggered": false,
+    "original_bank_inventories_unchanged": true,
+    "original_model_entries_and_active_descriptors_unchanged_during_case": true,
+    "tuned_candidate_registration_restored": true,
+    "model_weights_copied": false,
+    "note": "Failure-only guard would stop an unexpected helper startup; it was never invoked. Normal metadata-only native model probing remained part of registration."
+  },
+  "final_installation": {
+    "status": "passed",
+    "selected_model_id": "default",
+    "model_ids": [
+      "default",
+      "granite41-3b"
+    ],
+    "temporary_test_entries_removed": true,
+    "audit": {
+      "schema": "pixelforge.promoted-install-audit.v1",
+      "started_utc": "2026-10-31T21:37:26.276Z",
+      "inference_started": false,
+      "models": {
+        "default": {
+          "architecture": "qwen35",
+          "model_sha256": "cc4a3cc480fe0e0142333244aaa3f2c0d4feda6c78d296976e8513d02aabbbcd",
+          "native_engine_sha256": "43da28a3e88949bb08a74782862e94dabfc9faffa7a12833332b09010f86974c",
+          "helper_sha256": "90c3a13edd8c94f620d513d16dc73746b51fcbe0e524ca3434138789f81c35a1",
+          "pinned_sources": 85,
+          "bootstrap_pins": 87,
+          "source_inventory_exact": true,
+          "source_mismatches": [],
+          "bootstrap_mismatches": [],
+          "settings_changes_excluding_runtime_pins": [],
+          "full_model_helper_native_runtime_hashes_verified": true,
+          "full_routed_preflight_passed": true,
+          "B1_and_B64_manifest_checks": true,
+          "manifest_sha256": {
+            "grouped-columns-v1/b1/MODEL.json": "3f5204e2a5f11f3a56a521dc5fb5d02f94005618e95dfab0d2f133063b082dd7",
+            "grouped-columns-v1/b64/MODEL.json": "8bf1e3b9c0c06609153d51a5b18a9513cc0d93f4eb1f65212a7dd9dab3aaea0d"
+          },
+          "declared_decode_weights": 249,
+          "declared_prefill_weights": 249,
+          "batch_vectors": 64,
+          "decode_batch_vectors": 1,
+          "cpu_prefill": false,
+          "selected_bundle_guard_passed": true,
+          "bounded_telemetry_module_sha256": "87968457a61811c15959af86f1054e4097f5e4a890a5c8c4c399b24f92655497"
+        },
+        "granite41-3b": {
+          "architecture": "granite",
+          "model_sha256": "e80eec4cf0c8cc0b894117535707139f8e86ebc01d9ac7b11a11dad33508e7f9",
+          "native_engine_sha256": "43da28a3e88949bb08a74782862e94dabfc9faffa7a12833332b09010f86974c",
+          "helper_sha256": "90c3a13edd8c94f620d513d16dc73746b51fcbe0e524ca3434138789f81c35a1",
+          "pinned_sources": 85,
+          "bootstrap_pins": 87,
+          "source_inventory_exact": true,
+          "source_mismatches": [],
+          "bootstrap_mismatches": [],
+          "settings_changes_excluding_runtime_pins": [],
+          "full_model_helper_native_runtime_hashes_verified": true,
+          "full_routed_preflight_passed": true,
+          "B1_and_B64_manifest_checks": true,
+          "manifest_sha256": {
+            "grouped-columns-v1/b1/MODEL.json": "442279eab75434e2d6907b4565e54d34ed91a358039304ba15b1dba38094245c",
+            "grouped-columns-v1/b64/MODEL.json": "2ce56af876f970b72d27c2e16e62af95a196689ddd1c73149cb2d1b9dd44e83b"
+          },
+          "declared_decode_weights": 281,
+          "declared_prefill_weights": 281,
+          "batch_vectors": 64,
+          "decode_batch_vectors": 1,
+          "cpu_prefill": false,
+          "selected_bundle_guard_passed": null,
+          "bounded_telemetry_module_sha256": "87968457a61811c15959af86f1054e4097f5e4a890a5c8c4c399b24f92655497"
+        }
+      },
+      "checks": {
+        "only_original_registered_ids": true,
+        "selected_active_catalog_default": true,
+        "active_bootstrap_exact": true,
+        "active_client_descriptor_exact": true,
+        "catalog_entries_exact": true,
+        "root_launcher_and_registry_match_candidate": true,
+        "root_state_protected": true,
+        "app_uid_gid_0600_and_exact_labels_preserved": true,
+        "ordinary_identity_exact": true,
+        "passive_default_configured_and_idle": true,
+        "saved_engine_pixelforge": true,
+        "all_owned_hardware_processes_gone": true,
+        "global_idle_lock_free": true,
+        "guide_and_client_exact_candidate": true,
+        "frozen_inputs_unchanged": true,
+        "metadata_unchanged_during_catalog_correction": true
+      },
+      "passive_status": {
+        "configured": true,
+        "running": false,
+        "verified_worker_ready": false,
+        "model_id": "default",
+        "active": 0,
+        "queued": 0
+      },
+      "guide_sha256": "e1f68f726b25ccce72a4c50949b408964b452b3656b88daf921a8031936b3665",
+      "client_sha256": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a",
+      "success": true,
+      "completed_utc": "2026-10-31T21:39:52.078Z",
+      "scope": "Read-only installed source/model/helper/native and routed-bank verification plus ordinary passive client check; no inference/compilation/settings edits.",
+      "full_validation_completed_utc": "2026-10-31T21:37:36.772Z",
+      "catalog_assertion_correction": {
+        "classification": "caller error",
+        "reason": "Passive catalog intentionally publishes only registry.SUMMARY_FIELDS; full active client metadata is richer.",
+        "failed_assertion_preserved": true,
+        "device_or_source_changed": false,
+        "substantive_hashes_and_preflight_reused": true
+      }
+    }
+  },
+  "measurement_host": {
+    "cpu_architecture": "arm64",
+    "platform": "linux",
+    "substantial_local_workloads_during_five_comparisons": "held"
+  },
+  "completed_at_utc": "2026-10-31T21:41:45.069Z"
+}

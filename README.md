@@ -82,6 +82,11 @@ The fresh public source build and isolated installer independently passed the
 same kind of file-tool task, with 66 NPU matrix operations and 154 native
 invocations. That run took 707.9 seconds under concurrent phone load.
 
+The [full arsenal follow-up](benchmarks/full-arsenal-redo/README.md) records
+output-checked compiler completion comparisons, bounded invocation diagnostics
+and the separately verified real-model Voice checks. Its measurements keep
+host improvements separate from inference performance.
+
 ## Register compiled GGUFs in Voice
 
 Ostadix Voice can select registered decoder GGUFs from any publisher. Each

@@ -85,3 +85,14 @@ battery readings do not measure whole-device discharge power.
 bounded writes with a fake helper. Those protocol tests do not claim hardware
 inference. Hardware results come from `validate_runtime.py` and the recorded
 NPU counter changes.
+
+Invocation and eviction details retain only the most recent 1,024 events each.
+The report's `invocation_trace` and `eviction_trace` fields state the policy,
+limit, total, retained count and dropped count. These lists are diagnostic tails,
+not complete histories. `npu_invocations`, `invoke_seconds` and
+`npu_cache_evictions` remain exact totals across the whole runtime lifetime;
+use those counters instead of summing or counting retained details.
+Compilation/load `matrices` records retain their existing complete-history
+semantics because validation uses their graph inventory and compile/load counts.
+That lower-frequency history remains unbounded; this change bounds only
+invocation and eviction details.

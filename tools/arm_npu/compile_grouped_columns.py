@@ -14,6 +14,37 @@ from npu_linear import NPULinear
 from voice_handoff import add_voice_arguments, validate_voice_arguments, register_compiled
 
 
+def mark_columns_complete(cache, weight_dtype='original_groups'):
+    """Validate every planned tile while reading each geometry program once.
+
+    This compiler-only pass preserves the graph-author fingerprint used by
+    existing packages. Geometry identity checks still cover every canonical
+    row/column tile; source, manifest, metadata and bytecode checks are fresh
+    for each distinct program before the completion marker is published.
+    """
+    if not cache.layout.aliases:
+        raise ValueError('Cannot mark an empty original column plan complete')
+    verified = {}
+    for name in cache.layout.aliases:
+        for alias in cache.aliases_for(name):
+            layer = cache.layer(alias)
+            for start, stop in cache.ranges(alias):
+                key, expected = cache.identity(alias, start, stop, weight_dtype, layer['columns'])
+                if key in verified:
+                    if verified[key] != expected:
+                        raise ValueError('Conflicting column geometry identity')
+                    continue
+                found = cache.get(alias, start, stop, weight_dtype, layer['columns'], load_code=False)
+                if found is None:
+                    raise ValueError('Cannot mark incomplete column geometry complete')
+                verified[key] = expected
+    def complete(value):
+        dtypes = set(value.get('completed_weight_dtypes', []))
+        dtypes.add(weight_dtype)
+        value.update(complete=True, completed_weight_dtypes=sorted(dtypes))
+    cache._update(complete)
+
+
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model',type=Path,required=True)
@@ -86,7 +117,7 @@ def main(argv=None):
                         compiled_bytes=record['compiled_bytes'],bytecode_sha256=record['bytecode_sha256'])),flush=True)
                 invocations=native.invocations
             finally:native.close()
-        if args.tensor is None and args.tensor_pattern is None:cache.mark_complete()
+        if args.tensor is None and args.tensor_pattern is None:mark_columns_complete(cache)
         print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=invocations)),flush=True)
     return register_compiled(args, package=directory, model=args.model,
                              selected_tensors=sorted({name for name, *_ in original_banks}),

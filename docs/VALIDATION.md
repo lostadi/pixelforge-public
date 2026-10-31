@@ -6,6 +6,98 @@ identifies an operation that ran. The application result then establishes the
 particular task that completed.
 
 
+
+## Full arsenal rerun against 40885a7
+
+This rerun compares the published compiler/Voice integration with two focused host
+changes. Ostadix's native optimizer executed the comparison routes. Common Lisp
+independently derived geometry coverage; SQL inspected the original inference
+trace; JavaScript prepared structured evidence and independent acceptance checks;
+shell dispatched native commands and tests. The existing Python compiler/runtime
+and C++ engine kept their established roles.
+
+The column compiler now checks every canonical tile identity while freshly
+verifying each distinct geometry program once per completion pass. The change
+lives in compiler orchestration. The original cache/graph-author source,
+fingerprints, graph recipes, model weights and saved programs remain unchanged.
+
+| Check | Published implementation | Candidate |
+| --- | ---: | ---: |
+| Completion fixture, median terminal time | 2.887412 s | 0.614242 s |
+| Actual Granite B64 code hash checks | 465 | 5 |
+| Actual Granite B64 code bytes hashed | 699,395,776 | 6,902,208 |
+| Retained telemetry allocations, 24,598-event replay | 6,910,456 bytes | 293,744 bytes |
+| Serialized invocation details, same replay | 4,073,768 bytes | 169,444 bytes |
+
+All five fresh O comparisons selected the candidate with identical declared
+outputs. Each timed process included imports, synthetic fixture construction and
+three completion passes. Reference order alternated between runs. This is about
+4.70 times faster for that completion fixture; it does not establish a
+whole-compiler or generation speedup. The actual-package check was read-only:
+all 465 tile identities were checked, completion publication was intercepted, and
+the original manifest stayed unchanged. Independent Lisp planning reproduced
+465 logical tiles and five geometries from 281 source dimensions.
+
+Invocation and eviction detail histories now retain their latest 1,024 events.
+Reports expose exact total, retained and dropped counts. Existing exact operation
+and duration counters remain authoritative, and the stress driver now reads the
+exact eviction total. On a 200,000-event replay, tracked retained allocations
+stayed near 0.294 MB versus 56.0 MB with an ordinary history list. These allocation
+measurements include new containers and per-event dictionaries, excluding
+already-preloaded shared field objects; they are not process RSS measurements.
+Compile/load graph records retain their full-history behavior for existing
+validation consumers and can still grow.
+
+The selected software suites passed 706 distinct cases: 216 compiler/runtime,
+235 chat/native, 21 source-release and 234 focused Voice cases. Four native
+fixture groups initially lacked static libraries in the isolated worktree.
+All nineteen affected cases subsequently passed using the unchanged pinned
+libraries and fixtures compiled against the candidate's owning sources.
+
+See the [comparison record](../benchmarks/full-arsenal-redo/RESULTS.json) and
+[source-only reproduction instructions](../benchmarks/full-arsenal-redo/README.md).
+The original measured O project declared 72 staged files; the published
+materializer stages the same eight imported cache/graph files with 14 declared
+inputs. Its executed workload/helper/dimension hashes match, but the project
+bundle and staging work are not identical.
+
+The real ordinary-app text checks then passed on both registered candidates.
+Granite generated a workspace read with the correct path field, received the
+actual file result and returned its exact contents across two model turns
+(ignoring surrounding ASCII whitespace). The independent check required a
+matching successful receipt, the requested model identities, completed
+untruncated jobs, NPU work in both phases, zero CPU weight placement and owned
+process cleanup. It recorded 5,897 logical NPU weight operations and 17,527
+physical native invocations, retaining 1,024 invocation details and reporting
+16,503 dropped details. NeoHorse's short case returned the exact requested
+answer with 746 logical weight operations, 7,178 native invocations, 1,024 retained
+details and 6,154 dropped details. Neither case compiled a program.
+
+Granite took 362.688 seconds and NeoHorse 150.829 seconds. These are functional
+observations, not a controlled inference performance comparison. The earlier
+failed Granite file task used the guide before its explicit read/path example.
+This repeat used the clarified guide already published in 40885a7 and added
+the single word "only" to the private harness request so exact-answer checking
+matched an explicit formatting requirement. No intent routing, tool-argument
+translation, answer synthesis or model substitution supplied either answer.
+Microphone capture and speaker playback were outside these text checks.
+
+A real cached compiler invocation then processed private copies of both Granite
+bank packages and registered the result in Voice without selecting it. It
+reported five geometries, zero missing geometries, zero compilations and zero
+NPU invocations. A failure-only helper-start guard stayed untriggered. The
+original bank inventories and original model entries/active descriptors stayed
+unchanged throughout that case; the tested tuning was restored afterward.
+
+The validated runtime was then installed under the original default and Granite
+model IDs. An independent read-only audit verified all 85 installed runtime pins
+and 87 bootstrap pins per model, original GGUF/helper/native hashes, B1/B64
+preflight, unchanged tuning and bank pins, metadata ownership and exact SELinux
+labels. Only the original two IDs remain; NeoHorse is selected and Voice remains
+on PixelForge. The client is idle, all owned inference processes exited, and
+the global lock is free.
+
+
 ## 2026-10-31: compiled GGUF registration in Ostadix Voice
 
 Voice registration now uses the source GGUF, the native runner's metadata-only
