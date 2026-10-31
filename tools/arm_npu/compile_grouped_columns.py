@@ -72,16 +72,19 @@ def main(argv=None):
         if available<required:raise OSError('Insufficient space for column geometry package')
         cache=cache or ColumnProgramCache(directory,args.model,**options)
         command=json.loads(args.native_command_json) if args.native_command_json else DEFAULT_NATIVE_COMMAND
-        native=NPULinear(weights,command=command,weight_dtype='float32',batch_vectors=args.batch_vectors,
-                         min_free_mib=128,cache_mib=1,native_runtime_cache_mib=0)
-        try:
-            for alias,start,stop,columns in pending:
-                record=compile_grouped_geometry(native,cache,alias,start,stop)
-                print(json.dumps(dict(event='geometry_ready',rows=stop-start,columns=columns,
-                    compiled_bytes=record['compiled_bytes'],bytecode_sha256=record['bytecode_sha256'])),flush=True)
-        finally:native.close()
+        invocations=0
+        if pending:
+            native=NPULinear(weights,command=command,weight_dtype='float32',batch_vectors=args.batch_vectors,
+                             min_free_mib=128,cache_mib=1,native_runtime_cache_mib=0)
+            try:
+                for alias,start,stop,columns in pending:
+                    record=compile_grouped_geometry(native,cache,alias,start,stop)
+                    print(json.dumps(dict(event='geometry_ready',rows=stop-start,columns=columns,
+                        compiled_bytes=record['compiled_bytes'],bytecode_sha256=record['bytecode_sha256'])),flush=True)
+                invocations=native.invocations
+            finally:native.close()
         if args.tensor is None and args.tensor_pattern is None:cache.mark_complete()
-        print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=native.invocations)),flush=True)
+        print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=invocations)),flush=True)
     return 0
 
 

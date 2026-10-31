@@ -195,5 +195,58 @@ class DmaOwnershipTests(unittest.TestCase):
             cache.close()
 
 
+    def test_resident_bytes_track_page_rounding_reuse_eviction_and_close(self):
+        cache = DmaBufferCache(1, min_free_bytes=0, memory_available=lambda: 8*1024**2)
+        self.addCleanup(cache.close)
+        small = np.ones(1, np.uint8)
+        larger = np.ones(4097, np.uint8)
+        with patch('dma_buffers.os.open', side_effect=self.open_heap), patch('dma_buffers.fcntl.ioctl', side_effect=self.ioctl):
+            first = cache.put('small', small)
+            self.assertEqual(cache.resident_bytes, 4096)
+            cache.put('larger', larger)
+            self.assertEqual(cache.resident_bytes, 4096 + 8192)
+            self.assertIs(cache.put('small', small), first)
+            self.assertEqual(cache.resident_bytes, 4096 + 8192)
+        # Reusing small moved it to the end; the larger allocation leaves first.
+        self.assertTrue(cache.evict_oldest())
+        self.assertEqual(cache.resident_bytes, 4096)
+        self.assertEqual(cache.stats()['resident_bytes'], 4096)
+        cache.close()
+        self.assertEqual(cache.resident_bytes, 0)
+        self.assertFalse(cache.evict_oldest())
+        cache.close()
+        self.assertEqual(cache.resident_bytes, 0)
+
+    def test_failed_device_allocation_or_sync_never_charges_resident_bytes(self):
+        for failure in ('allocate', 'sync-start', 'sync-end'):
+            with self.subTest(failure=failure):
+                cache = DmaBufferCache(1, min_free_bytes=0, memory_available=lambda: 8*1024**2)
+                try:
+                    with patch('dma_buffers.os.open', side_effect=self.open_heap), patch('dma_buffers.fcntl.ioctl', side_effect=self.ioctl):
+                        retained = cache.put('retained', np.zeros(1, np.uint8))
+                    previous_descriptors = len(self.descriptors)
+                    def failing_ioctl(fd, operation, argument, mutate=False):
+                        if operation == DMA_HEAP_IOCTL_ALLOC and failure == 'allocate':
+                            raise OSError('injected allocation failure')
+                        if operation == DMA_BUF_IOCTL_SYNC:
+                            sync = struct.unpack('=Q', argument)[0]
+                            if (failure == 'sync-start' and sync == 2) or (failure == 'sync-end' and sync == 6):
+                                raise OSError('injected sync failure')
+                        return self.ioctl(fd, operation, argument, mutate)
+                    with patch('dma_buffers.os.open', side_effect=self.open_heap), patch('dma_buffers.fcntl.ioctl', side_effect=failing_ioctl):
+                        with self.assertRaises(OSError):
+                            cache.put('failed', np.zeros(8193, np.uint8))
+                    self.assertEqual(cache.resident_bytes, 4096)
+                    self.assertEqual(cache.allocations, 1)
+                    self.assertIs(cache.get('retained', 1), retained)
+                    self.assertIsNone(cache.get('failed', 8193))
+                    for fd in self.descriptors[previous_descriptors:]:
+                        with self.assertRaises(OSError):
+                            os.fstat(fd)
+                finally:
+                    cache.close()
+                self.assertEqual(cache.resident_bytes, 0)
+
+
 if __name__ == '__main__':
     unittest.main()

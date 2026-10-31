@@ -172,18 +172,30 @@ def compile_weights(args, row_range, weights):
     if args.copy_source:
         cache.embed_source()
     command = json.loads(args.native_command_json) if args.native_command_json else DEFAULT_NATIVE_COMMAND
-    native = NPULinear(weights, command=command, weight_dtype=args.weight_dtype,
-                       artifact_cache=cache if batch_vectors == 1 and not fused else None,
-                       batch_artifact_cache=cache if batch_vectors > 1 and not fused else None,
-                       fused_artifact_cache=cache if batch_vectors == 1 and fused else None,
-                       fused_batch_artifact_cache=cache if batch_vectors > 1 and fused else None,
-                       batch_vectors=batch_vectors, cache_mib=1)
+    native = None
+    reused_graphs = 0
     try:
-        for name, start, stop, _ in banks:
-            record = native._compile(name, start, stop, batch_vectors)
-            # Compiled code already persisted atomically by NPULinear. Drop
-            # every native graph before moving to the next to bound RAM.
-            native._free_oldest("bulk compiler releases persisted graph")
+        for name, start, stop, columns in banks:
+            # Preflight verified every saved bank before any native startup.
+            # Read it afresh here so a changed/removed artifact cannot become
+            # a stale cache hit, but do not load bytecode only to free it.
+            saved = cache.get(name, start, stop, args.weight_dtype, columns,
+                              load_code=False) if existing is not None else None
+            if saved is not None:
+                record = saved[0]
+                reused_graphs += 1
+            else:
+                if native is None:
+                    native = NPULinear(weights, command=command, weight_dtype=args.weight_dtype,
+                                       artifact_cache=cache if batch_vectors == 1 and not fused else None,
+                                       batch_artifact_cache=cache if batch_vectors > 1 and not fused else None,
+                                       fused_artifact_cache=cache if batch_vectors == 1 and fused else None,
+                                       fused_batch_artifact_cache=cache if batch_vectors > 1 and fused else None,
+                                       batch_vectors=batch_vectors, cache_mib=1)
+                record = native._compile(name, start, stop, batch_vectors)
+                # Persisted code is sufficient; release each newly compiled
+                # native graph before moving to the next to bound RAM.
+                native._free_oldest("bulk compiler releases persisted graph")
             print(json.dumps({"event": "artifact_ready", "tensor": name,
                               "row_start": start, "row_stop": stop,
                               "bytecode_sha256": record["bytecode_sha256"]}), flush=True)
@@ -193,11 +205,14 @@ def compile_weights(args, row_range, weights):
         print(json.dumps({"event": "complete", "output": str(output.resolve()),
                           "batch_vectors": batch_vectors,
                           "coverage": "full-rank-two-plan" if full_selection else "partial",
-                          "compiled_graphs": native.stats()["compiled_models"],
-                          "loaded_graphs": native.stats()["loaded_models"],
-                          "npu_invocations": native.invocations}), flush=True)
+                          "compiled_graphs": native.stats()["compiled_models"] if native is not None else 0,
+                          "loaded_graphs": native.stats()["loaded_models"] if native is not None else 0,
+                          "reused_graphs": reused_graphs,
+                          "native_helper_started": native is not None,
+                          "npu_invocations": native.invocations if native is not None else 0}), flush=True)
     finally:
-        native.close()
+        if native is not None:
+            native.close()
     return 0
 
 

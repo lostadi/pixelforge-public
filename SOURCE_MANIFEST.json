@@ -312,6 +312,11 @@
       "sha256": "dc4d53759f67f5171e461e878f250c0e0fa254be68a2d3f7f8d747051c76656c"
     },
     {
+      "bytes": 37540,
+      "path": "benchmarks/20261031-host-optimization/RESULTS.json",
+      "sha256": "baf102f5d7b9d395646a11af23e912940b1a0360acd9387a917d45aa71988386"
+    },
+    {
       "bytes": 42,
       "path": "chat/.gitignore",
       "sha256": "f6f88a183b508aa1acde4f82aa5705c2d483f2c232dd7dbebb999182bd3f31cb"
@@ -467,9 +472,9 @@
       "sha256": "d9a389b786b4022f60b1712fcbb4ed881ff9b316a3e55f8e5116bc2250fce73d"
     },
     {
-      "bytes": 12818,
+      "bytes": 16967,
       "path": "docs/VALIDATION.md",
-      "sha256": "39606afa0d0d36d09fe4076be1616d78e5a787d57018f904d9b3850273cb1eb3"
+      "sha256": "57b2758e527ff7bb82836fed5f13a252c0443db40354559c7c22d09f26831fd7"
     },
     {
       "bytes": 8217,
@@ -2207,9 +2212,9 @@
       "sha256": "c470672e3ae65d5834b9c048dfdff9ed8e858c59093831fd5860e8ae82fa3dac"
     },
     {
-      "bytes": 4956,
+      "bytes": 5074,
       "path": "tools/arm_npu/compile_dynamic_fc.py",
-      "sha256": "6daf8985e4150d6cf012f3fbbde1c783d136102b34b8d6db4a9a18013973f7f3"
+      "sha256": "83692222499dacf35cccc9f9d16dbe16129fb4705bfe4079fdd2795184dd2788"
     },
     {
       "bytes": 5038,
@@ -2217,14 +2222,14 @@
       "sha256": "250634f2a4ca575a4c1a015ad541b960be57d8bccfa97bf43e591e5284859160"
     },
     {
-      "bytes": 11336,
+      "bytes": 12279,
       "path": "tools/arm_npu/compile_gguf.py",
-      "sha256": "38c9bd9f99b98959f4c6c0fe38e9ddec41753544a44b6c215ab3099871bd394c"
+      "sha256": "25d206cd2ee0ba88265ded37b840bdef1ad82edc3bb0eba0cd8d33990669fd1f"
     },
     {
-      "bytes": 5104,
+      "bytes": 5218,
       "path": "tools/arm_npu/compile_grouped_columns.py",
-      "sha256": "7e82966dfed7b997401015d351ba1d6edd424bdb5cfafe44d8d44c7aeae68020"
+      "sha256": "8850a75316de74becdb476521f1de519c877b08f45b2a456ba119e971669d974"
     },
     {
       "bytes": 185,
@@ -2242,9 +2247,9 @@
       "sha256": "628fc635b41def14679d00e42dd9dc08940b057c6599d7be268f248115edb331"
     },
     {
-      "bytes": 5165,
+      "bytes": 5318,
       "path": "tools/arm_npu/dma_buffers.py",
-      "sha256": "853d7b5a1ccbd2e407bebdb980379689c0c87a6ed2c6c30e9d3bdbad75b262ff"
+      "sha256": "48b3cdc637d98f33a0f2e1294a60b0bc43e75c085bbc666a841db2e88899f9d1"
     },
     {
       "bytes": 13253,
@@ -2442,9 +2447,14 @@
       "sha256": "63e70f5c176472382a0b86eb527bc56b84407d4e710b947c6c24c1235d4b9e6c"
     },
     {
-      "bytes": 10462,
+      "bytes": 12694,
+      "path": "tools/arm_npu/test_compiler_resume.py",
+      "sha256": "b4652be22e207c637a865360387828c201e8ebf0f80e1fd26c410bc3893a2908"
+    },
+    {
+      "bytes": 13685,
       "path": "tools/arm_npu/test_dma_buffers.py",
-      "sha256": "50763c83e2fe2d6ebfd508a926216301508b6a3b9d1ae30f566f48604c1f8e1b"
+      "sha256": "663a9d6c9678ab55128dbccb394937afcae9e11142e838b8ee2f8be9430c17c4"
     },
     {
       "bytes": 11733,

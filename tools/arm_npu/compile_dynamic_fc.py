@@ -75,16 +75,19 @@ def main(argv=None,*,original_groups=False):
         if available<required:raise OSError('Insufficient space for dynamic geometry programs')
         cache=cache or Cache(output,a.model,**options)
         command=json.loads(a.native_command_json) if a.native_command_json else DEFAULT_NATIVE_COMMAND
-        native=NPULinear(weights,command=command,weight_dtype='float32',batch_vectors=a.batch_vectors,
-                         min_free_mib=128,cache_mib=1,native_runtime_cache_mib=0)
-        try:
-            for name,start,stop in pending:
-                r=compile_program(native,cache,name,start,stop)
-                print(json.dumps(dict(event='geometry_ready',rows=stop-start,
-                    columns=cache.layer(name)['columns'],compiled_bytes=r['compiled_bytes'],
-                    bytecode_sha256=r['bytecode_sha256'])),flush=True)
-        finally:native.close()
-        print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=native.invocations)),flush=True)
+        invocations=0
+        if pending:
+            native=NPULinear(weights,command=command,weight_dtype='float32',batch_vectors=a.batch_vectors,
+                             min_free_mib=128,cache_mib=1,native_runtime_cache_mib=0)
+            try:
+                for name,start,stop in pending:
+                    r=compile_program(native,cache,name,start,stop)
+                    print(json.dumps(dict(event='geometry_ready',rows=stop-start,
+                        columns=cache.layer(name)['columns'],compiled_bytes=r['compiled_bytes'],
+                        bytecode_sha256=r['bytecode_sha256'])),flush=True)
+                invocations=native.invocations
+            finally:native.close()
+        print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=invocations)),flush=True)
     return 0
 
 

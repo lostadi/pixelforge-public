@@ -40,6 +40,7 @@ class DmaBufferCache:
         self.min_free = min_free_bytes
         self.memory_available = memory_available
         self.buffers = OrderedDict()
+        self._resident_bytes = 0
         self.allocations = self.hits = self.evictions = 0
         self.admission_paused = False
         self.transient_allocations = 0
@@ -47,7 +48,7 @@ class DmaBufferCache:
 
     @property
     def resident_bytes(self):
-        return sum(item.allocation_bytes for item in self.buffers.values())
+        return self._resident_bytes
 
     def get(self, key, expected_bytes):
         item = self.buffers.get(key)
@@ -66,6 +67,7 @@ class DmaBufferCache:
         if not self.buffers:
             return False
         _, item = self.buffers.popitem(last=False)
+        self._resident_bytes -= item.allocation_bytes
         item.close()
         self.evictions += 1
         return True
@@ -110,6 +112,7 @@ class DmaBufferCache:
                 self.transient_allocations += 1
             else:
                 self.buffers[key] = item
+                self._resident_bytes += rounded
             descriptor = -1
             self.allocations += 1
             self.allocate_seconds += time.monotonic() - began
@@ -130,4 +133,5 @@ class DmaBufferCache:
     def close(self):
         while self.buffers:
             _, item = self.buffers.popitem(last=False)
+            self._resident_bytes -= item.allocation_bytes
             item.close()

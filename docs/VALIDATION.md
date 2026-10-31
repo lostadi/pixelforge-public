@@ -5,6 +5,82 @@ weights. A compilation result identifies an artifact. A successful invocation
 identifies an operation that ran. The application result then establishes the
 particular task that completed.
 
+## 2026-10-31: compiler resume and host cache accounting
+
+This source change removes redundant host work. It preserves the graph
+recipes, original weight bits, native memory guards and installed phone
+profile. The baseline source was commit
+`e0090fbed236c4fcb7c482b9ba962770b10b2215`.
+The [measurement record](../benchmarks/20261031-host-optimization/RESULTS.json)
+keeps the separate compiler, host-accounting and real-NPU checks.
+
+Cached static banks are still verified before native startup, freshly checked
+during resume, and verified again for full-plan completion. Resume skips
+loading and immediately freeing their bytecode. The helper starts only when
+a selected bank is missing. Dynamic, original-group and column compilers
+also skip helper startup on complete cache hits. Static completion records
+report `reused_graphs` and `native_helper_started` separately from compiled
+and loaded graphs.
+
+Five alternating baseline/candidate pairs used the same synthetic model,
+artifacts and fake native helper for each comparison:
+
+| Fully cached resume | Baseline median, ms | Candidate median, ms |
+| --- | ---: | ---: |
+| Static banks | 348.060 | 47.583 |
+| Dynamic geometry | 369.779 | 11.329 |
+| Column geometry | 391.527 | 30.152 |
+
+The static fixture removed one helper startup, five loads, five frees and
+3,750,000 bytes of saved-code transport. Partial resume still compiled its
+three missing banks while removing two saved-bank loads/frees and 1,500,000
+transport bytes. These are compiler-resume measurements with synthetic
+helpers, not vendor compiler or model-generation speed measurements.
+
+DMA residency accounting now maintains the admitted allocation total rather
+than summing every retained buffer on each admission. Charges still use
+page-rounded sizes; hits, transient allocations and failed allocation/sync
+attempts do not add retained bytes. Eviction and close subtract the removed
+allocation before closing its descriptor.
+
+Ostadix's native `o optimize` ran both versions of a 20,000-read,
+1,024-buffer accounting fixture in isolated workspaces. Complete JSON outputs
+matched. It selected the candidate: 2.845 seconds for the reference branch
+and 0.440 seconds for the candidate, including interpreter startup. The
+selection receipt applies only to that host-accounting fixture. It does not
+measure an NPU kernel or establish whole-model acceleration.
+
+An isolated root-host NeoHorse check then used the installed engine/helper
+and existing B64/B1 column banks. Temporary source copies differed only in
+`dma_buffers.py`, with their own matching source pins. Both versions completed
+two identical two-token requests with text `5` and token IDs `[20, 248046]`.
+Every request selected all 249 projections in each phase, with zero
+CPU-placed weight operations and zero compilation. Each version made 2,260
+owned native invocations, exited successfully and cleaned up its owned
+processes.
+
+| Generation call | Baseline, s | Candidate, s |
+| --- | ---: | ---: |
+| First request | 98.380 | 89.682 |
+| Second request | 83.172 | 68.906 |
+
+**No model-response speedup is established.** Available RAM, temperature and
+cache retention differed. The candidate retained about 899 MB in 285 DMA
+buffers versus 407 MB in 128 buffers for the baseline, and unpacked fewer
+weight groups. Both sessions paused further retained-weight admission after
+memory pressure. These conditions confound attribution to the accounting
+change. The observed driver counter increments matched the 2,260 owned
+calls in each bounded run; that agreement is not a general ownership rule.
+
+The complete compiler/runtime suite passed **191 tests**, and the chat suite
+passed **125 tests** with the current native runner selected explicitly.
+The software regressions cover cold/partial/full resume, B1/B4 and fused
+sidecars, corruption/source changes around preflight, full-coverage
+validation, and DMA lifecycle/failure cleanup. The chat suite must select
+the current native runner explicitly when an older ignored local build is
+present. No installed files, production profile, model weights, bank files,
+thermal policy or governors were changed by this validation.
+
 ## v0.2.0: ordinary Termux tool acceptance
 
 I checked the full conversation path on the rooted Pixel 10 Pro with Tensor
