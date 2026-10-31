@@ -49,20 +49,29 @@ class InstallerTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
     def prepare(self):
+        architecture = getattr(self, 'model_architecture', None) or self.args.architecture or 'llama'
+        fields = {'general.architecture': architecture, 'general.name': 'Local fixture decoder',
+                  architecture + '.context_length': 8192,
+                  'tokenizer.ggml.tokens': ['word', '<fixture-bos>', '<fixture-eos>'],
+                  'tokenizer.ggml.bos_token_id': 1, 'tokenizer.ggml.eos_token_id': 2}
+        template = getattr(self, 'chat_template', '{{ messages[0].content }}')
+        if template is not None:
+            fields['tokenizer.chat_template'] = template
+        fields.update(getattr(self, 'model_fields', {}))
         class Weights:
-            fields = {'tokenizer.chat_template': '{{ messages[0].content }}'}
             source_identity = (1, 2, 3, 4, 5)
             from types import SimpleNamespace
             tensors = {'blk.0.ffn_gate.weight': SimpleNamespace(shape=(4,2)),
                        'blk.0.ffn_up.weight': SimpleNamespace(shape=(4,2)),
                        'blk.0.ffn_down.weight': SimpleNamespace(shape=(2,4))}
-            def __init__(inner, _): pass
+            def __init__(inner, path): inner.path = Path(path)
             def __enter__(inner): return inner
             def __exit__(inner, *_): pass
             def sha256(inner): return config.sha256(self.model)
+        Weights.fields = fields
         if self.args.dynamic_weight_mode in ('original_groups','original_columns'):
             Weights.tensors={name:SimpleNamespace(shape=(2,256),type_id=(14 if 'down' in name else 13)) for name in Weights.tensors}
-        plan = {'generation_adapter_supported': True, 'architecture': self.args.architecture,
+        plan = {'generation_adapter_supported': True, 'architecture': architecture,
                 'dense_tensors': [{'name': name, 'rows': tensor.shape[0], 'columns': tensor.shape[1], 'bank_rows': 2,
                                    'type_id':getattr(tensor,'type_id',0)}
                                   for name,tensor in Weights.tensors.items()]}
@@ -92,7 +101,18 @@ class InstallerTests(unittest.TestCase):
             def ranges(inner,name):
                 item=inner.layer(name)
                 return [(start,min(start+item['bank_rows'],item['rows'])) for start in range(0,item['rows'],item['bank_rows'])]
+        plan.update(getattr(self, 'plan_overrides', {}))
+        probe = dict(schema='pixelforge.gguf.probe/v1', metadata_only=True, decoder_only=True,
+                     prompt_modes=['chat-template', 'raw-completion'],
+                     architecture=architecture, context_length=fields[architecture + '.context_length'],
+                     vocabulary_size=len(fields['tokenizer.ggml.tokens']),
+                     chat_template=fields.get('tokenizer.chat_template'),
+                     bos_token='<fixture-bos>', eos_token='<fixture-eos>')
+        probe.update(getattr(self, 'native_probe_overrides', {}))
+        for key in getattr(self, 'native_probe_omissions', ()):
+            probe.pop(key, None)
         with patch('gguf_hf_loader.GGUFWeights', Weights), patch('model_architecture.build_plan', return_value=plan), \
+                patch('model_info.probe_model', return_value=probe, side_effect=getattr(self, 'native_probe_error', None)), \
                 patch('compiled_model.ArtifactCache', Cache), patch.object(full_ffn,'FullFFNProgramCache',Program), \
                 patch.dict(sys.modules,{'dynamic_fc':SimpleNamespace(DynamicProgramCache=Cache),
                                         'grouped_fc':SimpleNamespace(GroupedProgramCache=Grouped),
@@ -290,7 +310,11 @@ class InstallerTests(unittest.TestCase):
         manifest,_,_=self.prepare();profile=manifest['profile'];model=manifest['client_metadata']['model']
         self.assertEqual(profile['dynamic_weight_mode'],'original_columns')
         self.assertEqual(set(profile['artifact_manifests_sha256']),{'grouped-columns-v1/b1/MODEL.json','grouped-columns-v1/b64/MODEL.json'})
-        self.assertEqual(model['selected_npu_weight_tensors'],self.args.select_tensors.split(','))
+        selected = model['selected_npu_weight_tensors']
+        self.assertIsNone(selected)
+        planned = {'blk.0.ffn_gate.weight', 'blk.0.ffn_up.weight', 'blk.0.ffn_down.weight'}
+        effective = planned if selected is None else set(selected)
+        self.assertEqual(effective, set(self.args.select_tensors.split(',')))
         self.assertIn('column partial sums on CPU',model['execution'])
         self.assertIn('original GGUF unchanged',model['execution'])
         self.assertIn('no additional weight quantization',model['execution'])
@@ -333,7 +357,7 @@ class InstallerTests(unittest.TestCase):
             self.assertEqual(name,'security.selinux')
             return labels[Path(path)]
         self.args.ubuntu_root=Path('/')
-        manifest={'termux_uid':10001,'writes':[],
+        manifest={'termux_uid':10001,'writes':[],'service_dir':str(self.args.service_dir),
                   'client_metadata':{'backend':install.BACKEND},'bootstrap':{'fixture':True}}
         with patch.object(Path,'stat',application_home_owner),patch.object(install.os,'getuid',return_value=0), \
                 patch.object(install.os,'chown') as chown, \

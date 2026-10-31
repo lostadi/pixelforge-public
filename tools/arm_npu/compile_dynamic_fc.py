@@ -10,6 +10,7 @@ from dynamic_fc import DynamicProgramCache, compile_dynamic_geometry
 from gguf_hf_loader import GGUFWeights
 from model_architecture import build_plan
 from npu_linear import NPULinear
+from voice_handoff import add_voice_arguments, validate_voice_arguments, register_compiled
 
 
 def main(argv=None,*,original_groups=False):
@@ -30,7 +31,9 @@ def main(argv=None,*,original_groups=False):
     p.add_argument('--resume',action='store_true')
     p.add_argument('--plan-only',action='store_true')
     p.add_argument('--native-command-json')
+    add_voice_arguments(p)
     a=p.parse_args(argv)
+    validate_voice_arguments(p,a)
     if a.bank_rows<1 or not 1<=a.batch_vectors<=512:p.error('Positive bank rows and batch1..512 required')
     try:
         if a.tensor_pattern is not None:re.compile(a.tensor_pattern)
@@ -88,7 +91,11 @@ def main(argv=None,*,original_groups=False):
                 invocations=native.invocations
             finally:native.close()
         print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=invocations)),flush=True)
-    return 0
+    selection = (sorted({name for name, *_ in banks})
+                 if original_groups or a.tensor is not None or a.tensor_pattern is not None else None)
+    return register_compiled(a, package=output, model=a.model, selected_tensors=selection,
+                             weight_dtype="float32", batch_vectors=a.batch_vectors,
+                             dynamic_weight_mode="original_groups" if original_groups else "float32")
 
 
 if __name__=='__main__':raise SystemExit(main())

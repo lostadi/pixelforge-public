@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_gguf_loader.py test_compiled_model.py test_gguf_run.py test_setup_gguf.py test_npu_protocol.py test_batched_fc.py test_dynamic_fc.py test_grouped_fc.py test_grouped_columns.py test_dma_buffers.py test_full_ffn.py test_runtime.py test_pack_gguf.py; do
+          for suite in test_gguf_loader.py test_compiled_model.py test_gguf_run.py test_setup_gguf.py test_npu_protocol.py test_batched_fc.py test_dynamic_fc.py test_grouped_fc.py test_grouped_columns.py test_dma_buffers.py test_full_ffn.py test_runtime.py test_pack_gguf.py test_compiler_resume.py test_voice_handoff.py; do
             python -m unittest discover -s tools/arm_npu -p "$suite" -q
           done
       - name: Test voice conversation, tool and terminal fixtures
@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_pixelforge_chat.py test_conversation_protocol.py test_local_chat.py test_terminal_ui.py test_npu_runtime.py test_local_runtime.py; do
+          for suite in test_pixelforge_chat.py test_pixelforge_models.py test_pixelforge_file_prompt.py test_conversation_protocol.py test_local_chat.py test_terminal_ui.py test_npu_runtime.py test_local_runtime.py; do
             python -m unittest discover -s tests -p "$suite" -q
           done
       - name: Build and independently verify the public source archive

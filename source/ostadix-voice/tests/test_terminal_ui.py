@@ -487,6 +487,71 @@ class FluidUITests(unittest.TestCase):
         self.assertEqual(self.ui.engine_health(), ('unchecked; checked on request', ''))
         self.assertNotIn('Old engine failed', self.ui.engine_summary())
 
+    def test_models_list_is_passive_and_preserves_engine_and_conversation(self):
+        previous, sid = self.session.agent, self.session.sid
+        catalog = {'selected_model_id': 'granite', 'models': {'granite': {
+            'model_name': 'Granite fixture', 'context_per_worker': 4096, 'max_output_tokens': 64}}}
+        with patch('pixelforge_chat.registered_models', return_value=catalog), \
+                patch('pixelforge_chat.subprocess.run') as root_call:
+            self.ui.handle('/models')
+        self.assertIs(self.session.agent, previous)
+        self.assertEqual(self.session.sid, sid)
+        self.assertIn('* granite · Granite fixture · context 4096 · output 64', self.output[-1])
+        self.assertIsNone(self.session.store.setting('chat_engine'))
+        root_call.assert_not_called()
+
+    def test_missing_model_catalog_is_a_displayable_control_error(self):
+        from local_runtime import LocalError
+        with patch('pixelforge_chat.registered_models', side_effect=LocalError('register a compiled model first')):
+            for line in ('/models', '/engine pixelforge granite'):
+                with self.subTest(line=line), self.assertRaisesRegex(AppError, 'register a compiled model'):
+                    self.ui.handle(line)
+        self.assertFalse(self.session.agent.closed)
+
+    def test_registered_pixelforge_selection_closes_idle_host_before_root_control(self):
+        previous, sid = self.session.agent, self.session.sid
+        self.session.draft('keep this draft')
+        replacement = Agent(self.session.store, self.root, rpc_factory=FakeRPC)
+        replacement.engine_label = 'Granite · PixelForge NPU + CPU'
+        def select(ident):
+            self.assertTrue(previous.closed)
+            self.assertEqual(ident, 'granite')
+            self.assertIsNone(self.session.store.setting('chat_engine'))
+        with patch('pixelforge_chat.registered_models', return_value={'models': {'granite': {}}}), \
+                patch('pixelforge_chat.select_model', side_effect=select) as root_select, \
+                patch('local_chat.create_agent', return_value=replacement):
+            self.ui.handle('/engine pixelforge granite')
+        root_select.assert_called_once_with('granite')
+        self.assertEqual(self.session.store.setting('chat_engine'), 'pixelforge')
+        self.assertEqual(self.session.sid, sid)
+        self.assertEqual(self.session.draft(), 'keep this draft')
+        self.assertIs(self.session.agent, replacement)
+
+    def test_pixelforge_unknown_busy_or_failed_selection_preserves_saved_engine(self):
+        previous = self.session.agent
+        catalog = {'models': {'granite': {}}}
+        with patch('pixelforge_chat.registered_models', return_value=catalog), \
+                patch('pixelforge_chat.select_model') as select:
+            with self.assertRaisesRegex(AppError, 'Unknown PixelForge'):
+                self.ui.handle('/engine pixelforge missing')
+            self.assertFalse(previous.closed)
+            previous.active = True
+            try:
+                with self.assertRaisesRegex(AppError, 'current task'):
+                    self.ui.handle('/engine pixelforge granite')
+            finally:
+                previous.active = False
+            select.assert_not_called()
+        replacement = Agent(self.session.store, self.root, rpc_factory=FakeRPC)
+        with patch('pixelforge_chat.registered_models', return_value=catalog), \
+                patch('pixelforge_chat.select_model', side_effect=RuntimeError('selected model unavailable')), \
+                patch('local_chat.create_agent', return_value=replacement):
+            with self.assertRaisesRegex(RuntimeError, 'selected model unavailable'):
+                self.ui.handle('/engine pixelforge granite')
+        self.assertIsNone(self.session.store.setting('chat_engine'))
+        self.assertIs(self.session.agent, replacement)
+        self.assertFalse(replacement.closed)
+
     def test_engine_switch_rejects_busy_or_invalid_requests(self):
         previous = self.session.agent
         with patch('local_chat.create_agent') as factory:

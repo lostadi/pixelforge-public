@@ -44,13 +44,38 @@ class RequestTests(unittest.TestCase):
             service.validate_request({'id':'job-1','prompt':'Hi','flash_attention':'on'},profile)
 
     def test_model_template_renders_user_text_as_data_and_disables_thinking(self):
-        render = service.renderer('{{ bos_token }}{{ messages[0].content }}|{{ enable_thinking }}|{{ add_generation_prompt }}')
+        render = service.renderer('{{ bos_token }}{{ messages[0].content }}|{{ enable_thinking }}|{{ add_generation_prompt }}',
+                                  {'bos_token': '<bos>', 'eos_token': '<eos>'})
         self.assertEqual(render('{{ 7*9 }}'), '<bos>{{ 7*9 }}|False|True')
 
     def test_template_cannot_access_python_object_internals(self):
         from jinja2.exceptions import SecurityError
         with self.assertRaises(SecurityError):
             service.renderer('{{ messages.__class__.__mro__ }}')('Hi')
+
+
+class TensorSelectionTests(unittest.TestCase):
+    def test_more_than_256_tensors_are_preserved_and_maximum_stays_within_native_frame_bounds(self):
+        for count in (281, 512):
+            names = ['w'+str(index).zfill(4)+'x'*51+'.weight' for index in range(count)]
+            selected = config.tensor_selection(names)
+            self.assertEqual(selected, names)
+            self.assertIsNot(selected, names)
+            profile = dict(phase_evidence_version=1, cpu_prefill=False, weight_dtype='float32',
+                selected_npu_weight_tensors=names, selected_prefill_npu_weight_tensors=names)
+            frame = dict(dense_npu_requested=True, prefill_batch_size=512, prefix_cache_mib=0,
+                         selected_npu_weight_tensors=names, selected_prefill_npu_weight_tensors=names)
+            service.validate_ready(frame, profile)
+            self.assertLess(len(','.join(names).encode()), 131072)
+            self.assertLess(len(json.dumps(frame).encode()), service.FRAME_LIMIT)
+
+    def test_513_tensors_duplicates_invalid_names_and_types_are_still_rejected(self):
+        names = ['blk.'+str(index)+'.ffn_down.weight' for index in range(513)]
+        for value in (names, [], tuple(names[:1]), ['a.weight', 'a.weight'], [True], [None],
+                      ['x'*57+'.weight'], ['a.weight::cols[0:1]'], 'a.weight'):
+            with self.subTest(value=value[:2] if isinstance(value, list) else value), self.assertRaises(ValueError):
+                config.tensor_selection(value)
+        self.assertIsNone(config.tensor_selection(None))
 
 
 class BrokerRuntimeOptionTests(unittest.TestCase):

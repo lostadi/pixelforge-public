@@ -11,6 +11,7 @@ from grouped_columns import ColumnLayout, ColumnProgramCache
 from grouped_fc import compile_grouped_geometry
 from model_architecture import build_plan
 from npu_linear import NPULinear
+from voice_handoff import add_voice_arguments, validate_voice_arguments, register_compiled
 
 
 def main(argv=None):
@@ -25,7 +26,9 @@ def main(argv=None):
     parser.add_argument('--resume',action='store_true')
     parser.add_argument('--plan-only',action='store_true')
     parser.add_argument('--native-command-json')
+    add_voice_arguments(parser)
     args=parser.parse_args(argv)
+    validate_voice_arguments(parser,args)
     if args.bank_rows<1 or not 1<=args.batch_vectors<=512:
         parser.error('Positive bank rows and batch1..512 required')
     try:
@@ -85,7 +88,10 @@ def main(argv=None):
             finally:native.close()
         if args.tensor is None and args.tensor_pattern is None:cache.mark_complete()
         print(json.dumps(dict(event='complete',compiled_geometries=len(pending),npu_invocations=invocations)),flush=True)
-    return 0
+    return register_compiled(args, package=directory, model=args.model,
+                             selected_tensors=sorted({name for name, *_ in original_banks}),
+                             weight_dtype="float32", batch_vectors=args.batch_vectors,
+                             dynamic_weight_mode="original_columns")
 
 
 if __name__=='__main__':raise SystemExit(main())

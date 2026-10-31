@@ -219,8 +219,16 @@ static json full_ffn_tensors() {
     return csv.empty() ? json::array() : tensor_names(csv);
 }
 
+static bool raw_completion_prompt() {
+    const char * setting = std::getenv("PIXELFORGE_CHAT_PROMPT_MODE");
+    if (!setting || std::string(setting) == "chat-template") return false;
+    if (std::string(setting) == "raw-completion") return true;
+    throw std::runtime_error("PIXELFORGE_CHAT_PROMPT_MODE must be chat-template or raw-completion");
+}
+
 static void generate(llama_model * model, ConversationContext & resident, int threads,
-                     int prefill_batch, const FlashAttention & flash, const json & request) {
+                     int prefill_batch, const FlashAttention & flash, const json & request,
+                     bool raw_completion = false) {
     if (!request.is_object()) throw std::runtime_error("Request must be an object");
     for (const auto & item : request.items()) {
         if (item.key() != "id" && item.key() != "prompt" && item.key() != "max_tokens" &&
@@ -241,12 +249,27 @@ static void generate(llama_model * model, ConversationContext & resident, int th
     const bool prefill_cpu = request.value("prefill_cpu", false);
     const std::string id = request["id"];
     const auto * vocab = llama_model_get_vocab(model);
-    // The supplied Jinja output already includes its own BOS/control tokens.
-    int n = -llama_tokenize(vocab, prompt.data(), prompt.size(), nullptr, 0, false, true);
-    if (n < 1 || n + tokens > context) throw std::runtime_error("Prompt plus output exceeds context_size");
+    // Rendered templates own their control tokens. Raw completion instead
+    // follows the tokenizer's native add-BOS/add-EOS policy.
+    int n = -llama_tokenize(vocab, prompt.data(), prompt.size(), nullptr, 0, raw_completion, true);
+    if (n < 1) throw std::runtime_error("Prompt plus output exceeds context_size");
     std::vector<llama_token> input(n);
-    if (llama_tokenize(vocab, prompt.data(), prompt.size(), input.data(), n, false, true) != n)
+    if (llama_tokenize(vocab, prompt.data(), prompt.size(), input.data(), n, raw_completion, true) != n)
         throw std::runtime_error("Rendered prompt tokenization failed");
+    if (raw_completion) {
+        // Upstream warns but retains duplicate automatically added tokens.
+        // Remove only the automatic duplicate of an explicit edge token,
+        // using native IDs/preferences rather than guessing token strings.
+        const auto bos = llama_vocab_bos(vocab), eos = llama_vocab_eos(vocab);
+        if (llama_vocab_get_add_bos(vocab) && input.size() >= 2 &&
+                input[0] == bos && input[1] == bos)
+            input.erase(input.begin());
+        if (llama_vocab_get_add_eos(vocab) && input.size() >= 2 &&
+                input.back() == eos && input[input.size() - 2] == eos)
+            input.pop_back();
+        n = int(input.size());
+    }
+    if (n < 1 || n + tokens > context) throw std::runtime_error("Prompt plus output exceeds context_size");
     const bool context_reused = resident.value && resident.size == context &&
                                 resident.batch_size == prefill_batch && resident.owner == model;
     int prefix_tokens_reused = 0;
@@ -343,7 +366,8 @@ static void generate(llama_model * model, ConversationContext & resident, int th
     if (!pending.empty()) emit({{"type", "chunk"}, {"id", id}, {"text", pending}});
     const auto decoded = Clock::now();
     emit({{"type", "done"}, {"id", id}, {"text", text}, {"generated_tokens", output_ids},
-          {"prompt_tokens", n}, {"npu_weight_matmul_operations", pixelforge_ggml_npu_requests() - npu_before},
+          {"prompt_tokens", n}, {"prompt_mode", raw_completion ? "raw-completion" : "chat-template"},
+          {"npu_weight_matmul_operations", pixelforge_ggml_npu_requests() - npu_before},
           {"npu_prefill_weight_matmul_operations", npu_prefill},
           {"npu_decode_weight_matmul_operations", pixelforge_ggml_npu_requests() - npu_before - npu_prefill},
           {"cpu_dynamic_matmul_operations", pixelforge_ggml_npu_cpu_matmuls() - cpu_before},
@@ -374,11 +398,105 @@ static void generate(llama_model * model, ConversationContext & resident, int th
           {"generation_seconds", std::chrono::duration<double>(decoded - began).count()}});
 }
 
+// Probe paths never create a context or consult the NPU bridge singleton.
+extern char ** environ;
+
+static void clear_probe_bridge_environment() {
+    std::vector<std::string> names;
+    for (char ** item = environ; item && *item; ++item) {
+        const std::string entry(*item);
+        if (entry.compare(0, 16, "PIXELFORGE_GGML_") == 0) {
+            const auto equal = entry.find('=');
+            if (equal != std::string::npos) names.push_back(entry.substr(0, equal));
+        }
+    }
+    for (const auto & name : names)
+        if (unsetenv(name.c_str()) != 0)
+            throw std::runtime_error("Cannot clear native probe bridge settings");
+}
+
+static std::string model_metadata(const llama_model * model, const char * key) {
+    const int length = llama_model_meta_val_str(model, key, nullptr, 0);
+    if (length < 1) throw std::runtime_error(std::string("Missing model metadata: ") + key);
+    std::vector<char> value(size_t(length) + 1);
+    if (llama_model_meta_val_str(model, key, value.data(), value.size()) != length)
+        throw std::runtime_error("Model metadata changed during probe");
+    return std::string(value.data(), size_t(length));
+}
+
+static std::string special_token(const llama_vocab * vocab, llama_token token) {
+    if (token == LLAMA_TOKEN_NULL) return {};
+    if (token < 0 || token >= llama_vocab_n_tokens(vocab))
+        throw std::runtime_error("Native special token is outside the vocabulary");
+    const char * value = llama_vocab_get_text(vocab, token);
+    if (!value) throw std::runtime_error("Native special token has no text");
+    return value;
+}
+
+static bool probe_decoder_only(const llama_model * model, const std::string & architecture) {
+    // Upstream's has_encoder/has_decoder distinguish encoder-decoder models,
+    // but also label embedding-only BERT families as having a decoder.
+    // Keep the known non-generation roles excluded without an allowlist of
+    // decoder architectures; all other eligible pinned architectures remain.
+    static const std::vector<std::string> non_generation = {
+        "bert", "modern-bert", "nomic-bert", "nomic-bert-moe", "neo-bert", "jina-bert-v2",
+        "jina-bert-v3", "eurobert", "t5encoder", "gemma-embedding", "llama-embed",
+        "pangu-embedded", "wavtokenizer-dec", "qwen3tts", "pockettts"};
+    if (std::find(non_generation.begin(), non_generation.end(), architecture) != non_generation.end())
+        return false;
+    const int type_length = llama_model_meta_val_str(model, "general.type", nullptr, 0);
+    if (type_length >= 0 && model_metadata(model, "general.type") != "model") return false;
+    return llama_model_has_decoder(model) && !llama_model_has_encoder(model) &&
+           !llama_model_is_diffusion(model);
+}
+
+static int probe_context_length(const llama_model * model, const std::string & architecture) {
+    // vocab_only intentionally skips hparams loading in the pinned upstream;
+    // llama_model_n_ctx_train() therefore returns zero on this probe path.
+    const auto value = model_metadata(model, (architecture + ".context_length").c_str());
+    size_t consumed = 0;
+    const auto context = std::stoull(value, &consumed);
+    if (consumed != value.size() || !context || context > uint64_t(INT32_MAX))
+        throw std::runtime_error("Invalid model context length metadata");
+    return int(context);
+}
+
+static int probe_model(const char * path) {
+    clear_probe_bridge_environment();
+    llama_backend_init();
+    auto params = llama_model_default_params();
+    params.n_gpu_layers = 0;
+    params.use_extra_bufts = false;
+    params.vocab_only = true;
+    params.load_mode = LLAMA_LOAD_MODE_MMAP;
+    std::unique_ptr<llama_model, decltype(&llama_model_free)> model(
+        llama_model_load_from_file(path, params), llama_model_free);
+    if (!model) throw std::runtime_error("GGUF metadata/tokenizer loading failed");
+    const llama_vocab * vocab = llama_model_get_vocab(model.get());
+    if (!vocab || llama_vocab_n_tokens(vocab) < 1)
+        throw std::runtime_error("A tokenizer vocabulary is required");
+    const char * tmpl = llama_model_chat_template(model.get(), nullptr);
+    const auto architecture = model_metadata(model.get(), "general.architecture");
+    emit({{"schema", "pixelforge.gguf.probe/v1"},
+          {"architecture", architecture},
+          {"decoder_only", probe_decoder_only(model.get(), architecture)},
+          {"context_length", probe_context_length(model.get(), architecture)},
+          {"vocabulary_size", llama_vocab_n_tokens(vocab)},
+          {"chat_template", tmpl ? json(tmpl) : json(nullptr)},
+          {"bos_token", special_token(vocab, llama_vocab_bos(vocab))},
+          {"eos_token", special_token(vocab, llama_vocab_eos(vocab))},
+          {"metadata_only", true},
+          {"prompt_modes", json::array({"chat-template", "raw-completion"})}});
+    return 0;
+}
+
 int main(int argc, char ** argv) {
     try {
-        if (argc != 3) throw std::runtime_error("Usage: pixelforge-chat MODEL THREADS");
+        if (argc == 3 && std::string(argv[1]) == "--probe-model") return probe_model(argv[2]);
+        if (argc != 3) throw std::runtime_error("Usage: pixelforge-chat MODEL THREADS | --probe-model MODEL");
         const int threads = std::stoi(argv[2]);
         if (threads < 1 || threads > 32) throw std::runtime_error("Threads must be 1 to 32");
+        const bool raw_prompt = raw_completion_prompt();
         const int prefill_batch = prefill_batch_size();
         const int prefix_mib = prefix_cache_mib();
         const FlashAttention flash = flash_attention();
@@ -402,7 +520,8 @@ int main(int argc, char ** argv) {
               {"selected_prefill_npu_weight_tensors", selected_tensors(true)},
               {"full_ffn_tensors", full_ffn_tensors()},
               {"full_ffn_phases", pixelforge_ggml_npu_full_ffn_phases()},
-              {"prompt_format", "host-rendered-model-template"}});
+              {"prompt_format", raw_prompt ? "raw-completion" : "host-rendered-model-template"},
+              {"prompt_mode", raw_prompt ? "raw-completion" : "chat-template"}});
         std::string line;
         ConversationContext resident(size_t(prefix_mib) * MIB);
         while (frame(line)) {
@@ -411,7 +530,7 @@ int main(int argc, char ** argv) {
                 const auto request = json::parse(line);
                 if (request.is_object() && request.contains("id") && request["id"].is_string())
                     id = request["id"].get<std::string>().substr(0, 128);
-                generate(model.get(), resident, threads, prefill_batch, flash, request);
+                generate(model.get(), resident, threads, prefill_batch, flash, request, raw_prompt);
             } catch (const std::exception & error) {
                 pixelforge_ggml_npu_set_cpu_prefill(false);
                 pixelforge_ggml_npu_set_prefill_phase(false);

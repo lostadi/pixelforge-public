@@ -1,8 +1,8 @@
 # Conversational PixelForge backend
 
-This backend runs a supplied Huihui GGUF through the pinned llama.cpp architecture engine and PixelForge's compiled Tensor NPU matrix bridge. The phone host validates model JSON requests and owns tool execution. Model output never executes root commands in this service.
+This backend runs a registered decoder GGUF through the pinned llama.cpp architecture engine and PixelForge's compiled Tensor NPU matrix bridge. The phone host validates model JSON requests and owns tool execution. Model output never executes root commands in this service.
 
-The reference phone used `gemma4` and `qwen35`. Prompt and decoding placements are explicit. The `original_groups` route has run the NeoHorse model's 249 main Q5_K/Q6_K projections on NPU in both phases, keeping the original integer levels and group coefficients. CPU unpacking preserves those values; NPU programs reconstruct the weights and multiply them. Attention, recurrent GDN, normalization, sampling and ordinary FFN elementwise operations remain on CPU. A chosen NPU operation that fails aborts inference.
+Earlier reference deployments used `gemma4` and `qwen35`. Prompt and decoding placements are explicit. The `original_groups` route has run the NeoHorse model's 249 main Q5_K/Q6_K projections on NPU in both phases, keeping the original integer levels and group coefficients. CPU unpacking preserves those values; NPU programs reconstruct the weights and multiply them. Attention, recurrent GDN, normalization, sampling and ordinary FFN elementwise operations remain on CPU. A chosen NPU operation that fails aborts inference.
 
 Shared DMA weight buffers survive device-program eviction and serve both B1 decoding and the configured prompt batch. The earlier full-projection path used B16 prompt programs. Compiled code is reused by geometry, with separate source-bank and generation checks before invocation. The GGUF stays unchanged and no extra weight quantization is introduced. See [the original-group guide](../tools/arm_npu/ORIGINAL_GROUPS.md) for the supported formats, compiler commands, memory budgets and default settings.
 
@@ -32,6 +32,30 @@ it excludes context initialization, source validation and host-tool work.
 These fields describe an individual run and do not establish an overall
 speedup.
 
+## Which GGUFs can become Voice models
+
+Registration accepts models from any publisher. It hashes the original GGUF,
+checks the architecture plan, probes the actual native loader/tokenizer without
+creating an inference context, and verifies the declared source-bound NPU banks.
+The probe establishes loader eligibility, not numerical correctness or useful
+conversation quality. Matrix compilation alone is insufficient: encoder-only
+or matrix-only models, unsupported graph or expert operations, split shards,
+unsupported weight formats, and missing declared banks stop activation.
+
+The original-group and column routes retain their Q5_K/Q6_K format limits.
+Static INT8 and float32 packages retain their distinct precision semantics.
+Fused and full-FFN programs still require their own supported architecture and
+phase settings; discovering a sidecar does not infer a new model operation.
+Declared NPU work never switches automatically to CPU or a cloud model after a
+missing bank or hardware failure. The architecture's ordinary attention,
+normalization, sampling and other CPU graph operations remain on CPU.
+
+The model's embedded chat template receives its actual tokenizer BOS/EOS
+strings. A model without a template uses explicit `raw-completion` mode.
+The native tokenizer follows that same trusted prompt policy, avoiding an extra
+set of special tokens around a rendered chat template. Ready and completion
+frames must attest the registered mode; an inference request cannot change it.
+
 ## Prepare local model banks
 
 Supply your own model, matching compiled banks and the Android helper built from `tools/arm_npu/npu_pipe.cc`. Follow [the compiler guide](../tools/arm_npu/GGUF_COMPILER.md) for the compatible rooted Tensor runtime and its helper setup. GGUF model weights, DarwiNN bytecode, proprietary vendor runtime libraries and SDK binaries are not included here.
@@ -44,6 +68,50 @@ The opt-in `--dynamic-weight-mode original_columns` uses separate `grouped-colum
 
 The earlier static-bank route uses `compile_gguf.py`. Compile only explicitly selected tensors when using hybrid placement, with the same source, output and bank size and `--resume` for subsequent tensors. Its default INT8 constants requantize decoded GGUF weights; `--weight-dtype float32` preserves decoded values in larger constant artifacts. Keep those packages separate from original-group programs. Never add `--copy-source` unless you independently want a model copy. Saved packages must match the exact GGUF hash and device/compiler fingerprint; startup verifies every selected bank with compilation disabled.
 
+## Register a compiled package
+
+After the first platform installation, an exact compiled leaf is enough to
+register another model from the existing Ubuntu root environment:
+
+```sh
+chat/venv/bin/python chat/install.py \
+  --from-compiled /srv/pixelforge/example-decoder/grouped-columns-v1/b64/MODEL.json \
+  --model-id example-decoder --select --apply
+```
+
+Omit `--apply` for a dry run. Omit `--select` to register without changing the
+current model. IDs contain 1 to 64 lowercase letters, digits, underscores or
+hyphens and begin with a letter or digit. `--replace` updates an existing ID
+while idle. The installer reuses the current root-owned installation's Ubuntu,
+Python, helper and Termux locations, while taking the model and bank identity
+from the selected package. A first installation still needs the platform paths
+in the explicit example below.
+
+Use an exact leaf `MODEL.json` when the output contains several packages.
+Discovery infers the recipe, source SHA-256, bank layout, weight dtype and
+batch sizes from verified metadata. A B64 package uses a compatible same-source
+B1 sibling for decoding when the route supports split batches; a B64-only
+package decodes through B64. The float32 dynamic-input route always uses its
+selected batch for both phases, even when a B1 sibling exists. An explicit
+incompatible decode batch is rejected. Discovery does not pretend that a B1
+package exists. A mixed INT8/float32 static package
+requires an explicit `--weight-dtype`. `--model` may identify a moved GGUF, but
+its bytes must still match the package's source hash. No missing tensors are
+silently removed from the declared NPU placement.
+
+`--model-name` and `--provenance-repo` are optional display metadata.
+`--architecture` is an optional assertion against the original GGUF, not a
+publisher or model-name allowlist. `--context-size` can reduce the selected
+context, within 256 to 8,192 tokens and the native model's limit.
+`--max-output-tokens` accepts 2 to 512 tokens; output plus the native reserve
+must fit the selected context. Defaults use the model's bounded context and
+an output allowance that fits it.
+
+The compiler can also request registration after successful compilation with
+`--voice-model-id example-decoder`; add `--select-voice` to select it or
+`--replace-voice` to update its existing entry. See the
+[compiler handoff workflow](../tools/arm_npu/GGUF_COMPILER.md#register-successful-compilation-with-voice).
+
 ## Review and install
 
 Run the installer inside the already configured Ubuntu root environment. An existing mounted Ubuntu session must remain available to the Android bootstrap. Supply paths as seen in that environment; `--ubuntu-root` identifies its root directory in Android's host filesystem. The Termux home and voice runtime must already exist and belong to the same application account.
@@ -52,18 +120,16 @@ Run the installer inside the already configured Ubuntu root environment. An exis
 chat/venv/bin/python chat/install.py \
   --ubuntu-root /path/in/android/to/ubuntu/rootfs \
   --python /absolute/ubuntu/path/to/chat/venv/bin/python \
-  --model /srv/models/your-huihui.gguf \
+  --model /srv/models/your-model.gguf \
   --artifacts /srv/pixelforge/your-compiled-banks \
   --helper /data/local/tmp/pixelforge-npu/npu_pipe_gguf \
   --termux-home /data/data/com.termux/files/home \
   --app-runtime /data/data/com.termux/files/home/ostadix-voice/runtime \
-  --model-name 'Your Huihui model' \
-  --provenance-repo huihui-ai/YOUR_MODEL \
-  --architecture qwen35 \
+  --model-id example-decoder --select \
   --select-tensors blk.0.ffn_down.weight,blk.0.ffn_gate.weight,blk.0.ffn_up.weight
 ```
 
-This is a dry run. It prints the exact output paths, discovered Termux UID, model/source/helper hashes, bootstrap and generated profile. It neither downloads nor copies weights or compiled banks. Review that manifest, then repeat the command with `--apply`. `--replace` permits replacing an idle installation; the shared chat lock rejects replacement while the backend is running.
+This is a dry run. It prints the exact output paths, discovered Termux UID, model/source/helper hashes, bootstrap and generated profile. It neither downloads nor copies weights or compiled banks. Review that manifest, then repeat the command with `--apply`. `--replace` permits replacing an existing registry entry while idle; the global chat lock rejects registration or selection while inference owns the runtime.
 
 Defaults are `/opt/pixelforge-chat` for installed source and `/data/adb/ostadix-pixelforge` for root state. Change them with `--service-dir` and `--state-dir`. The default installed `chat.py` entrypoint matches the exported voice adapter. A custom state directory also requires configuring that adapter's launcher path. Optional arguments include `--native-binary`, `--bank-rows 4096`, `--cache-mib 256` and an explicit `--hardware-counter-path`. The installer generates hashes; do not copy the illustrative [profile template](examples/profile.example.json) into a running installation.
 
@@ -75,9 +141,29 @@ Defaults are `/opt/pixelforge-chat` for installed source and `/data/adb/ostadix-
 
 `--prefix-cache-mib` accepts 0 to 512 and defaults to 0. `--prefix-cache-mib 256` is an explicit phone-profile opt-in. It bounds an in-memory native cache of exact prompt-token checkpoints, including the architecture engine's attention and recurrent GDN state, captured at prompt chunk boundaries. The engine clears its live state before a restore, verifies checkpoint byte and position counts, and processes at least one remaining prompt token for logits. A failed restore clears the snapshots and live state before fresh prompt processing. The cache writes no persistent snapshots and replays no host actions. Ready events confirm the trusted budget; completion usage reports `prefix_cache_hit`, `prefix_tokens_reused`, `prefix_cache_bytes`, `prefix_cache_entries` and `prefill_tokens_processed`. NPU operation counts remain the operations actually performed for that turn. Cache limits bound RAM, not elapsed turn time.
 
-The bootstrap reads only its root-owned local `bootstrap.json`. It verifies the configured Ubuntu root inode, interpreter and installed source hashes before entering that mount namespace. It does not import any old device-specific launcher. The service accepts inference fields only: `id`, `prompt`, `max_tokens`, `context_size` and `prefill_cpu`. IPC callers cannot select a model, filesystem output, helper command or root command. Main turns have no elapsed deadline; explicit cancellation terminates only the recorded process identities. Tool commands still use the phone host's ordinary action policy and their own limits.
+The fixed bootstrap reads its root-owned selected `bootstrap.json` and model registry. It verifies the configured Ubuntu root inode, interpreter and installed source hashes before entering that mount namespace. It does not import any old device-specific launcher. The service accepts inference fields only: `id`, `prompt`, `max_tokens`, `context_size` and `prefill_cpu`. IPC callers cannot select a model, filesystem output, helper command or root command. Main turns have no elapsed deadline; explicit cancellation terminates only the recorded process identities. Tool commands still use the phone host's ordinary action policy and their own limits.
 
-After installing the exported voice source and its `c` launcher, start `c` and select `/engine pixelforge`. The service loads on a request. Switching profiles means reviewing a new installer manifest with the actual model/bank inputs and replacing an idle local installation; no private device-profile catalogue is shipped. `manage.py inspect --manifest /opt/pixelforge-chat/INSTALL_MANIFEST.json` shows the recorded output scope.
+Each registration writes a versioned, hash-pinned source/profile bundle.
+Selection changes the root-owned registry and bootstrap under the same global
+idle lock used by inference; it does not overwrite an active bundle. The service
+rechecks the selected bundle after taking that lock, so an old launcher cannot
+start a different model after a selection race.
+
+After installing the exported voice source and its `c` launcher, use ordinary
+Termux:
+
+```text
+/models
+/engine pixelforge example-decoder
+```
+
+`/models` reads the passive catalog without launching hardware. Selection closes
+the current idle conversation host, then passes only a registered ID to the
+fixed root selector. `/engine pixelforge` uses the current selected model.
+The service loads on a request. Model JSON cannot choose a model ID, filesystem
+path or command. Each installed bundle's `INSTALL_MANIFEST.json` records its
+output scope; `manage.py inspect --manifest /path/to/INSTALL_MANIFEST.json`
+displays it.
 
 ## Evidence and licenses
 

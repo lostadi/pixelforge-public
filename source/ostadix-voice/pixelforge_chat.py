@@ -1,4 +1,4 @@
-"""Main conversations through the fixed, root-owned Huihui PixelForge host.
+"""Main conversations through the fixed, root-owned PixelForge host.
 
 Inference is privileged; model-requested tools still execute in the ordinary
 Termux host dispatcher. No helper can obtain this main-conversation interface.
@@ -6,6 +6,7 @@ Termux host dispatcher. No helper can obtain this main-conversation interface.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -22,6 +23,8 @@ from npu_chat import NPU_CHAT_GUIDE
 
 BACKEND = 'pixelforge-npu-dense+ggml-cpu'
 METADATA = Path(__file__).parent / 'runtime/pixelforge-chat.json'
+MODEL_CATALOG = METADATA.with_name('pixelforge-models.json')
+MODEL_ID = re.compile(r'[a-z0-9][a-z0-9_-]{0,63}')
 COMMAND = ['/system/bin/su', '-c',
            '/data/data/com.termux/files/usr/bin/python3 -I /data/adb/ostadix-pixelforge/chat.py']
 TERMINAL = frozenset(('completed', 'failed', 'cancelled'))
@@ -32,7 +35,7 @@ MAX_FRAME = 262144
 def selected_tensors(value):
     if value is None:
         return None
-    if (not isinstance(value, list) or not 1 <= len(value) <= 256
+    if (not isinstance(value, list) or not 1 <= len(value) <= 512
             or any(not isinstance(name, str) or len(name) > 63 or
                    not re.fullmatch(r'[A-Za-z0-9_.-]+\.weight', name) for name in value)
             or len(set(value)) != len(value)):
@@ -145,6 +148,89 @@ def model_execution(model, data):
                 selected_prefill_npu_weight_tensors=prefill_selection, execution=execution)
 
 
+def model_limits(model):
+    context = model.get('context_per_worker', 8192)
+    output = model.get('max_output_tokens', 512)
+    if (type(context) is not int or not 256 <= context <= 8192
+            or type(output) is not int or not 2 <= output <= 512 or output + 8 > context):
+        raise ValueError('PixelForge installation has invalid model limits')
+    return context, output
+
+
+def installation_model(data):
+    model = data.get('model') if isinstance(data, dict) else None
+    if (not isinstance(data, dict) or data.get('backend') != BACKEND or not isinstance(model, dict)
+            or not isinstance(model.get('model_name'), str) or not model['model_name'].strip()
+            or len(model['model_name']) > 256 or any(ord(c) < 32 for c in model['model_name'])
+            or not re.fullmatch('[0-9a-f]{64}', str(model.get('model_sha256', '')))):
+        raise ValueError('PixelForge installation metadata is invalid')
+    provenance = model.get('provenance_repo')
+    if provenance is not None and (not isinstance(provenance, str) or len(provenance) > 512
+                                   or any(ord(c) < 32 for c in provenance)):
+        raise ValueError('PixelForge installation provenance metadata is invalid')
+    model_id = data.get('model_id')
+    if model_id is not None and (not isinstance(model_id, str) or not MODEL_ID.fullmatch(model_id)):
+        raise ValueError('PixelForge installation model identifier is invalid')
+    context, output = model_limits(model)
+    execution = model_execution(model, data)
+    return dict(model, model_id=model_id, backend=BACKEND,
+                context_per_worker=context, context_length=context, max_output_tokens=output,
+                streaming_preview=False, npu_dense_decode=True, **execution,
+                dense_placement='all NPU' if execution['selected_npu_weight_tensors'] is None
+                else 'selected NPU, remaining CPU')
+
+
+def registered_models(catalog=MODEL_CATALOG):
+    """Read published model names only; listing never starts a privileged host."""
+    try:
+        raw = Path(catalog).read_bytes()
+        if len(raw) > MAX_FRAME:
+            raise ValueError('Oversized model catalog')
+        value = json.loads(raw)
+        if (not isinstance(value, dict) or value.get('schema') != 'pixelforge.models.v1'
+                or not isinstance(value.get('models'), dict) or not 1 <= len(value['models']) <= 256):
+            raise ValueError('Invalid model catalog')
+        models = {}
+        for ident, descriptor in value['models'].items():
+            if not isinstance(ident, str) or not MODEL_ID.fullmatch(ident):
+                raise ValueError('Invalid registered model identifier')
+            models[ident] = installation_model(dict(descriptor, model_id=ident))
+        selected = value.get('selected_model_id')
+        if selected is not None and selected not in models:
+            raise ValueError('Selected model is absent from the catalog')
+        return {'selected_model_id': selected, 'models': models}
+    except (OSError, ValueError, TypeError, KeyError):
+        raise LocalError('PixelForge model catalog is unavailable; register a compiled model first') from None
+
+
+def select_model(model_id, *, catalog=MODEL_CATALOG, metadata=METADATA):
+    """Explicit user control: only a registered ID crosses the fixed su launcher."""
+    if not isinstance(model_id, str) or not MODEL_ID.fullmatch(model_id):
+        raise LocalError('Use a registered PixelForge model ID from /models')
+    models = registered_models(catalog)['models']
+    if model_id not in models:
+        raise LocalError('Unknown PixelForge model ID; use /models')
+    command = COMMAND[:2] + [COMMAND[2] + ' --select-model ' + model_id]
+    try:
+        result = subprocess.run(command, input='', capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        raise LocalError('PixelForge selection outcome is unknown; inspect /models before retrying') from None
+    except OSError as error:
+        raise LocalError('PixelForge model selection could not start: ' + str(error)[:200]) from None
+    if result.returncode:
+        raise LocalError('PixelForge model selection failed: ' + (result.stderr or result.stdout or 'root host rejected selection')[:500])
+    try:
+        raw = Path(metadata).read_bytes()
+        if len(raw) > MAX_FRAME:
+            raise ValueError('Oversized model metadata')
+        active = installation_model(json.loads(raw))
+        if active['model_id'] != model_id or active['model_sha256'] != models[model_id]['model_sha256']:
+            raise ValueError('Selected model identity differs')
+    except (OSError, ValueError, TypeError):
+        raise LocalError('PixelForge selection was not confirmed by its published model metadata; inspect /models') from None
+    return active
+
+
 def conversation_prompt(task, role, response_correction=None):
     if not is_main_role(role):
         raise LocalError('PixelForge requires a main-agent role; helpers stay separate')
@@ -194,7 +280,7 @@ def public_response(text):
 
 class PixelForgeClient:
     engine_name = 'pixelforge'
-    engine_label = 'Huihui · PixelForge NPU + CPU'
+    engine_label = 'PixelForge NPU + CPU'
     output_limit = 512
     requires_native_tool_calls = False
     supports_host_conversation = True
@@ -211,6 +297,7 @@ class PixelForgeClient:
         self._process = None
         self._active_job = None
         self._ready = False
+        self._host_configuration = None
         self._error = None
         # The terminal prints its welcome before its first status poll.
         # Resolve only passive installation metadata here, never start inference.
@@ -220,19 +307,12 @@ class PixelForgeClient:
             pass
 
     def _model(self):
-        data = json.loads(self.metadata.read_text())
-        model = data.get('model')
-        if (data.get('backend') != BACKEND or not isinstance(model, dict)
-                or not str(model.get('provenance_repo', '')).startswith('huihui-ai/')
-                or not isinstance(model.get('model_name'), str) or not model['model_name'].strip()
-                or not re.fullmatch('[0-9a-f]{64}', str(model.get('model_sha256', '')))):
-            raise ValueError('PixelForge installation metadata is invalid')
-        execution = model_execution(model, data)
-        selection = execution['selected_npu_weight_tensors']
-        return dict(model, backend=BACKEND, context_per_worker=8192, context_length=8192,
-                    max_output_tokens=self.output_limit, streaming_preview=False,
-                    npu_dense_decode=True, **execution,
-                    dense_placement='all NPU' if selection is None else 'selected NPU, remaining CPU')
+        raw = self.metadata.read_bytes()
+        if len(raw) > MAX_FRAME:
+            raise ValueError('PixelForge installation metadata is oversized')
+        data = json.loads(raw)
+        model = installation_model(data)
+        return dict(model, configuration_sha256=hashlib.sha256(raw).hexdigest())
 
     def status(self):
         # Reading status does not launch su, inference, compilation or downloads.
@@ -247,26 +327,30 @@ class PixelForgeClient:
                 self.engine_label = model['model_name'] + ' · PixelForge NPU + CPU'
             execution = model['execution'] if model else 'PixelForge installation unavailable'
             process_alive = self._process is not None and self._process.poll() is None
+            verified = bool(process_alive and self._ready and model and
+                            self._host_configuration == model['configuration_sha256'])
             return {'running': process_alive, 'ready': bool(model and not self._closed),
-                    'verified_worker_ready': bool(process_alive and self._ready),
+                    'verified_worker_ready': verified,
                     'configured': bool(model), 'engine': self.engine_name, 'backend': BACKEND,
-                    'selection_state': 'failed' if self._error else 'verified' if process_alive and self._ready else 'configured',
+                    'selection_state': 'failed' if self._error else 'verified' if verified else 'configured',
                     'model': model, 'active': sum(j['state'] == 'running' for j in self._jobs.values()),
                     'queued': len(self._queue), 'error': self._error or error,
-                    'limits': {'active': 1, 'queued': 8, 'max_tokens': self.output_limit,
+                    'limits': {'active': 1, 'queued': 8, 'max_tokens': model['max_output_tokens'] if model else self.output_limit,
                                'conversation_timeout_seconds': None},
                     'execution': execution}
 
-    def submit(self, owner, task, max_tokens=512, role='assistant', response_correction=None):
+    def submit(self, owner, task, max_tokens=None, role='assistant', response_correction=None):
         if not isinstance(owner, str) or not owner or len(owner) > 256:
             raise LocalError('PixelForge owner must be bounded text')
-        if type(max_tokens) is not int or not 2 <= max_tokens <= self.output_limit:
-            raise LocalError('PixelForge output limit must be between 2 and 512 tokens')
         prompt = conversation_prompt(task, role, response_correction)
         try:
             model = self._model()
         except (OSError, ValueError, TypeError, LocalError):
             raise LocalError('PixelForge chat installation is unavailable') from None
+        if max_tokens is None:
+            max_tokens = model['max_output_tokens']
+        if type(max_tokens) is not int or not 2 <= max_tokens <= model['max_output_tokens']:
+            raise LocalError('PixelForge output limit must be between 2 and ' + str(model['max_output_tokens']) + ' tokens')
         with self.condition:
             if self._closed:
                 raise LocalError('PixelForge client is closed')
@@ -325,6 +409,7 @@ class PixelForgeClient:
             if self._process is process:
                 self._process = None
                 self._ready = False
+                self._host_configuration = None
         # EOF is the trusted root host's cancellation signal; do this before
         # touching the ordinary-user su process, which may not own root children.
         try:
@@ -374,9 +459,13 @@ class PixelForgeClient:
         with self.condition:
             if self._closed or job['_cancel'].is_set():
                 return None
+            if self._model()['configuration_sha256'] != job['_model']['configuration_sha256']:
+                raise LocalError('PixelForge model selection changed while this request was queued; submit it again')
             process = self._process
             if process is not None and process.poll() is None and self._ready:
-                return process
+                if self._host_configuration == job['_model']['configuration_sha256']:
+                    return process
+                self._disconnect(process)
             process = subprocess.Popen(self.command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                        stderr=subprocess.DEVNULL, text=True, encoding='utf-8',
                                        start_new_session=True, bufsize=1)
@@ -396,6 +485,8 @@ class PixelForgeClient:
         if job['_model']['phase_evidence_version'] == 1:
             if model.get('model_sha256') != job['_model']['model_sha256']:
                 raise LocalError('PixelForge host readiness changed the configured model')
+            if model_limits(model) != model_limits(job['_model']):
+                raise LocalError('PixelForge host readiness changed the configured model limits')
             actual = model_execution(model, {})
             for key in actual.keys() - {'execution'}:
                 if actual[key] != job['_model'][key]:
@@ -404,6 +495,7 @@ class PixelForgeClient:
             if self._closed or job['_cancel'].is_set() or self._process is not process:
                 return None
             self._ready = True
+            self._host_configuration = job['_model']['configuration_sha256']
         return process
 
     @staticmethod
@@ -461,7 +553,7 @@ class PixelForgeClient:
         if (type(npu) is not int or npu < 1 or type(cpu) is not int or cpu < 0
                 or not isinstance(tokens, list) or not 1 <= len(tokens) <= job['_max_tokens']
                 or any(type(token) is not int or token < 0 for token in tokens)
-                or type(prompt_tokens) is not int or not 1 <= prompt_tokens <= 8192
+                or type(prompt_tokens) is not int or not 1 <= prompt_tokens <= job['_model']['context_per_worker']
                 or type(seconds) not in (int, float) or not math.isfinite(seconds) or seconds < 0
                 or type(event.get('token_limit_reached')) is not bool
                 or event.get('prefill_cpu') is not job['_model']['cpu_prefill']):
@@ -542,8 +634,10 @@ class PixelForgeClient:
             returned_model = event['model']
             if (not isinstance(returned_model, dict) or
                     returned_model.get('model_sha256') != job['_model']['model_sha256']):
-                raise LocalError('PixelForge completion does not match the configured Huihui model')
+                raise LocalError('PixelForge completion does not match the configured model')
             if strict:
+                if model_limits(returned_model) != model_limits(job['_model']):
+                    raise LocalError('PixelForge completion changed the configured model limits')
                 actual = model_execution(returned_model, {})
                 if any(actual[key] != job['_model'][key] for key in actual.keys() - {'execution'}):
                     raise LocalError('PixelForge completion changed the configured phase execution')
@@ -585,7 +679,7 @@ class PixelForgeClient:
                  'flash_attention': job['_model']['flash_attention'],
                  'cpu_dynamic_matmul_operations_scope':'unfused activation/cache matmuls; excludes other CPU operations',
                  'model_name': job['_model']['model_name'],
-                 'provenance_repo': job['_model']['provenance_repo'],
+                 'provenance_repo': job['_model'].get('provenance_repo'),
                  'model_sha256': job['_model']['model_sha256'], **placement_usage}
         return text, usage, limited
 
@@ -608,7 +702,7 @@ class PixelForgeClient:
                 if process is None:
                     continue
                 request = {'id': job['id'], 'prompt': job['_prompt'], 'max_tokens': job['_max_tokens'],
-                           'context_size': 8192, 'prefill_cpu': job['_model']['cpu_prefill']}
+                           'context_size': job['_model']['context_per_worker'], 'prefill_cpu': job['_model']['cpu_prefill']}
                 with self.condition:
                     if self._closed or job['_cancel'].is_set():
                         continue

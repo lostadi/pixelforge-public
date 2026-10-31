@@ -937,6 +937,8 @@ More controls:
 /controls             Current voice, speaker, engine and action controls
 /engine gemini|local|codex|pixelforge   Choose the main chat engine while idle (saved)
 /engine gemini MODEL        Choose a Gemini model explicitly
+/engine pixelforge ID      Choose a registered compiled GGUF while idle
+/models                   List registered PixelForge models (passive)
 /npu [status|on|off]  Inspect or control the automatic NPU text helper
 /o SOURCE             Run complete OSTADIX code locally; follows action policy
 /ostadix              Check the embedded OSTADIX MCP connection and revision
@@ -1310,14 +1312,38 @@ class TerminalUI:
             parts.append(self.local_badge())
         return ' · '.join(parts)
 
+    def show_models(self):
+        from pixelforge_chat import registered_models
+        from local_runtime import LocalError
+        try:
+            catalog = registered_models()
+        except LocalError as error:
+            raise AppError(str(error)) from None
+        self.say('PixelForge models · /engine pixelforge ID')
+        for ident, model in catalog['models'].items():
+            selected = '* ' if ident == catalog['selected_model_id'] else '  '
+            self.say(selected + ident + ' · ' + model['model_name'] + ' · context ' +
+                     str(model['context_per_worker']) + ' · output ' + str(model['max_output_tokens']))
+
     def select_engine(self, name):
         parts = name.split()
         model = None
+        pixelforge_model = None
         if len(parts) == 2 and parts[0] == 'gemini':
             from gemini_client import MODELS
             if parts[1] not in MODELS:
                 raise AppError('Gemini models: ' + ', '.join(MODELS))
             name, model = 'gemini', parts[1]
+        elif len(parts) == 2 and parts[0] == 'pixelforge':
+            from pixelforge_chat import registered_models
+            from local_runtime import LocalError
+            try:
+                catalog = registered_models()
+            except LocalError as error:
+                raise AppError(str(error)) from None
+            if parts[1] not in catalog['models']:
+                raise AppError('Unknown PixelForge model ID; use /models')
+            name, pixelforge_model = 'pixelforge', parts[1]
         if name not in ('local', 'codex', 'gemini', 'pixelforge'):
             raise AppError('Use /engine gemini, /engine local, /engine codex, /engine pixelforge, or /engine for the current engine.')
         previous = self.session.agent
@@ -1328,6 +1354,20 @@ class TerminalUI:
                 raise AppError('This interface is closing. Start c again to continue.')
             previous.closed = True
         previous.close()
+        if pixelforge_model is not None:
+            from pixelforge_chat import select_model
+            try:
+                select_model(pixelforge_model)
+            except Exception as error:
+                # Selection may fail or have an uncertain outcome. Keep the saved
+                # engine choice and restore an idle client without replaying it.
+                from local_chat import create_agent
+                self.session.agent = create_agent(self.session.store, self.session.root)
+                self.session.agent.interface.attach(self.voice_control)
+                from local_runtime import LocalError
+                if isinstance(error, LocalError):
+                    raise AppError(str(error)) from None
+                raise
         if model is not None:
             self.session.store.setting('gemini_model', model)
         self.session.store.setting('chat_engine', name)
@@ -2431,6 +2471,10 @@ class TerminalUI:
             if argument:
                 raise AppError('Use /controls for current settings, or /help for controls.')
             self.controls()
+        elif command == '/models':
+            if argument:
+                raise AppError('Use /models, then /engine pixelforge ID.')
+            self.show_models()
         elif command == '/engine':
             if argument in ('', 'status'):
                 self.say(self.engine_summary() + ' · /engine gemini|local|codex|pixelforge')

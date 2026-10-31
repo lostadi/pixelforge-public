@@ -1,0 +1,151 @@
+{
+  "compiler_handoff": {
+    "case": "Real fully cached B64 grouped-column compiler resume followed by installer registration",
+    "compiled_geometries": 0,
+    "exit_code": 0,
+    "npu_invocations": 0,
+    "registration_succeeded": true,
+    "selected_default_preserved": true
+  },
+  "date": "2026-10-31",
+  "device": {
+    "client": "ordinary Termux application; UID/GID 10402, verified untrusted_app_27 domain, zero inherited/permitted/effective/ambient capabilities",
+    "host": "separate fixed root-owned inference service",
+    "model": "Pixel 10 Pro",
+    "soc": "Tensor G5"
+  },
+  "granite": {
+    "architecture": "granite",
+    "compiled_programs_during_inference": 0,
+    "elapsed_seconds": 1133.662490265997,
+    "file_tool_acceptance_passed": false,
+    "file_tool_failure": "The model supplied argv for a read operation instead of path. The real tool rejected the missing path. The second model turn incorrectly interpreted that error as a missing file.",
+    "global_lock_free_after": true,
+    "inference_checks": {
+      "actual_npu_weight_operations": true,
+      "all_jobs_requested_model": true,
+      "all_model_jobs_completed": true,
+      "at_least_two_actual_model_turns": true,
+      "no_cpu_weight_placement": true
+    },
+    "model_jobs_completed": 2,
+    "model_sha256": "e80eec4cf0c8cc0b894117535707139f8e86ebc01d9ac7b11a11dad33508e7f9",
+    "native_cleanup_ok": true,
+    "native_invocations": 24598,
+    "selected_dense_weights": 281,
+    "turns": [
+      {
+        "completion_tokens": 18,
+        "cpu_placed_weight_matmul_operations": 0,
+        "cpu_prefill_weight_matmul_operations": 0,
+        "decode_seconds": 393.076723346,
+        "generation_seconds": 595.630954048,
+        "npu_decode_weight_matmul_operations": 4777,
+        "npu_prefill_weight_matmul_operations": 558,
+        "prefill_seconds": 202.554230702,
+        "prompt_tokens": 740
+      },
+      {
+        "completion_tokens": 20,
+        "cpu_placed_weight_matmul_operations": 0,
+        "cpu_prefill_weight_matmul_operations": 0,
+        "decode_seconds": 430.642505459,
+        "generation_seconds": 517.958927713,
+        "npu_decode_weight_matmul_operations": 5339,
+        "npu_prefill_weight_matmul_operations": 281,
+        "prefill_seconds": 87.316422254,
+        "prompt_tokens": 874
+      }
+    ]
+  },
+  "granite_package": {
+    "dense_weights": 281,
+    "geometry_programs": 10,
+    "maximum_normalized_error": 0.000572496147635279,
+    "maximum_relative_l2": 0.0003641449199821746,
+    "model_weights_unchanged": true,
+    "normalized_max_limit": 0.005,
+    "numerical_checks_passed": 10,
+    "original_weight_bits_equal": true,
+    "programs_compiled": 4,
+    "programs_reused": 6,
+    "relative_l2_limit": 0.002
+  },
+  "limits": [
+    "Inference completion and tool-task success are distinct. Granite file-tool acceptance failed.",
+    "The guide was subsequently clarified with an explicit read/path example; no new live model acceptance is claimed for that prompt change.",
+    "These are slow functional checks, not speed, quality, energy or sustained-thermal comparisons.",
+    "Only the two listed local GGUFs were tested through this application path. Native model support and complete verified declared compiled banks remain requirements.",
+    "No intent router, tool-argument rewriting, generated-answer synthesis or cloud inference was used.",
+    "Raw prompts, file contents, conversations, app categories and private deployment paths are excluded."
+  ],
+  "native_engine_sha256": "43da28a3e88949bb08a74782862e94dabfc9faffa7a12833332b09010f86974c",
+  "neohorse": {
+    "architecture": "qwen35",
+    "compiled_programs_during_inference": 0,
+    "elapsed_seconds": 235.23519778400077,
+    "global_lock_free_after": true,
+    "model_jobs_completed": 1,
+    "model_sha256": "cc4a3cc480fe0e0142333244aaa3f2c0d4feda6c78d296976e8513d02aabbbcd",
+    "native_cleanup_ok": true,
+    "native_invocations": 6674,
+    "selected_dense_weights": 249,
+    "short_answer_passed": true,
+    "turns": [
+      {
+        "completion_tokens": 2,
+        "cpu_placed_weight_matmul_operations": 0,
+        "cpu_prefill_weight_matmul_operations": 0,
+        "decode_seconds": 24.99613153,
+        "generation_seconds": 206.062895861,
+        "npu_decode_weight_matmul_operations": 249,
+        "npu_prefill_weight_matmul_operations": 497,
+        "prefill_seconds": 181.066764331,
+        "prompt_tokens": 714
+      }
+    ]
+  },
+  "ordinary_app_model_selection": {
+    "app_metadata_ownership_and_exact_selinux_labels_preserved": true,
+    "granite_then_default_passed": true,
+    "protected_registry_and_active_descriptor_agreed": true
+  },
+  "placement": {
+    "decode_batch_vectors": 1,
+    "native_max_resident_models": 8,
+    "native_runtime_cache_mib": 128,
+    "other_operations": "Attention, recurrent state where applicable, normalization, sampling and column partial sums remain on CPU.",
+    "prefix_cache_mib": 256,
+    "prompt_batch_vectors": 64,
+    "route": "original_columns",
+    "weight_buffer_cache_mib": 5632
+  },
+  "schema": "pixelforge.compiled-voice-validation.v1",
+  "software_checks": {
+    "arm_compiler_runtime": {
+      "failed": 0,
+      "passed": 200,
+      "skipped": 0
+    },
+    "chat_native": {
+      "failed": 0,
+      "passed": 235,
+      "skipped": 0
+    },
+    "focused_voice": {
+      "failed": 0,
+      "passed": 232,
+      "skipped": 0
+    },
+    "source_release": {
+      "failed": 0,
+      "passed": 20,
+      "skipped": 0
+    },
+    "targeted_guide_transport": {
+      "includes_two_new_rendered_file_prompt_tests": true,
+      "overlaps_focused_voice": true,
+      "passed": 76
+    }
+  }
+}

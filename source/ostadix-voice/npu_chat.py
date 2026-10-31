@@ -23,7 +23,12 @@ Your tool is named workspace. To run a command, return ONLY a complete object li
 The tool name is always workspace. Commands such as @npu belong inside argv, never in tool.
 No introduction, explanation or other text may surround a tool request.
 Other operations: list(path), read(path), write(path,content), delete(path).
-File-operation paths are workspace-relative. Commands can inspect system metadata outside
+File operations use the path field, for example:
+{"tool":"workspace","arguments":{"operation":"read","path":"example.txt"}}
+Use argv only for operation command. File-operation paths are workspace-relative.
+A missing-path error means the request is malformed, not that the file is absent.
+Correct that read request with a path field before answering from its actual result.
+Commands can inspect system metadata outside
 that workspace with getprop, ls, cat, readlink, find or Python under saved action policy.
 For requested read-only diagnostics denied to the app user, try its existing root grant:
 command argv ["/system/bin/su","-c","ls /sys/class"], replacing ls with the needed read.

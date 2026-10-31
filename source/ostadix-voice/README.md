@@ -43,14 +43,17 @@ a compiler toolchain, and the upstream repository's build dependencies.
 ## Configure an inference engine
 
 - **PixelForge:** follow the repository's [chat setup](../../chat/README.md).
-  Its installer consumes a local model profile and generates
-  `runtime/pixelforge-chat.json`; no active phone profile is distributed here.
-  Select `/engine pixelforge` while idle after installation. The interface
-  validates a completed response's model identity and positive NPU operation
-  count before allowing its tool request to proceed. Explicit hybrid placement
-  means selected dense projections run on the NPU while other dense operations,
-  attention, normalization, sampling, and prompt processing can remain on CPU.
-  Failures of selected NPU projections are errors, not automatic CPU fallback.
+  It registers eligible decoder GGUFs with their verified compiled NPU packages,
+  independently of publisher. The native loader/tokenizer probe, original source
+  hash and exact bank preflight must pass before activation. No active phone
+  profile or model catalog is distributed here. Use `/models` to list registered
+  IDs and `/engine pixelforge ID` to select one while idle; `/engine pixelforge`
+  uses the current selected model. The interface checks model identity, selected
+  context/output limits and positive NPU execution evidence before accepting a
+  completed response. Explicit hybrid placement can leave other dense
+  projections on CPU; ordinary attention, normalization, sampling and other
+  architecture operations retain their CPU path. A selected NPU failure is an
+  error, without automatic CPU or cloud substitution.
 - **Local CPU:** `python3 source/ostadix-voice/setup_local_model.py --help` lists
   pinned model profiles. Running the installer can download weights and build
   llama.cpp; it is an explicit, separate step. The resulting local manifest stays
@@ -60,6 +63,45 @@ a compiler toolchain, and the upstream repository's build dependencies.
   `/engine gemini` only when that cloud engine is wanted.
 - **Codex:** requires the locally installed Codex CLI and the user's own sign-in.
   Select `/engine codex` when that engine is wanted.
+
+For an existing platform installation, register an exact compiled package from
+its Ubuntu root environment:
+
+```sh
+chat/venv/bin/python chat/install.py \
+  --from-compiled /srv/pixelforge/example-decoder/grouped-columns-v1/b64/MODEL.json \
+  --model-id example-decoder --select --apply
+```
+
+Run that command from the repository root. It reuses the existing platform
+locations, references weights and banks in place, and publishes a passive
+catalog plus the selected model descriptor. First installation requires the
+explicit local platform paths in the [chat guide](../../chat/README.md).
+Model registration without `--select` keeps the current selection. The compiler's
+`--voice-model-id ID` option can request the same handoff after successful
+compilation; `--select-voice` and `--replace-voice` are explicit additions.
+
+In the ordinary Termux interface:
+
+```text
+/models
+/engine pixelforge example-decoder
+```
+
+Listing starts no inference. Selection accepts only registered lowercase IDs,
+closes the current idle host and uses the fixed root selector. It retains the
+conversation, draft and voice settings. Root selection and inference share a
+global idle lock and versioned, pinned bundles. Model-generated requests cannot
+choose profiles, model paths or commands. A changed descriptor invalidates an
+old resident host before its next request.
+
+Chat templates use the selected model's actual BOS/EOS tokens. A GGUF without a
+template uses raw completion, with the matching policy attested by the native
+engine. Context and output limits come from the selected descriptor, within
+the current 8,192-context/512-output ceilings. Missing banks, unsupported
+architectures, encoder/expert operations, shards or unsupported quantization
+stop activation; a compiled matrix is not proof that a model can converse or
+that its NPU arithmetic has passed reference checks.
 
 `/controls` reports the selected engine, microphone, speaker, and action policy.
 `/cancel` cancels the current task, `/stop` controls audio, and `/quit` saves and

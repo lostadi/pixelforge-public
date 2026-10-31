@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import stat
 import sys
+import types
 
 
 def digest(path):
@@ -85,13 +86,39 @@ def ubuntu_handles(config):
     raise RuntimeError('Open the configured Ubuntu root environment first; no verified mounted session exists')
 
 
+def registry_module(installed):
+    """Execute the exact checked bytes of the root-owned sibling helper."""
+    path = installed.with_name("registry.py")
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    with os.fdopen(fd, "rb") as source:
+        info = os.fstat(source.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+            raise ValueError("Model registry helper must be a protected root-owned file")
+        data = source.read(262145)
+    if len(data) > 262144:
+        raise ValueError("Model registry helper exceeds its size limit")
+    module = types.ModuleType("pixelforge_model_registry")
+    module.__file__ = str(path)
+    exec(compile(data, str(path), "exec"), module.__dict__)
+    return module
+
+
 def main():
     installed = Path(__file__).absolute()
     info = installed.lstat()
     parent = installed.parent.stat()
-    if (os.getuid() != 0 or len(sys.argv) != 1 or not stat.S_ISREG(info.st_mode)
+    if (os.getuid() != 0 or not stat.S_ISREG(info.st_mode)
             or info.st_uid != 0 or info.st_mode & 0o022 or parent.st_uid != 0 or parent.st_mode & 0o022):
         raise ValueError('Use the installed root-owned stdin-only chat launcher')
+    args = sys.argv[1:]
+    if args:
+        if args != ["--list-models"] and not (len(args) == 2 and args[0] == "--select-model"):
+            raise ValueError("Use no arguments, --list-models, or --select-model ID")
+        registry = registry_module(installed)
+        result = (registry.list_models(installed.parent) if args == ["--list-models"] else
+                  registry.select_model(installed.parent, args[1], verifier=ubuntu_handles))
+        print(json.dumps(result, ensure_ascii=False), flush=True)
+        return
     config = read_bootstrap(installed.with_name('bootstrap.json'))
     root_fd, namespace_fd = ubuntu_handles(config)
     try:
@@ -113,5 +140,6 @@ if __name__ == '__main__':
     try:
         main()
     except (OSError, ValueError, RuntimeError) as error:
-        print(json.dumps({'type': 'error', 'error': str(error)[:500]}), flush=True)
+        print(json.dumps({'type': 'error', 'error': str(error)[:500]}),
+              file=sys.stderr if sys.argv[1:] else sys.stdout, flush=True)
         raise SystemExit(1)

@@ -10,7 +10,7 @@ import re
 def tensor_selection(value):
     if value is None:
         return None
-    if (not isinstance(value, list) or not 1 <= len(value) <= 256
+    if (not isinstance(value, list) or not 1 <= len(value) <= 512
             or any(not isinstance(name, str) or len(name) > 63 or
                    not re.fullmatch(r'[A-Za-z0-9_.-]+\.weight', name) for name in value)
             or len(set(value)) != len(value)):
@@ -408,3 +408,18 @@ def root_json(path, *, owner=0, limit=262144):
     if not isinstance(result, dict):
         raise ValueError('Configuration must be a JSON object')
     return result
+
+def model_limits(profile=None):
+    """Return the selected model's bounded host limits, including legacy defaults."""
+    if profile is not None and not isinstance(profile, dict):
+        raise ValueError('Invalid model profile')
+    model = (profile or {}).get('model', {})
+    if not isinstance(model, dict):
+        raise ValueError('Invalid model metadata')
+    context = model.get('context_per_worker', 8192)
+    output = model.get('max_output_tokens', 512)
+    if (type(context) is not int or not 256 <= context <= 8192
+            or type(output) is not int or not 2 <= output <= 512
+            or output + 8 > context):
+        raise ValueError('Invalid selected model context/output limits')
+    return context, output

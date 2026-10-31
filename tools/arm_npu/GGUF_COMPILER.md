@@ -159,8 +159,9 @@ bash tools/arm_npu/gguf.sh compile \
   --model /path/to/your-model.gguf --output /path/to/compiled-model --resume
 ```
 
-Already verified banks load their saved bytecode rather than recompiling.
-Bulk compilation releases each native graph after saving it, so the whole
+Already verified banks are checked and reused without loading their bytecode
+into a native helper. A cached resume starts the helper only for missing work.
+Bulk compilation releases each new native graph after saving it, so the whole
 model's compiled code does not need to remain in RAM. Compiling matrices alone
 does not perform an inference or establish generation quality.
 
@@ -178,6 +179,73 @@ architecture engine and Android vendor runtime remain execution dependencies.
 Bytecode is bound to the compiler/firmware fingerprint of the device where it
 was built. Keep the kit version used to build it; changing decoder or graph
 author source requires a new package.
+
+## Register successful compilation with Voice
+
+An eligible decoder GGUF can become an Ostadix Voice model through its compiled
+package. Publisher is display metadata, not an admission gate. Registration
+hashes the source GGUF, probes the actual native loader and tokenizer, and
+verifies the declared NPU bank coverage against the original source plan.
+Encoder-only or matrix-only models, unsupported expert/graph operations,
+shards, unsupported quantizations and missing declared banks are rejected before
+activation. Successful registration does not establish conversation quality or
+numerical correctness on the NPU.
+
+With an existing chat platform installation, pass an exact leaf package:
+
+```sh
+chat/venv/bin/python chat/install.py \
+  --from-compiled /srv/pixelforge/example-decoder/grouped-columns-v1/b64/MODEL.json \
+  --model-id example-decoder --select --apply
+```
+
+Omit `--apply` for a dry run, or `--select` to keep the current model selected.
+An output containing several sidecars requires an explicit leaf rather than a
+guess based on timestamps. Source identity, recipe, bank rows, dtype and batch
+sizes are inferred. Routes supporting split batches prefer a compatible B1
+sibling for decoding; without one, a B64 package decodes through B64. The
+float32 dynamic-input route uses the same batch for both phases and rejects an
+incompatible decode override, even when a B1 sibling exists. Mixed static dtypes
+require an explicit dtype choice. A moved model can be supplied with `--model`,
+but its complete hash must still match. First installation requires the
+platform paths in the [chat setup](../../chat/README.md).
+
+The direct compiler CLIs can request this handoff after actual compilation.
+For example, after compiling any B1 geometry needed for the same model:
+
+```sh
+chat/venv/bin/python tools/arm_npu/compile_grouped_columns.py \
+  --model /srv/models/example-decoder.gguf \
+  --output /srv/pixelforge/example-decoder \
+  --bank-rows 4096 --batch-vectors 64 \
+  --voice-model-id example-decoder --select-voice
+```
+
+Use device-validated row/column/batch geometries appropriate to the actual
+model; the original-group/column route accepts supported Q5_K/Q6_K tensors.
+`--voice-model-id ID` registers the successful package. `--select-voice` also
+selects it, and `--replace-voice` permits updating the registered ID. These
+options require an existing platform installation and cannot accompany
+`--plan-only`. Without the Voice option, compilation leaves the registry alone.
+The handoff preserves the compiler's actual selected tensor names; it does not
+silently choose a smaller present subset. If registration fails after
+compilation, saved artifacts remain and the compiler exits with status **3**
+and a failed `voice_registration` event. Fix the registration issue and reuse
+the saved package; compilation success alone does not imply activation.
+
+From ordinary Termux, `/models` lists the passive catalog and
+`/engine pixelforge ID` selects a registered model while idle. The fixed root
+selector uses versioned, pinned bundles and the global inference lock. A
+missing declared NPU bank or failed NPU operation never triggers automatic CPU
+or cloud substitution. Normal non-weight graph operations retain their CPU
+implementation.
+
+Voice applies the model's embedded chat template using actual BOS/EOS tokens;
+models without a template use explicit raw completion. The native tokenizer
+attests the same prompt policy on readiness and completion. Optional
+`--context-size` and `--max-output-tokens` installation settings can reduce the
+model's limits within the current 8,192-context/512-output ceilings. They do not
+expand native model eligibility. See the [Voice source guide](../../source/ostadix-voice/README.md).
 
 ## Generate and verify that saved code is used
 

@@ -15,6 +15,7 @@ import shutil
 from compiled_model import ArtifactCache, batch_directory
 from gguf_hf_loader import GGUFWeights
 from npu_linear import NPULinear
+from voice_handoff import add_voice_arguments, validate_voice_arguments, register_compiled
 
 MIB = 1024 ** 2
 DEFAULT_NATIVE_COMMAND = [
@@ -96,7 +97,9 @@ def main():
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--plan-only", action="store_true")
     parser.add_argument("--native-command-json", help="Explicit JSON argv for the D/L-capable native helper")
+    add_voice_arguments(parser)
     args = parser.parse_args()
+    validate_voice_arguments(parser, args)
     if args.bank_rows < 1:
         parser.error("--bank-rows must be positive")
     if args.tensor_pattern is not None:
@@ -213,7 +216,21 @@ def compile_weights(args, row_range, weights):
     finally:
         if native is not None:
             native.close()
-    return 0
+    selection = None
+    fused_names = None
+    if fused or args.tensor is not None or pattern is not None:
+        names = {name for name, *_ in banks}
+        if fused:
+            sources = weights.fused_sources
+            selection = sorted({member for name in names for member in sources.get(name, (name,))})
+            fused_names = sorted(name for name in sources
+                                 if name in names or name[:-len("ffn_gate_up.weight")] + "ffn_down.weight" in names)
+        else:
+            selection = sorted(names)
+    return register_compiled(args, package=output, model=args.model, selected_tensors=selection,
+                             weight_dtype=args.weight_dtype, batch_vectors=batch_vectors,
+                             fused_gate_up=fused, fused_bank_rows=args.bank_rows,
+                             fused_gate_up_tensors=fused_names)
 
 
 if __name__ == "__main__":

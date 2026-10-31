@@ -15,7 +15,7 @@ from agent import Store
 from conversation_protocol import encode_conversation
 from local_chat import LocalChatAgent, create_agent
 from local_runtime import LocalError
-from pixelforge_chat import BACKEND, COMMAND, PixelForgeClient, conversation_prompt, public_response
+from pixelforge_chat import BACKEND, COMMAND, PixelForgeClient, conversation_prompt, public_response, selected_tensors
 
 
 ROLE = 'phone conversation assistant'
@@ -129,15 +129,61 @@ class PixelForgeTests(unittest.TestCase):
         popen.assert_not_called()
         missing = PixelForgeClient(metadata=self.root / 'missing.json')
         self.addCleanup(missing.close)
-        self.assertEqual(missing.engine_label, 'Huihui · PixelForge NPU + CPU')
+        self.assertEqual(missing.engine_label, 'PixelForge NPU + CPU')
         self.assertFalse(missing.status()['ready'])
 
-    def test_missing_or_non_huihui_installation_is_unavailable(self):
-        self.metadata.write_text(json.dumps({'backend': BACKEND, 'model': {
-            'model_name': 'Google fixture', 'provenance_repo': 'google/gemma', 'model_sha256': 'a' * 64}}))
+    def test_publisher_is_display_metadata_and_model_identity_remains_required(self):
+        for provenance in ('google/gemma', 'ibm-granite/granite', None):
+            model = {'model_name': 'Other GGUF', 'model_sha256': 'a' * 64}
+            if provenance is not None:
+                model['provenance_repo'] = provenance
+            self.metadata.write_text(json.dumps({'backend': BACKEND, 'model': model}))
+            self.assertTrue(self.client.status()['ready'])
+        model['model_sha256'] = 'not-a-digest'
+        self.metadata.write_text(json.dumps({'backend': BACKEND, 'model': model}))
         self.assertFalse(self.client.status()['ready'])
         with self.assertRaisesRegex(LocalError, 'installation'):
             self.client.submit('owner-a', TASK, role=ROLE)
+
+    def test_strict_host_model_limits_cannot_change_at_ready_or_completion(self):
+        model = self.phase_metadata()
+        model.update(context_per_worker=4096, max_output_tokens=64)
+        self.metadata.write_text(json.dumps({'backend': BACKEND, 'model': model}))
+        host = self.phase_host(model)
+        host.stdout.frames.get_nowait()
+        host.stdout.push({'type': 'ready', 'model': dict(model, context_per_worker=8192), 'prefix_cache_mib': 0})
+        result, _ = self.reply(host)
+        self.assertEqual(result['state'], 'failed')
+        self.assertEqual(host.requests, [])
+        self.client._disconnect(host)
+        host = self.phase_host(model, model=dict(model, max_output_tokens=128))
+        result, _ = self.reply(host)
+        self.assertEqual(result['state'], 'failed')
+        self.assertEqual(result['result'], '')
+
+    def test_large_source_tensor_selections_preserve_281_and_512_names_without_starting_host(self):
+        for count in (281, 512):
+            names = ['w'+str(index).zfill(4)+'x'*51+'.weight' for index in range(count)]
+            self.assertEqual(selected_tensors(names), names)
+            data = json.loads(self.metadata.read_text())
+            data['model'].update(selected_npu_weight_tensors=names,
+                                 selected_prefill_npu_weight_tensors=names)
+            self.metadata.write_text(json.dumps(data))
+            with patch('pixelforge_chat.subprocess.Popen') as spawn:
+                status = self.client.status()
+            self.assertTrue(status['ready'], status)
+            self.assertEqual(status['model']['selected_npu_weight_tensors'], names)
+            self.assertEqual(status['model']['selected_prefill_npu_weight_tensors'], names)
+            self.assertLess(len(json.dumps({'type': 'ready', 'model': status['model']}).encode()), 262144)
+            spawn.assert_not_called()
+
+    def test_513_source_tensors_and_invalid_names_types_or_duplicates_are_rejected(self):
+        names = ['blk.'+str(index)+'.ffn_down.weight' for index in range(513)]
+        for value in (names, [], tuple(names[:1]), ['a.weight', 'a.weight'], [True], [None],
+                      ['x'*57+'.weight'], ['a.weight::cols[0:1]'], 'a.weight'):
+            with self.subTest(value=value[:2] if isinstance(value, list) else value), self.assertRaises(LocalError):
+                selected_tensors(value)
+        self.assertIsNone(selected_tensors(None))
 
     def test_helper_cannot_acquire_main_tools_and_transcript_is_required(self):
         for task, role in ((TASK, 'assistant'), ('plain text', ROLE)):

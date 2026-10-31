@@ -23,15 +23,16 @@ read_profile_counter = None
 
 # -I keeps the launch isolated; only this installed source directory is added.
 sys.path.insert(0, str(ROOT))
-from config import sha256, root_json, runtime_options, preflight_artifacts, validate_phase_evidence, validate_flash_evidence, validate_prefix_evidence, tensor_selection, cpu_affinity_selection
+from config import sha256, root_json, runtime_options, preflight_artifacts, validate_phase_evidence, validate_flash_evidence, validate_prefix_evidence, tensor_selection, cpu_affinity_selection, model_limits
 import lifecycle
 
 
 def read_profile():
     profile = root_json(PROFILE)
-    if (profile.get('backend') != BACKEND or not profile['model']['provenance_repo'].startswith('huihui-ai/')
-            or profile.get('architecture') not in ('gemma4', 'qwen35')):
-        raise ValueError('Profile is not a supported Huihui decoder model')
+    if (profile.get('backend') != BACKEND or not isinstance(profile.get('model'), dict)
+            or not isinstance(profile.get('architecture'), str) or not profile['architecture']):
+        raise ValueError('Profile is not a valid registered GGUF decoder model')
+    model_limits(profile)
     model = Path(profile['model_path'])
     if model.is_symlink() or not model.is_file() or sha256(model) != profile['model']['model_sha256']:
         raise ValueError('PixelForge source model SHA-256 mismatch')
@@ -58,17 +59,35 @@ def read_profile():
     return profile
 
 
-def renderer(template):
+def renderer(template, template_variables=None, *, prompt_mode=None):
+    """Render this GGUF's template and tokenizer tokens, or explicit completion text."""
+    if prompt_mode not in (None, 'chat-template', 'raw-completion'):
+        raise ValueError('Unknown model prompt mode')
+    if template_variables is not None and (not isinstance(template_variables, dict)
+            or template_variables.keys() - {'bos_token', 'eos_token'}):
+        raise ValueError('Invalid model tokenizer template variables')
+    if prompt_mode == 'raw-completion' or (template is None and prompt_mode is None):
+        if template is not None:
+            raise ValueError('Raw completion must not override a model chat template')
+        return lambda prompt: prompt
+    if not isinstance(template, str) or not template or chr(0) in template:
+        raise ValueError('Selected chat template must be a nonempty string without NUL')
+    from datetime import datetime
     from jinja2.sandbox import ImmutableSandboxedEnvironment
     environment = ImmutableSandboxedEnvironment(trim_blocks=True, lstrip_blocks=True)
     def fail(message):
         raise ValueError(str(message)[:300])
     environment.globals['raise_exception'] = fail
+    environment.globals['strftime_now'] = lambda fmt: datetime.now().strftime(fmt)
     compiled = environment.from_string(template)
+    variables = dict(bos_token='', eos_token='')
+    variables.update(template_variables or {})
+    if any(not isinstance(value, str) or '\0' in value for value in variables.values()):
+        raise ValueError('Invalid model tokenizer template variables')
     def render(prompt):
         return compiled.render(messages=[{'role': 'user', 'content': prompt}],
                                add_generation_prompt=True, enable_thinking=False,
-                               tools=[], bos_token='<bos>', eos_token='<eos>')
+                               tools=[], **variables)
     return render
 
 
@@ -81,18 +100,26 @@ def validate_request(request, profile=None):
     prompt = request.get('prompt')
     if not isinstance(prompt, str) or not prompt.strip() or len(prompt) > 48000 or '\0' in prompt:
         raise ValueError('PixelForge prompt must contain 1 to 48000 characters without NUL')
-    count = request.get('max_tokens', 512)
-    context = request.get('context_size', 8192)
-    if type(count) is not int or not 2 <= count <= 512:
-        raise ValueError('PixelForge requires 2 to 512 output tokens')
+    context_limit, output_limit = model_limits(profile)
+    count = request.get('max_tokens', output_limit)
+    context = request.get('context_size', context_limit)
+    if type(count) is not int or not 2 <= count <= output_limit:
+        raise ValueError('PixelForge output tokens exceed the selected model limit')
     cpu_prefill = runtime_options(profile or {})['cpu_prefill']
-    if (type(context) is not int or not 256 <= context <= 8192
+    if (type(context) is not int or not 256 <= context <= context_limit or count + 8 > context
             or request.get('prefill_cpu', cpu_prefill) is not cpu_prefill):
         raise ValueError('Invalid PixelForge context or configured prefill setting')
     return dict(id=ident, prompt=prompt, max_tokens=count, context_size=context, prefill_cpu=cpu_prefill)
 
 
+def validate_prompt_mode(frame, profile):
+    expected = profile.get('model', {}).get('prompt_mode')
+    if expected is not None and frame.get('prompt_mode') != expected:
+        raise ValueError('Native prompt token policy does not match the registered model')
+
+
 def validate_ready(frame, profile):
+    validate_prompt_mode(frame, profile)
     options = runtime_options(profile)
     validate_prefix_evidence(frame, profile, ready=True)
     validate_flash_evidence(frame, options, ready=True)
@@ -175,6 +202,24 @@ def track_owned(cleanup, owned, stopped):
         interval = .2 if cleanup.collect_owned_children(owned) else 2.0
 
 
+def verify_selected_bundle(state, profile):
+    """Reject a launch whose selected bootstrap changed before it acquired the lock."""
+    registry_path = state / 'models.json'
+    if not registry_path.exists():
+        return
+    registry = root_json(registry_path)
+    selected = registry.get('selected_model_id')
+    models = registry.get('models')
+    if not isinstance(models, dict) or selected not in models:
+        raise ValueError('No registered model is currently selected')
+    bootstrap = root_json(state / 'bootstrap.json')
+    entry = models[selected]
+    if (not isinstance(entry, dict) or bootstrap != entry.get('bootstrap')
+            or bootstrap.get('service') != str(ROOT / 'service.py')
+            or bootstrap.get('ubuntu_pins', {}).get(str(ROOT / 'profile.json')) != sha256(PROFILE)):
+        raise ValueError('Selected model changed before inference startup; reopen the selected model')
+
+
 def main():
     global read_profile_counter
     if len(sys.argv) != 1:
@@ -192,6 +237,7 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
         raise ValueError('Another PixelForge chat owns the NPU runtime; close it first')
+    verify_selected_bundle(state, profile)
     sys.path.insert(0, str(KIT))
     from gguf_hf_loader import GGUFWeights
     from model_architecture import build_plan, write_bridge_plan
@@ -204,7 +250,14 @@ def main():
     if manifest_pins != expected_pins:
         raise ValueError('PixelForge phase bank manifests do not match the pinned profile')
     selection = options['selected_npu_weight_tensors']
-    render = renderer(weights.fields['tokenizer.chat_template'])
+    from model_info import describe_model, probe_model
+    probe = profile.get('native_model_probe')
+    if probe is None:
+        probe = probe_model(ROOT / 'bin/pixelforge-chat', profile['model_path'])
+    info = describe_model(weights, plan, probe=probe)
+    if profile['model'].get('prompt_mode', info['prompt_mode']) != info['prompt_mode']:
+        raise ValueError('Selected model prompt format does not match its GGUF')
+    render = renderer(info['chat_template'], info['template_variables'], prompt_mode=info['prompt_mode'])
     jobs = state / 'chat-jobs'
     jobs.mkdir(mode=0o700, exist_ok=True)
     job = jobs / uuid.uuid4().hex
@@ -231,6 +284,7 @@ def main():
            'PIXELFORGE_GGML_PLAN': str(job / 'weights.plan'), 'PIXELFORGE_GGML_BROKER': str(launcher),
            'PIXELFORGE_NPU_STDERR': str(job / 'native.stderr'),
            'PIXELFORGE_NPU_FAILURE_DIR': str(job / 'failures')}
+    env['PIXELFORGE_CHAT_PROMPT_MODE'] = info['prompt_mode']
     env['PIXELFORGE_CHAT_PREFILL_BATCH'] = str(options['prefill_batch_size'])
     env['PIXELFORGE_CHAT_FLASH_ATTN'] = options['flash_attention']
     env['PIXELFORGE_CHAT_PREFIX_CACHE_MIB'] = str(options['prefix_cache_mib'])
@@ -288,6 +342,7 @@ def main():
                                              dynamic_weight_mode=options['dynamic_weight_mode'],
                                              cpu_affinity=actual_cpu_affinity)
                                 try:
+                                    validate_prompt_mode(frame, profile)
                                     validate_phase_evidence(frame, profile)
                                 except ValueError as error:
                                     frame = dict(type='error', id=frame['id'], error=str(error))

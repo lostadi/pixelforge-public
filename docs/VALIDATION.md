@@ -5,6 +5,77 @@ weights. A compilation result identifies an artifact. A successful invocation
 identifies an operation that ran. The application result then establishes the
 particular task that completed.
 
+
+## 2026-10-31: compiled GGUF registration in Ostadix Voice
+
+Voice registration now uses the source GGUF, the native runner's metadata-only
+model probe, and verified compiled-package manifests. Architecture and publisher
+names no longer form an application whitelist. Registration still requires a
+decoder supported by the native build, supported weight formats, and every
+program needed by the declared phase selections. Compiling one matrix does not
+establish that a GGUF can run as a conversational model.
+
+The installer records the model's template and special-token strings, or an
+explicit raw-completion policy when no template exists. Root-owned versioned
+bundles pin the engine, sources, original GGUF and compiled artifacts. The
+ordinary client chooses only a registered model ID through the fixed launcher;
+selection and inference share an idle lock. The application displays available
+models with `/models` and selects one with `/engine pixelforge ID`.
+
+The [compiled-model validation record](evidence/compiled-voice-20261031.json)
+keeps inference completion separate from tool-task acceptance. Both model checks
+used the real Voice agent/client from ordinary Termux UID/GID 10402 in its verified
+application domain, with no process capabilities. The fixed root inference host
+was a separate boundary. No intent router, argument rewriting, synthesized
+answer or cloud model supplied either response.
+
+| Registered model | Completed turns | NPU prompt weight operations | NPU decode weight operations | Result |
+| --- | ---: | ---: | ---: | --- |
+| NeoHorse 1 4B, qwen35 | 1 | 497 | 249 | Short-answer check passed |
+| Granite 4.1 3B, granite | 2 | 839 | 10,116 | Inference completed; file-tool task failed |
+
+Both phases selected 249 main projections for NeoHorse and all 281 planned dense
+weights for Granite, using B64 prompt programs and B1 decoding. CPU-placed and
+CPU-prefill weight counters were zero. Other operations, including attention,
+normalization, sampling and column partial sums, remained on CPU. The original
+GGUFs were unchanged. These two checks made 6,674 and 24,598 owned native
+invocations respectively, with zero compilation during inference, successful
+native cleanup and a free global lock afterward.
+
+The Granite model independently requested a workspace read, but put its filename
+in `argv` instead of `path`. The real tool returned a missing-path error. Its
+second generated turn incorrectly described a missing file. This is a failed
+file-tool acceptance test despite successful model execution. PixelForge's text
+tool guide was subsequently clarified with a complete read/path example and a
+distinction between file and command arguments. That clarification has software
+regression coverage; no new live model acceptance is claimed for it.
+
+The NeoHorse check took 235.235 seconds; Granite's two turns took 1,133.662
+seconds. These are slow functional observations. They establish neither a
+speedup nor general model quality. The new Granite package contained ten geometry
+programs: six verified reusable programs and four newly compiled programs.
+All ten real-device primitive checks passed with original weight bits preserved;
+maximum relative L2 was 0.0003642 against a 0.002 limit, and maximum normalized
+error was 0.0005725 against a 0.005 limit. Primitive errors are not a full-model
+quality bound.
+
+A real fully cached grouped-column compiler resume then registered the Granite
+package through `--voice-model-id`, with no compilation or native invocation.
+It exited zero and preserved the selected default. The ordinary-app selector
+also completed a Granite-to-default roundtrip while preserving metadata
+ownership and exact SELinux labels. The final installed selection is NeoHorse;
+Granite remains available as `granite41-3b`.
+
+The final compiler/runtime, chat/native and source-release suites passed
+**455 tests**: 200, 235 and 20 respectively, with no skips or failures.
+They cover package ambiguity and corruption, source binding, native metadata,
+template/raw special-token policy, phase coverage, compiler handoff, selection
+races, atomic publications and rollback. Software fixtures do not establish
+another GGUF's live compatibility. A separate 232-test focused Voice pass
+covered transport, model selection, terminal commands and the conversation
+coordinator. The two new rendered file-tool guide regressions also passed
+within a 76-test targeted guide/transport pass.
+
 ## 2026-10-31: compiler resume and host cache accounting
 
 This source change removes redundant host work. It preserves the graph

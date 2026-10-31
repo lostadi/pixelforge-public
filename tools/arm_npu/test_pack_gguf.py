@@ -122,8 +122,8 @@ class CompilerExportTests(unittest.TestCase):
         # The synthetic helper workers must also come from the extracted kit.
         code = '''import sys,unittest
 sys.path.insert(0,sys.argv[1])
-import gguf_broker,compile_grouped_fc,grouped_fc,compile_grouped_columns,grouped_columns,dynamic_fc,full_ffn,dma_buffers
-names=['test_batched_fc','test_dynamic_fc','test_grouped_fc','test_grouped_columns','test_dma_buffers','test_full_ffn']
+import gguf_broker,compile_grouped_fc,grouped_fc,compile_grouped_columns,grouped_columns,dynamic_fc,full_ffn,dma_buffers,voice_handoff
+names=['test_batched_fc','test_dynamic_fc','test_grouped_fc','test_grouped_columns','test_dma_buffers','test_full_ffn','test_compiler_resume','test_voice_handoff']
 suite=unittest.defaultTestLoader.loadTestsFromNames(names)
 result=unittest.TextTestRunner(verbosity=1).run(suite)
 raise SystemExit(not result.wasSuccessful())

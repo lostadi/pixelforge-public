@@ -7,9 +7,9 @@
       "sha256": "02b65e220609912de260a3ab22ba45e7d69d977ff3c55cccdc4f7aab025d8301"
     },
     {
-      "bytes": 4634,
+      "bytes": 4737,
       "path": ".github/workflows/ci.yml",
-      "sha256": "94b9b0af57d1653985f4aee665674cece737a2d4f709e413af93038230ec908b"
+      "sha256": "77e48a502db5ee8b3c5bd4534b3daf0d2cf13aa06ffa2a0fc952cf5d77f3e3e5"
     },
     {
       "bytes": 163,
@@ -52,9 +52,9 @@
       "sha256": "141e31f0f6ce05912801c015f983c4381013a88ae3eab961c73a609baed1f8b7"
     },
     {
-      "bytes": 8578,
+      "bytes": 10030,
       "path": "README.md",
-      "sha256": "a3e8fab488a228535ef7a4d4ce12c3c3dbffcd8ca552b2522daa1195b7e1d783"
+      "sha256": "7a3859835ee75b8250c22713b9492e565e8ab629f79bafde4877ce50084da748"
     },
     {
       "bytes": 5496,
@@ -322,9 +322,9 @@
       "sha256": "f6f88a183b508aa1acde4f82aa5705c2d483f2c232dd7dbebb999182bd3f31cb"
     },
     {
-      "bytes": 13052,
+      "bytes": 17538,
       "path": "chat/README.md",
-      "sha256": "3a057cff2a6adf1e71cb67ef5b4ad090c487ed8f5f0252cefc29851743d2a143"
+      "sha256": "fe0adc31dfb4adfe9cce344b4c1f20a1ec3dcf4d447bd1da8bb56a7635f2066e"
     },
     {
       "bytes": 1465,
@@ -337,9 +337,9 @@
       "sha256": "c1381cf27e1c6712a6bda764d38719716d5c48c0836759b613e895dfa640922f"
     },
     {
-      "bytes": 4869,
+      "bytes": 6237,
       "path": "chat/android_launcher.py",
-      "sha256": "09a6a6c611fa1aeb844c90c05659b3f959998e18f17d772ee9a58d1d05ead400"
+      "sha256": "21edac5dcf451020ad42b5c1451b7b7c0aa0c930392fe3ddc3541047053e49a1"
     },
     {
       "bytes": 5888,
@@ -347,9 +347,14 @@
       "sha256": "180419482f3965be6b717fb433697bd79c893f14a16aae6f7daf005dd59ed520"
     },
     {
-      "bytes": 27483,
+      "bytes": 16394,
+      "path": "chat/compiled_package.py",
+      "sha256": "17bbe8e9ed925fa65124f06dcba96a8ba51e38643730d98596e2eef209cf8936"
+    },
+    {
+      "bytes": 28213,
       "path": "chat/config.py",
-      "sha256": "aa47b12c0381180d0740b28abad16db8deb974f856e40cfd1abc8584343df939"
+      "sha256": "3437ad7448deda97e17341e89df5e45251c96f29426834966a1d9adbf8883942"
     },
     {
       "bytes": 960,
@@ -357,9 +362,9 @@
       "sha256": "159966f7fc2a881c69dea8a20aa086aaea811af91a03d38f261f89336dadba87"
     },
     {
-      "bytes": 15255,
+      "bytes": 24522,
       "path": "chat/install.py",
-      "sha256": "8712f99e7cb4ea82d76c46ad24f07631625e9d278c14faa5bf15a5c855f7ab68"
+      "sha256": "9824557603b62f9b7194259fb2955a9493fc2bc44a371737642db85f9dc358bd"
     },
     {
       "bytes": 6209,
@@ -367,9 +372,14 @@
       "sha256": "d427026fc12e6fd2ee0a283b36f0023dd234083f21fc27310debd5c96728181b"
     },
     {
-      "bytes": 875,
+      "bytes": 1549,
       "path": "chat/manage.py",
-      "sha256": "37630e23c4480c166848f80abc32c1752483b7f600191846cbc4f1577e17d8d9"
+      "sha256": "65b4b238cf563d39ab21ae8bcab4b095f8c750ca9d67ba61f1b5f06ae9c39687"
+    },
+    {
+      "bytes": 7529,
+      "path": "chat/model_info.py",
+      "sha256": "63116dfb7344fdcc78e3a0b43eb4b90e811d5618083c2e470fd001d4c6a3a84d"
     },
     {
       "bytes": 1078,
@@ -377,9 +387,9 @@
       "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
     },
     {
-      "bytes": 22911,
+      "bytes": 29390,
       "path": "chat/native/chat_runner.cc",
-      "sha256": "f3ce17a5aefb45ac39e90183a47fa1beadf10b01bd2074b34ae2b93c9208b7fb"
+      "sha256": "85f6abeef7d738dc0678ed11468a2d63804da39b366aa8496611aa9c4b03e2cf"
     },
     {
       "bytes": 29817,
@@ -392,14 +402,19 @@
       "sha256": "d5607dd9eba95c41002a95d0bf2bb5eae3d6ec6b096c4a114c0e4d82f62f46bc"
     },
     {
+      "bytes": 17328,
+      "path": "chat/registry.py",
+      "sha256": "f525a0ec6c7fa4fe1b817468dd3b890f93788ee3fc7f34eca8e17c04747256e1"
+    },
+    {
       "bytes": 213,
       "path": "chat/requirements-chat.txt",
       "sha256": "7244d459cc7d4c0c27e96cbe1695e37b8bad53c8e78e5907e471d8c75263206d"
     },
     {
-      "bytes": 18744,
+      "bytes": 22023,
       "path": "chat/service.py",
-      "sha256": "8ae6580ca1fac92c782afa88ff16df54878495549e5a37cd294075a8c5e6b7c7"
+      "sha256": "260e682db26b622b384479d73886cdbbce4d4cefe6a9ae1ef0871f0486f48a14"
     },
     {
       "bytes": 4223,
@@ -432,14 +447,39 @@
       "sha256": "24ffb0c2554e0d7049ceec499d8921c80c2aea1b4683e28fb602dde38e5f0381"
     },
     {
+      "bytes": 18246,
+      "path": "chat/tests/test_compiled_package.py",
+      "sha256": "d639e7f95ef80f5b117a68f199723cdd56f02e0ffadb1dcbb3ffba15798f9540"
+    },
+    {
       "bytes": 6761,
       "path": "chat/tests/test_flash_attention.py",
       "sha256": "95f5eabe975b19ee69d9e675a5e5590b341d715227a94913fdf5b21eabe75197"
     },
     {
-      "bytes": 24537,
+      "bytes": 20159,
+      "path": "chat/tests/test_generic_install.py",
+      "sha256": "6fe8a137b118ac39f3ffdcb0b4c96f3f9c2cbd7a13f54d0be5d024b4e25251cd"
+    },
+    {
+      "bytes": 21896,
+      "path": "chat/tests/test_generic_service.py",
+      "sha256": "0eaec848859b686339bdf46f934cc773a7b4484b450c20738784828f6c8f23d0"
+    },
+    {
+      "bytes": 26271,
       "path": "chat/tests/test_install.py",
-      "sha256": "1ce1b334798c4917eb1645c5877a2e29893fdae5444bdd0ad2fffaa58a50e4d9"
+      "sha256": "7a7a43160b94b5f857436520237c3cf93952ef68f2c9889a2164025e13d51746"
+    },
+    {
+      "bytes": 7200,
+      "path": "chat/tests/test_model_info.py",
+      "sha256": "093635af83911e6f923b565580ebe3353e7bce63a045f4610ffedc3770e365f7"
+    },
+    {
+      "bytes": 4884,
+      "path": "chat/tests/test_model_probe.py",
+      "sha256": "0e8c080dfb339121947c79fc9692f7b3607c6f53d0f2d5f9df1f6d92b990a66c"
     },
     {
       "bytes": 20089,
@@ -457,14 +497,24 @@
       "sha256": "7429522979d1daacd72103f5de207f5d651832db8d39791ab4e8642b2551ddaa"
     },
     {
+      "bytes": 5367,
+      "path": "chat/tests/test_native_prompt_mode.py",
+      "sha256": "610d3a032032df4c0ea036b224edaba77acc1a1fe04dc719d383152a66e4ae12"
+    },
+    {
       "bytes": 5032,
       "path": "chat/tests/test_native_wait.py",
       "sha256": "2c08b27357fd29f77654876eec91a2783fe6b2814b8669e1b9517152ce0e9303"
     },
     {
-      "bytes": 60804,
+      "bytes": 20284,
+      "path": "chat/tests/test_registry.py",
+      "sha256": "7e838bdb0bddf9415cf65536f92780a1d3e138e7ee20e2fc4ef2a850b58bd937"
+    },
+    {
+      "bytes": 62450,
       "path": "chat/tests/test_service.py",
-      "sha256": "cf74c1c39781229bce53b54ad91862a0306a90b6d5671d29716b5ffd2f00d11c"
+      "sha256": "bde5dfad7609b6dea8d6a873cf62fe4e4f0269c56d1022ef33a4b8e0d08a3ebc"
     },
     {
       "bytes": 988,
@@ -472,9 +522,14 @@
       "sha256": "d9a389b786b4022f60b1712fcbb4ed881ff9b316a3e55f8e5116bc2250fce73d"
     },
     {
-      "bytes": 16967,
+      "bytes": 21395,
       "path": "docs/VALIDATION.md",
-      "sha256": "57b2758e527ff7bb82836fed5f13a252c0443db40354559c7c22d09f26831fd7"
+      "sha256": "49f394774fd9828641ac0b875a9ba93d52b9933a5ab90a9c0acd5e7a2ce7418f"
+    },
+    {
+      "bytes": 5643,
+      "path": "docs/evidence/compiled-voice-20261031.json",
+      "sha256": "1891833c4caaad7eb401860a59001693cd694c4a1eb8a1cd256c45fb596877d0"
     },
     {
       "bytes": 8217,
@@ -1407,9 +1462,9 @@
       "sha256": "f82f03363dec5272125b0a7616326d66f8738eb8e4679f91ab91e389e1f3dea4"
     },
     {
-      "bytes": 6037,
+      "bytes": 8132,
       "path": "source/ostadix-voice/README.md",
-      "sha256": "65d3247dd6df56296e053da83920b9b194782301b1f3bbdb45c352a42318639d"
+      "sha256": "77f0b7961e98fefac3e448d8abb428d6b63d4d99dca55bfb6a2ce45737b7610e"
     },
     {
       "bytes": 68754,
@@ -1567,9 +1622,9 @@
       "sha256": "42ffe4866749ec5f5dc24f2dc7238ade863566c84900cc03f820515c6be6af8b"
     },
     {
-      "bytes": 11476,
+      "bytes": 11804,
       "path": "source/ostadix-voice/npu_chat.py",
-      "sha256": "432f546e3c84bc86532d117362fe5f6d66e6dc12dfb1a9ca01046af3fe127019"
+      "sha256": "e1f68f726b25ccce72a4c50949b408964b452b3656b88daf921a8031936b3665"
     },
     {
       "bytes": 18398,
@@ -1627,9 +1682,9 @@
       "sha256": "b2d502f20e81e90ff64f18f375b312fb342d56e96e46e63fce52bc17fa12d780"
     },
     {
-      "bytes": 39312,
+      "bytes": 44784,
       "path": "source/ostadix-voice/pixelforge_chat.py",
-      "sha256": "6ed15fcc98218454c3ef10d38f53ab60a8ddb26f53058d9b918d167d04aadc9a"
+      "sha256": "f3f16ee1770b546e35523d73a8e727d09552b511e933314d6cb067cd0fe59f9a"
     },
     {
       "bytes": 15563,
@@ -1727,9 +1782,9 @@
       "sha256": "744e09f0134f11e1e7312718a05c19554751b8113dd6a78527baf072e344d9c8"
     },
     {
-      "bytes": 147168,
+      "bytes": 149427,
       "path": "source/ostadix-voice/terminal.py",
-      "sha256": "9f1cd538599cd830ec3ebc1abf311a47bef5d26b6c3a24086879b9f2ba630dc8"
+      "sha256": "3cc38302b89b109a904bace9aac594c60f49dc92116d556ea4841aae56f57578"
     },
     {
       "bytes": 15195,
@@ -2012,9 +2067,19 @@
       "sha256": "9a6f20ffcdcfc76c803927f958f79929bedbbbe9552d3c463abbfc31fd86731d"
     },
     {
-      "bytes": 41082,
+      "bytes": 43869,
       "path": "source/ostadix-voice/tests/test_pixelforge_chat.py",
-      "sha256": "8b23af8a11656bf8317caaeffe12faf0a6f8bea8ec1e5fb5e44d8a40834c13e2"
+      "sha256": "87ac009400402c4cdf9587fa67c6eb206e312e740aff80acce900fa32a993e59"
+    },
+    {
+      "bytes": 3299,
+      "path": "source/ostadix-voice/tests/test_pixelforge_file_prompt.py",
+      "sha256": "12954870d210b6b78f69146b511a88c84216982574cabcdc5ce3d23cde5f23bf"
+    },
+    {
+      "bytes": 8450,
+      "path": "source/ostadix-voice/tests/test_pixelforge_models.py",
+      "sha256": "066949db57ea0fbc0784142ec975647b39e58e4439d8f13bcdd1db70a6883706"
     },
     {
       "bytes": 3494,
@@ -2057,9 +2122,9 @@
       "sha256": "764f1fa66c8674b95ce08433704ef7db20ab885e7317d0edcaff5dc8b26ed442"
     },
     {
-      "bytes": 71009,
+      "bytes": 74948,
       "path": "source/ostadix-voice/tests/test_terminal_ui.py",
-      "sha256": "6c80158d8e77d6726335d109511918d4cc278c328a2190b0bd241a09c30e7289"
+      "sha256": "4261d91827955c29bd3932e423a2c27981c38cb9938554cda6cc3afe50bd38bd"
     },
     {
       "bytes": 6424,
@@ -2102,9 +2167,9 @@
       "sha256": "9e54722ec4404655cbc15449461df100fdaa8db778ad1c9f4257675e1f9a60b6"
     },
     {
-      "bytes": 11648,
+      "bytes": 15474,
       "path": "tools/arm_npu/GGUF_COMPILER.md",
-      "sha256": "af68dba03b752b668a16ff5c1e136cba2abb9921351fbb4384fdc5b7d5f389b6"
+      "sha256": "56583b57c0aad52a7257f8def66f357ab6987d88fef86ee440fc28735e1f1255"
     },
     {
       "bytes": 2851,
@@ -2212,9 +2277,9 @@
       "sha256": "c470672e3ae65d5834b9c048dfdff9ed8e858c59093831fd5860e8ae82fa3dac"
     },
     {
-      "bytes": 5074,
+      "bytes": 5647,
       "path": "tools/arm_npu/compile_dynamic_fc.py",
-      "sha256": "83692222499dacf35cccc9f9d16dbe16129fb4705bfe4079fdd2795184dd2788"
+      "sha256": "9fee5d151c5c5ddfd78e485b4ff4cd11921c6b6c12713e509cf4cccfc23317b0"
     },
     {
       "bytes": 5038,
@@ -2222,14 +2287,14 @@
       "sha256": "250634f2a4ca575a4c1a015ad541b960be57d8bccfa97bf43e591e5284859160"
     },
     {
-      "bytes": 12279,
+      "bytes": 13307,
       "path": "tools/arm_npu/compile_gguf.py",
-      "sha256": "25d206cd2ee0ba88265ded37b840bdef1ad82edc3bb0eba0cd8d33990669fd1f"
+      "sha256": "c39c10e9fc3625aca68bb3c6ba516b7bf8c46c54bdc6b6c177a09d57a4f07f5c"
     },
     {
-      "bytes": 5218,
+      "bytes": 5691,
       "path": "tools/arm_npu/compile_grouped_columns.py",
-      "sha256": "8850a75316de74becdb476521f1de519c877b08f45b2a456ba119e971669d974"
+      "sha256": "7c14d15147a5f825e3623a7d672f695c73ac4afd037b175b9f1318ec308ba333"
     },
     {
       "bytes": 185,
@@ -2372,9 +2437,9 @@
       "sha256": "9f90172713858be8f96fbc2a4ffa4908588c540183c8bdac226c32346e21dd09"
     },
     {
-      "bytes": 14986,
+      "bytes": 15049,
       "path": "tools/arm_npu/pack_gguf.py",
-      "sha256": "fb2616022680899e8264c023d1fc631c4c416215f9341ff1a999a8bffc32213d"
+      "sha256": "a0a872bea9c17fb048e8c5fc39be02c53ad4bdc5b9977bf465a8248ef64dc86d"
     },
     {
       "bytes": 4220,
@@ -2517,9 +2582,9 @@
       "sha256": "0b7655139eac8328bcac07aa45cc370ee707d4312a61ccf900101823be580a41"
     },
     {
-      "bytes": 14768,
+      "bytes": 14826,
       "path": "tools/arm_npu/test_pack_gguf.py",
-      "sha256": "2475697de2fc672baf9d38db01accd821a87e33c6f2b6ff5fc68418c6454236b"
+      "sha256": "23e9da250d32c6bbcd244c87cdf09a26f9f2858d03cb44c26f29c72e39805f6e"
     },
     {
       "bytes": 3410,
@@ -2547,9 +2612,19 @@
       "sha256": "7cd445110e60efc352b65a19ff952b70f9548a3039b970e3ef967c648b807c75"
     },
     {
+      "bytes": 12352,
+      "path": "tools/arm_npu/test_voice_handoff.py",
+      "sha256": "3ad59adf95bf032219312fdae153184e1eb95f5162273d8c48ce0fa08f59ca35"
+    },
+    {
       "bytes": 12713,
       "path": "tools/arm_npu/validate_runtime.py",
       "sha256": "b83d02b803beb3083ed39bda294910c72a6e12c96dc5158fd6de6e67c1de11d5"
+    },
+    {
+      "bytes": 6386,
+      "path": "tools/arm_npu/voice_handoff.py",
+      "sha256": "643551032ce246ac004b650b7969433ed3337637d6a49494a2941104ee6427c7"
     },
     {
       "bytes": 14428,

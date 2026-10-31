@@ -82,6 +82,28 @@ The fresh public source build and isolated installer independently passed the
 same kind of file-tool task, with 66 NPU matrix operations and 154 native
 invocations. That run took 707.9 seconds under concurrent phone load.
 
+## Register compiled GGUFs in Voice
+
+Ostadix Voice can select registered decoder GGUFs from any publisher. Each
+registration binds the original model hash to its compiled package, probes the
+actual native loader/tokenizer and verifies the declared NPU banks before
+activation. An exact package leaf supplies the recipe, dtype and batch layout;
+routes supporting split batches use a compatible B1 sibling for decoding when
+present. Float32 dynamic-input programs retain one batch for both phases.
+Templates use actual model special tokens; models without templates use explicit
+raw completion.
+
+On an existing platform installation, `chat/install.py --from-compiled`
+registers an exact package leaf with `--model-id ID`; `--select --apply` selects
+it. Compiler CLIs can request the handoff after successful compilation with
+`--voice-model-id ID` and optional `--select-voice`. In ordinary Termux,
+`/models` lists registered models and `/engine pixelforge ID` selects one while idle. Read the
+[registration workflow and limits](chat/README.md#register-a-compiled-package).
+A matrix-only result, unsupported model or missing declared bank is rejected;
+registration does not establish general conversation quality or NPU numerical
+validation. Normal CPU graph operations remain, and failed declared NPU work
+does not switch automatically to CPU or cloud inference.
+
 ## Build and use
 
 The tested hardware is a **rooted Pixel 10 Pro with Tensor G5**. The device
@@ -127,8 +149,9 @@ python3 source/ostadix-voice/install_shortcut.py --shell both
 c --text
 ```
 
-Inside `c`, `/engine pixelforge` saves the selection. `/status` shows the model
-and placement; `/cancel` interrupts a turn; `/quit` closes the interface.
+Inside `c`, `/models` lists registered models; `/engine pixelforge ID` selects
+one while idle. `/engine pixelforge` uses the selected model. `/status` shows its
+identity and placement; `/cancel` interrupts a turn; `/quit` closes the interface.
 Use `/voice on` when the Android speech bridge is installed and you want
 microphone capture. See [the voice source guide](source/README.md).
 
